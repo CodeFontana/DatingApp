@@ -29,9 +29,9 @@ namespace API.Controllers
                 return BadRequest("Username is taken.");
             }
 
-            using var hmac = new HMACSHA512();
+            using HMACSHA512 hmac = new();
 
-            var user = new AppUser
+            AppUser user = new()
             {
                 UserName = userReg.Username.ToLower(),
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(userReg.Password)),
@@ -51,7 +51,7 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserModel>> Login(LoginModel loginModel)
         {
-            var user = await _context.Users
+            AppUser user = await _context.Users
                 .SingleOrDefaultAsync(u => u.UserName == loginModel.Username);
 
             if (user == null)
@@ -59,8 +59,8 @@ namespace API.Controllers
                 return Unauthorized("Invalid username.");
             }
 
-            using var hmac = new HMACSHA512(user.PasswordSalt);
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginModel.Password));
+            using HMACSHA512 hmac = new(user.PasswordSalt);
+            byte[] computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginModel.Password));
 
             for (int i = 0; i < computedHash.Length; i++)
             {
@@ -76,7 +76,6 @@ namespace API.Controllers
                 Token = _tokenService.CreateToken(user)
             };
         }
-
 
         private async Task<bool> UserExists(string username)
         {
