@@ -1,0 +1,70 @@
+﻿@inject AccountService Account
+
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">Dating App</a>
+        @if (Account.LoggedIn)
+        {
+            <ul class="navbar-nav mr-auto">
+                <NavLink class="nav-link text-light" href="" Match="NavLinkMatch.All">
+                    <span class="oi oi-people" aria-hidden="true"></span> Matches
+                </NavLink>
+                <NavLink class="nav-link text-light" href="" Match="NavLinkMatch.All">
+                    <span class="oi oi-list" aria-hidden="true"></span> Lists
+                </NavLink>
+                <NavLink class="nav-link text-light" href="" Match="NavLinkMatch.All">
+                    <span class="oi oi-envelope-closed" aria-hidden="true"></span> Messages
+                </NavLink>
+                <NavLink class="nav-link text-light" href="" Match="NavLinkMatch.All" @onclick="() => HandleLogout()">
+                    <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+                </NavLink>
+            </ul>
+
+            <div class="nav-item dropdown show">
+                <NavLink class="nav-link text-light" @onclick="() => expandSubNavSettings = !expandSubNavSettings" id="navbarDropdown">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Welcome user
+                </NavLink>
+
+                @if (expandSubNavSettings)
+                {
+                    <div class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => expandSubNavSettings = !expandSubNavSettings">
+                        <NavLink class="nav-link text-dark" href="">
+                            <span class="oi oi-pencil" aria-hidden="true"></span> Edit Profile
+                        </NavLink>
+                        <div class="dropdown-divider"></div>
+                        <NavLink class="nav-link text-dark" href="" @onclick="() => HandleLogout()">
+                            <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+                        </NavLink>
+                    </div>
+                        
+                }
+            </div>
+        }
+        else
+        {
+            <EditForm Model="@loginUser" OnValidSubmit="HandleValidSubmit" class="form-inline mt-2 mt-md-0">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <InputText @bind-Value="loginUser.Username" class="form-control mr-sm-2" type="text" placeholder="Username" />
+                <InputText @bind-Value="loginUser.Password" class="form-control mr-sm-2" type="password" placeholder="Password" />
+                <button class="btn btn-info my-2 my-sm-0" type="submit"><span class="oi oi-account-login" aria-hidden="true"></span> Login</button>
+            </EditForm>
+        }
+    </div>
+</nav>
+
+@code {
+    private LoginModel loginUser = new LoginModel();
+    private bool expandSubNavSettings = false;
+
+    private async Task HandleValidSubmit()
+    {
+        await Account.Login(loginUser);
+        loginUser = new LoginModel();
+    }
+
+    private void HandleLogout()
+    {
+        Account.Logout();
+    }
+}
