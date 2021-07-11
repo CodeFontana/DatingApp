@@ -11,9 +11,11 @@ using System.Threading.Tasks;
 
 namespace API.Data
 {
-    public class Seed
+    public class SeedData
     {
-        public static async Task SeedUsers(ILogger<Program> logger, UserManager<AppUser> userManager)
+        public static async Task SeedUsers(ILogger<Program> logger,
+                                           UserManager<AppUser> userManager,
+                                           RoleManager<AppRole> roleManager)
         {
             if (await userManager.Users.AnyAsync())
             {
@@ -30,11 +32,32 @@ namespace API.Data
                     return;
                 }
 
+                List<AppRole> roles = new() 
+                {
+                    new AppRole {Name = "Member"},
+                    new AppRole {Name = "Admin"},
+                    new AppRole {Name = "Moderator"}
+                };
+
+                foreach (var role in roles)
+                {
+                    await roleManager.CreateAsync(role);
+                }
+
                 foreach (AppUser user in users)
                 {
                     user.UserName = user.UserName.ToLower();
                     await userManager.CreateAsync(user, "Passw0rd123!!");
+                    await userManager.AddToRoleAsync(user, "Member");
                 }
+
+                AppUser admin = new()
+                {
+                    UserName = "admin"
+                };
+
+                await userManager.CreateAsync(admin, "Passw0rd123!!");
+                await userManager.AddToRolesAsync(admin, new[] { "Admin", "Moderator" });
             }
             catch (Exception ex)
             {
