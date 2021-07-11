@@ -3,8 +3,8 @@ using System.Text;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
-using API.Interfaces;
 using API.Models;
+using API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -47,10 +47,17 @@ namespace API.Controllers
                 return BadRequest(result.Errors);
             }
 
+            IdentityResult roleResult = await _userManager.AddToRoleAsync(user, "Member");
+
+            if (roleResult.Succeeded == false)
+            {
+                return BadRequest(result.Errors);
+            }
+
             return new AuthenticatedUser
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = await _tokenService.CreateToken(user)
             };
         }
 
@@ -76,7 +83,7 @@ namespace API.Controllers
             return new AuthenticatedUser
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = await _tokenService.CreateToken(user)
             };
         }
 
