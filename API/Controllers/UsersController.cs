@@ -19,11 +19,18 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
         }
+
+        //[HttpGet("{username}", Name = "GetUser")]
+        //[Authorize(Roles = "Member")]
+        //public async Task<ActionResult<MemberData>> GetUser(string username)
+        //{
+        //    return await _userRepositoryt.GetMemberAsync(username);
+        //}
 
         [HttpGet("{id}")]
         [Authorize]
