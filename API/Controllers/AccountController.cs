@@ -5,6 +5,7 @@ using API.Data;
 using API.Entities;
 using API.Interfaces;
 using API.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,36 +13,41 @@ namespace API.Controllers
 {
     public class AccountController : BaseApiController
     {
-        private readonly DataContext _context;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
 
-        public AccountController(DataContext context, ITokenService tokenService)
+        public AccountController(
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
+            ITokenService tokenService)
         {
+            _userManager = userManager;
+            _signInManager = signInManager;
             _tokenService = tokenService;
-            _context = context;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserModel>> Register(RegisterModel userReg)
+        public async Task<ActionResult<AuthenticatedUser>> Register(AuthenticationUser userReg)
         {
             if (await UserExists(userReg.Username))
             {
                 return BadRequest("Username is taken.");
             }
 
-            using HMACSHA512 hmac = new();
-
             AppUser user = new()
             {
                 UserName = userReg.Username.ToLower(),
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(userReg.Password)),
-                PasswordSalt = hmac.Key
             };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            IdentityResult result = await _userManager.CreateAsync(user, userReg.Password);
 
-            return new UserModel
+            if (result.Succeeded == false)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return new AuthenticatedUser
             {
                 Username = user.UserName,
                 Token = _tokenService.CreateToken(user)
@@ -49,28 +55,25 @@ namespace API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserModel>> Login(LoginModel loginModel)
+        public async Task<ActionResult<AuthenticatedUser>> Login(AuthenticationUser loginModel)
         {
-            AppUser user = await _context.Users
-                .SingleOrDefaultAsync(u => u.UserName == loginModel.Username);
+            AppUser user = await _userManager.Users
+                .SingleOrDefaultAsync(u => u.UserName == loginModel.Username.ToLower());
 
             if (user == null)
             {
                 return Unauthorized("Invalid username.");
             }
 
-            using HMACSHA512 hmac = new(user.PasswordSalt);
-            byte[] computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginModel.Password));
+            Microsoft.AspNetCore.Identity.SignInResult result = 
+                await _signInManager.CheckPasswordSignInAsync(user, loginModel.Password, false);
 
-            for (int i = 0; i < computedHash.Length; i++)
+            if (result.Succeeded == false)
             {
-                if (computedHash[i] != user.PasswordHash[i])
-                {
-                    return Unauthorized("Invalid password.");
-                }
+                return Unauthorized();
             }
 
-            return new UserModel
+            return new AuthenticatedUser
             {
                 Username = user.UserName,
                 Token = _tokenService.CreateToken(user)
@@ -79,7 +82,7 @@ namespace API.Controllers
 
         private async Task<bool> UserExists(string username)
         {
-            return await _context.Users.AnyAsync(e => e.UserName == username.ToLower());
+            return await _userManager.Users.AnyAsync(e => e.UserName == username.ToLower());
         }
     }
 }
