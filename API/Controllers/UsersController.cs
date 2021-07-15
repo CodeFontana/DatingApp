@@ -29,7 +29,7 @@ namespace API.Controllers
         //[Authorize(Roles = "Member")]
         //public async Task<ActionResult<MemberData>> GetUser(string username)
         //{
-        //    return await _userRepositoryt.GetMemberAsync(username);
+        //    return await _userRepository.GetMemberAsync(username);
         //}
 
         [HttpGet("{id}")]
