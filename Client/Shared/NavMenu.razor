@@ -1,21 +1,21 @@
-﻿@inject AccountService Account
+﻿@inject IAuthenticationService AuthService
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container">
         <a class="navbar-brand" href="#">Dating App</a>
-        @if (Account.LoggedIn)
+        @if (isAuthenticated)
         {
             <ul class="navbar-nav mr-auto">
-                <NavLink class="nav-link text-light" href="" Match="NavLinkMatch.All">
+                <NavLink class="nav-link text-light" href="#" Match="NavLinkMatch.All">
                     <span class="oi oi-people" aria-hidden="true"></span> Matches
                 </NavLink>
-                <NavLink class="nav-link text-light" href="" Match="NavLinkMatch.All">
+                <NavLink class="nav-link text-light" href="#" Match="NavLinkMatch.All">
                     <span class="oi oi-list" aria-hidden="true"></span> Lists
                 </NavLink>
-                <NavLink class="nav-link text-light" href="" Match="NavLinkMatch.All">
+                <NavLink class="nav-link text-light" href="#" Match="NavLinkMatch.All">
                     <span class="oi oi-envelope-closed" aria-hidden="true"></span> Messages
                 </NavLink>
-                <NavLink class="nav-link text-light" href="" Match="NavLinkMatch.All" @onclick="() => HandleLogout()">
+                <NavLink class="nav-link text-light" href="#" Match="NavLinkMatch.All" @onclick="() => HandleLogout()">
                     <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
                 </NavLink>
             </ul>
@@ -36,13 +36,13 @@
                             <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
                         </NavLink>
                     </div>
-                        
+
                 }
             </div>
         }
         else
         {
-            <EditForm Model="@loginUser" OnValidSubmit="HandleValidSubmit" class="form-inline mt-2 mt-md-0">
+            <EditForm Model="@loginUser" OnValidSubmit="HandleLogin" class="form-inline mt-2 mt-md-0">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
                 <InputText @bind-Value="loginUser.Username" class="form-control mr-sm-2" type="text" placeholder="Username" />
@@ -54,17 +54,38 @@
 </nav>
 
 @code {
-    private LoginModel loginUser = new LoginModel();
-    private bool expandSubNavSettings = false;
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
 
-    private async Task HandleValidSubmit()
+    private AuthenticationUserModel loginUser = new();
+    private bool expandSubNavSettings = false;
+    private bool isAuthenticated = false;
+    private string userName;
+    private bool isAdmin = false;
+    private bool isModerator = false;
+    private bool isMember = false;
+
+    protected override async Task OnInitializedAsync()
     {
-        await Account.Login(loginUser);
-        loginUser = new LoginModel();
+        AuthenticationState authState = await AuthState;
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            isAuthenticated = true;
+            isAdmin = authState.User.IsInRole("Admin");
+            isModerator = authState.User.IsInRole("Moderator");
+            isMember = authState.User.IsInRole("Member");
+        }
     }
 
-    private void HandleLogout()
+    private async Task HandleLogin()
     {
-        Account.Logout();
+        await AuthService.Login(loginUser);
+        loginUser = new();
+    }
+
+    private async Task HandleLogout()
+    {
+        await AuthService.Logout();
     }
 }

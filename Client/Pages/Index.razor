@@ -3,41 +3,6 @@
 
 <h1>Dating App</h1>
 
-<h3>Users</h3>
-@if (string.IsNullOrWhiteSpace(errorString) == false)
-{
-    <h4>System Error</h4>
-    <p>@errorString</p>
-}
-else if (Users is null)
-{
-    <h4>Loading...</h4>
-}
-else
-{
-    <ul>
-        @foreach (var user in Users)
-        {
-            <li>@user.Id - @user.UserName</li>
-        }
-    </ul>
-}
-
 @code {
-    private List<UserModel> Users = new List<UserModel>();
-    private string errorString = "";
 
-    protected override async Task OnInitializedAsync()
-    {
-        HttpResponseMessage response = await Http.GetAsync($"api/Users");
-
-        if (response.IsSuccessStatusCode)
-        {
-            Users = await response.Content.ReadFromJsonAsync<List<UserModel>>();
-        }
-        else
-        {
-            errorString = response.ReasonPhrase;
-        }
-    }
 }

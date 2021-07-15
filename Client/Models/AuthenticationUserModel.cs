@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Client.Models
 {
-    public class LoginModel
+    public class AuthenticationUserModel
     {
-        [Required]
+        [Required(ErrorMessage = "Username required.")]
         public string Username { get; set; }
-        
-        [Required]
+
+        [Required(ErrorMessage = "Password is required.")]
         public string Password { get; set; }
     }
 }

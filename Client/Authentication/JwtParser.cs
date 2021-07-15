@@ -1,0 +1,81 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace Client.Authentication
+{
+    public static class JwtParser
+    {
+        public static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+        {
+            Console.WriteLine(jwt);
+
+            List<Claim> claims = new List<Claim>();
+            string payload = jwt.Split('.')[1];
+            byte[] jsonBytes = ParseBase64WithoutPadding(payload);
+            Dictionary<string, object> keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+
+            ExtractRolesFromJwt(claims, keyValuePairs);
+
+            claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
+
+            return claims;
+        }
+
+        /* Sample JWT Payload from DatingApp...
+         {
+              "nameid": "11",
+              "unique_name": "admin",
+              "role": [
+                "Admin",
+                "Moderator"
+              ],
+              "nbf": 1626241023,
+              "exp": 1626327423,
+              "iat": 1626241023
+         }
+         */
+
+        private static void ExtractRolesFromJwt(List<Claim> claims, Dictionary<string, object> keyValuePairs)
+        {
+            keyValuePairs.TryGetValue(ClaimTypes.Role, out object roles);
+
+            if (roles != null)
+            {
+                var parsedRoles = roles.ToString().Trim().TrimStart('[').TrimEnd(']').Split(',');
+
+                if (parsedRoles.Length > 1)
+                {
+                    foreach (var parsedRole in parsedRoles)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, parsedRole.Trim('"')));
+                    }
+                }
+                else
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, parsedRoles[0]));
+                }
+
+                keyValuePairs.Remove(ClaimTypes.Role);
+            }
+        }
+
+        private static byte[] ParseBase64WithoutPadding(string base64)
+        {
+            switch (base64.Length % 4)
+            {
+                case 2:
+                    base64 += "==";
+                    break;
+                case 3:
+                    base64 += "=";
+                    break;
+            }
+
+            return Convert.FromBase64String(base64);
+        }
+    }
+}

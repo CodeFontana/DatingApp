@@ -1,0 +1,44 @@
+﻿@page "/verifyauth"
+@using System.Security.Claims
+
+<h3>Verify Auth</h3>
+
+@if (isAuthenticated)
+{
+    <h4>@userName is authenticated...</h4>
+    <ul>
+        <li>Access to Admin Role: @isAdmin</li>
+        <li>Access to Moderator Role: @isModerator</li>
+        <li>Access to Member Role: @isMember</li>
+    </ul>
+}
+else
+{
+    <h4>Not authenticated.</h4>
+}
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+    private bool isAuthenticated = false;
+    private string userName;
+    private bool isAdmin = false;
+    private bool isModerator = false;
+    private bool isMember = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthenticationState authState = await AuthState;
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            isAuthenticated = true;
+            Console.WriteLine(authState.User.Identity.Name);
+            userName = authState.User.Identity.Name;//.FindFirst(ClaimTypes.NameIdentifier).Value;
+            isAdmin = authState.User.IsInRole("Admin");
+            isModerator = authState.User.IsInRole("Moderator");
+            isMember = authState.User.IsInRole("Member");
+        }
+    }
+}
