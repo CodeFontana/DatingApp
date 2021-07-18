@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +13,16 @@ namespace DatingApp.Client.Authentication
 {
     public class AuthStateProvider : AuthenticationStateProvider
     {
+        private readonly IConfiguration _config;
         private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorage;
         private readonly AuthenticationState _anonymous;
 
-        public AuthStateProvider(HttpClient httpClient, ILocalStorageService localStorage)
+        public AuthStateProvider(IConfiguration config,
+                                 HttpClient httpClient,
+                                 ILocalStorageService localStorage)
         {
+            _config = config;
             _httpClient = httpClient;
             _localStorage = localStorage;
             _anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
@@ -25,7 +30,7 @@ namespace DatingApp.Client.Authentication
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            string token = await _localStorage.GetItemAsync<string>("DatingApp.Token");
+            string token = await _localStorage.GetItemAsync<string>(_config["authTokenStorageKey"]);
 
             if (string.IsNullOrWhiteSpace(token))
             {
