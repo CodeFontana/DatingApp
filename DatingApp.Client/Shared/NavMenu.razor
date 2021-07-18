@@ -3,8 +3,8 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container">
         <a class="navbar-brand" href="#">Dating App</a>
-        <AuthorizeView>
-            <Authorized Context="Auth">
+        <AuthorizeView Context="AuthContext">
+            <Authorized>
                 <ul class="navbar-nav mr-auto">
                     <NavLink class="nav-link text-light" href="#" Match="NavLinkMatch.All">
                         <span class="oi oi-people" aria-hidden="true"></span> Matches
@@ -22,7 +22,7 @@
 
                 <div class="nav-item dropdown show">
                     <NavLink class="nav-link text-light" @onclick="() => _expandSubNavSettings = !_expandSubNavSettings" id="navbarDropdown">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Welcome @Auth.User.Identity.Name
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Welcome @AuthContext.User.Identity.Name
                     </NavLink>
 
                     @if (_expandSubNavSettings)
@@ -40,7 +40,7 @@
                     }
                 </div>
             </Authorized>
-            <NotAuthorized Context="Auth">
+            <NotAuthorized>
                 <EditForm Model="@_loginUser" OnValidSubmit="HandleLogin" class="form-inline mt-2 mt-md-0">
                     <DataAnnotationsValidator />
                     <ValidationSummary />
