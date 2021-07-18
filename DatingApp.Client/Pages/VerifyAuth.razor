@@ -3,41 +3,22 @@
 
 <h3>Verify Auth</h3>
 
-@if (_isAuthenticated)
-{
-    <h4>@_userName is authenticated...</h4>
-    <ul>
-        <li>Access to Admin Role: @_isAdmin</li>
-        <li>Access to Moderator Role: @_isModerator</li>
-        <li>Access to Member Role: @_isMember</li>
-    </ul>
-}
-else
-{
-    <h4>Not authenticated.</h4>
-}
+<AuthorizeView Context="AuthContext">
+    <Authorized>
+        <h4>@AuthContext.User.Identity.Name is authenticated...</h4>
+        <ul>
+            <li>Access to Admin Role: @AuthContext.User.IsInRole("Admin")</li>
+            <li>Access to Moderator Role: @AuthContext.User.IsInRole("Moderator")</li>
+            <li>Access to Member Role: @AuthContext.User.IsInRole("Member")</li>
+        </ul>
+    </Authorized>
+    <NotAuthorized>
+        <h4>Not authenticated.</h4>
+    </NotAuthorized>
+</AuthorizeView>
+
+    
 
 @code {
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthState { get; set; }
-
-    private bool _isAuthenticated = false;
-    private string _userName;
-    private bool _isAdmin = false;
-    private bool _isModerator = false;
-    private bool _isMember = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        AuthenticationState authState = await AuthState;
-
-        if (authState.User.Identity.IsAuthenticated)
-        {
-            _isAuthenticated = true;
-            _userName = authState.User.Identity.Name;
-            _isAdmin = authState.User.IsInRole("Admin");
-            _isModerator = authState.User.IsInRole("Moderator");
-            _isMember = authState.User.IsInRole("Member");
-        }
-    }
+    
 }
