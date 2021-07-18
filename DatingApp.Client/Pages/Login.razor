@@ -4,38 +4,38 @@
 
 <h3>Login</h3>
 
-@if (showAuthenticationError)
+@if (_showAuthError)
 {
     <div class="alert alert-danger" role="alert">
-        <p>@authenticationErrorText</p>
+        <p>@_authErrorText</p>
     </div>
 }
 
-<EditForm Model="@loginUser" OnValidSubmit="HandleValidSubmit" class="card card-body bg-dark text-light mt-5">
+<EditForm Model="@_loginUser" OnValidSubmit="HandleValidSubmit" class="card card-body bg-dark text-light mt-5">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="form-group">
         <label>Username</label>
-        <InputText @bind-Value="loginUser.Username" class="form-control mr-sm-2" type="text" />
+        <InputText @bind-Value="_loginUser.Username" class="form-control mr-sm-2" type="text" />
     </div>
     <div class="form-group">
         <label>Password</label>
-        <InputText @bind-Value="loginUser.Password" class="form-control mr-sm-2" type="password" />
+        <InputText @bind-Value="_loginUser.Password" class="form-control mr-sm-2" type="password" />
     </div>
     <button class="btn btn-primary my-2 my-sm-0" type="submit"><span class="oi oi-account-login" aria-hidden="true"></span> Login</button>
 
 </EditForm>
 
 @code {
-    private LoginUserModel loginUser = new();
-    private bool showAuthenticationError = false;
-    private string authenticationErrorText = "";
+    private LoginUserModel _loginUser = new();
+    private bool _showAuthError = false;
+    private string _authErrorText = "";
 
     private async Task HandleValidSubmit()
     {
-        showAuthenticationError = false;
-        AuthUserModel result = await AuthService.Login(loginUser);
+        _showAuthError = false;
+        AuthUserModel result = await AuthService.Login(_loginUser);
 
         if (result != null)
         {
@@ -43,8 +43,8 @@
         }
         else
         {
-            authenticationErrorText = "Login failed";
-            showAuthenticationError = true;
+            _authErrorText = "Login failed";
+            _showAuthError = true;
         }
     }
 }

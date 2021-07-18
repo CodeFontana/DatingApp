@@ -3,7 +3,7 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container">
         <a class="navbar-brand" href="#">Dating App</a>
-        @if (isAuthenticated)
+        @if (_isAuthenticated)
         {
             <ul class="navbar-nav mr-auto">
                 <NavLink class="nav-link text-light" href="#" Match="NavLinkMatch.All">
@@ -21,13 +21,13 @@
             </ul>
 
             <div class="nav-item dropdown show">
-                <NavLink class="nav-link text-light" @onclick="() => expandSubNavSettings = !expandSubNavSettings" id="navbarDropdown">
-                    <span class="oi oi-list-rich" aria-hidden="true"></span> Welcome user
+                <NavLink class="nav-link text-light" @onclick="() => _expandSubNavSettings = !_expandSubNavSettings" id="navbarDropdown">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Welcome @_userName
                 </NavLink>
 
-                @if (expandSubNavSettings)
+                @if (_expandSubNavSettings)
                 {
-                    <div class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => expandSubNavSettings = !expandSubNavSettings">
+                    <div class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => _expandSubNavSettings = !_expandSubNavSettings">
                         <NavLink class="nav-link text-dark" href="">
                             <span class="oi oi-pencil" aria-hidden="true"></span> Edit Profile
                         </NavLink>
@@ -42,11 +42,11 @@
         }
         else
         {
-            <EditForm Model="@loginUser" OnValidSubmit="HandleLogin" class="form-inline mt-2 mt-md-0">
+            <EditForm Model="@_loginUser" OnValidSubmit="HandleLogin" class="form-inline mt-2 mt-md-0">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
-                <InputText @bind-Value="loginUser.Username" class="form-control mr-sm-2" type="text" placeholder="Username" />
-                <InputText @bind-Value="loginUser.Password" class="form-control mr-sm-2" type="password" placeholder="Password" />
+                <InputText @bind-Value="_loginUser.Username" class="form-control mr-sm-2" type="text" placeholder="Username" />
+                <InputText @bind-Value="_loginUser.Password" class="form-control mr-sm-2" type="password" placeholder="Password" />
                 <button class="btn btn-info my-2 my-sm-0" type="submit"><span class="oi oi-account-login" aria-hidden="true"></span> Login</button>
             </EditForm>
         }
@@ -57,35 +57,51 @@
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
 
-    private LoginUserModel loginUser = new();
-    private bool expandSubNavSettings = false;
-    private bool isAuthenticated = false;
-    private string userName;
-    private bool isAdmin = false;
-    private bool isModerator = false;
-    private bool isMember = false;
+    private LoginUserModel _loginUser = new();
+    private bool _expandSubNavSettings = false;
+    private bool _isAuthenticated = false;
+    private string _userName = "";
+    private bool _isAdmin = false;
+    private bool _isModerator = false;
+    private bool _isMember = false;
 
     protected override async Task OnInitializedAsync()
     {
-        AuthenticationState authState = await AuthState;
-
-        if (authState.User.Identity.IsAuthenticated)
-        {
-            isAuthenticated = true;
-            isAdmin = authState.User.IsInRole("Admin");
-            isModerator = authState.User.IsInRole("Moderator");
-            isMember = authState.User.IsInRole("Member");
-        }
+        await VerifyAuth();
     }
 
     private async Task HandleLogin()
     {
-        await AuthService.Login(loginUser);
-        loginUser = new();
+        await AuthService.Login(_loginUser);
+        _loginUser = new();
+        await VerifyAuth();
     }
 
     private async Task HandleLogout()
     {
         await AuthService.Logout();
+        await VerifyAuth();
+    }
+
+    private async Task VerifyAuth()
+    {
+        AuthenticationState authState = await AuthState;
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            _isAuthenticated = true;
+            _userName = authState.User.Identity.Name;
+            _isAdmin = authState.User.IsInRole("Admin");
+            _isModerator = authState.User.IsInRole("Moderator");
+            _isMember = authState.User.IsInRole("Member");
+        }
+        else
+        {
+            _isAuthenticated = false;
+            _userName = "";
+            _isAdmin = false;
+            _isModerator = false;
+            _isMember = false;
+        }
     }
 }

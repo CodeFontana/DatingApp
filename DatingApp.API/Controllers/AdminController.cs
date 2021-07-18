@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 
 namespace DatingApp.API.Controllers
 {
-    public class AdminController : BaseApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AdminController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
 

@@ -11,8 +11,6 @@ namespace DatingApp.Client.Authentication
     {
         public static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
-            Console.WriteLine(jwt);
-
             List<Claim> claims = new List<Claim>();
             string payload = jwt.Split('.')[1];
             byte[] jsonBytes = ParseBase64WithoutPadding(payload);
@@ -24,20 +22,6 @@ namespace DatingApp.Client.Authentication
 
             return claims;
         }
-
-        /* Sample JWT Payload from DatingApp...
-         {
-              "nameid": "11",
-              "unique_name": "admin",
-              "role": [
-                "Admin",
-                "Moderator"
-              ],
-              "nbf": 1626241023,
-              "exp": 1626327423,
-              "iat": 1626241023
-         }
-         */
 
         private static void ExtractRolesFromJwt(List<Claim> claims, Dictionary<string, object> keyValuePairs)
         {

@@ -1,10 +1,10 @@
-using System.Security.Cryptography;
-using System.Text;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using DatingApp.API.Data;
+using System.Text;
 using DatingApp.API.Entities;
 using DatingApp.API.Interfaces;
-using DatingApp.API.Services;
 using DatingApp.Library.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +12,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.API.Controllers
 {
-    public class AccountController : BaseApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AccountController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
@@ -29,19 +31,19 @@ namespace DatingApp.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<AuthUserModel>> Register(LoginUserModel userReg)
+        public async Task<ActionResult<AuthUserModel>> Register(LoginUserModel regUser)
         {
-            if (await UserExists(userReg.Username))
+            if (await UserExists(regUser.Username))
             {
                 return BadRequest("Username is taken.");
             }
 
             AppUser user = new()
             {
-                UserName = userReg.Username.ToLower(),
+                UserName = regUser.Username.ToLower()
             };
 
-            IdentityResult result = await _userManager.CreateAsync(user, userReg.Password);
+            IdentityResult result = await _userManager.CreateAsync(user, regUser.Password);
 
             if (result.Succeeded == false)
             {
@@ -52,6 +54,7 @@ namespace DatingApp.API.Controllers
 
             if (roleResult.Succeeded == false)
             {
+                await _userManager.DeleteAsync(user);
                 return BadRequest(result.Errors);
             }
 
@@ -63,10 +66,10 @@ namespace DatingApp.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AuthUserModel>> Login(LoginUserModel loginModel)
+        public async Task<ActionResult<AuthUserModel>> Login(LoginUserModel loginUser)
         {
             AppUser user = await _userManager.Users
-                .SingleOrDefaultAsync(u => u.UserName == loginModel.Username.ToLower());
+                .SingleOrDefaultAsync(u => u.UserName == loginUser.Username.ToLower());
 
             if (user == null)
             {
@@ -74,7 +77,7 @@ namespace DatingApp.API.Controllers
             }
 
             Microsoft.AspNetCore.Identity.SignInResult result = 
-                await _signInManager.CheckPasswordSignInAsync(user, loginModel.Password, false);
+                await _signInManager.CheckPasswordSignInAsync(user, loginUser.Password, false);
 
             if (result.Succeeded == false)
             {

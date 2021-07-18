@@ -24,8 +24,4 @@
     <ProjectReference Include="..\DatingApp.Library\DatingApp.Library.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
 </Project>

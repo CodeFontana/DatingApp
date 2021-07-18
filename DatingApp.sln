@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatingApp.API", "DatingApp.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatingApp.Client", "DatingApp.Client\DatingApp.Client.csproj", "{88EB8CB9-4163-4CE6-8932-7CD51630CFF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatingApp.Library", "DatingApp.Library\DatingApp.Library.csproj", "{3FFA00DA-20E7-4B77-BCB3-91ACB3BCD690}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatingApp.Library", "DatingApp.Library\DatingApp.Library.csproj", "{3FFA00DA-20E7-4B77-BCB3-91ACB3BCD690}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
