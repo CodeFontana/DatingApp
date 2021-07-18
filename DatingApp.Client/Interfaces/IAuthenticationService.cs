@@ -1,11 +1,11 @@
-﻿using Client.Models;
+﻿using DatingApp.Library.Models;
 using System.Threading.Tasks;
 
-namespace Client.Interfaces
+namespace DatingApp.Client.Interfaces
 {
     public interface IAuthenticationService
     {
-        Task<AuthenticatedUserModel> Login(AuthenticationUserModel loginUser);
+        Task<AuthUserModel> Login(LoginUserModel loginUser);
         Task Logout();
     }
 }

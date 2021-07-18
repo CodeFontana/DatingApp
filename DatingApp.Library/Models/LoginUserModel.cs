@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Client.Models
+namespace DatingApp.Library.Models
 {
-    public class AuthenticationUserModel
+    public class LoginUserModel
     {
         [Required(ErrorMessage = "Username required.")]
         public string Username { get; set; }

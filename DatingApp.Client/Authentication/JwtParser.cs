@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Client.Authentication
+namespace DatingApp.Client.Authentication
 {
     public static class JwtParser
     {

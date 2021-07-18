@@ -20,4 +20,12 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.11.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DatingApp.Library\DatingApp.Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>

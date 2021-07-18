@@ -1,7 +1,7 @@
 ﻿using Blazored.LocalStorage;
-using Client.Authentication;
-using Client.Interfaces;
-using Client.Models;
+using DatingApp.Client.Authentication;
+using DatingApp.Client.Interfaces;
+using DatingApp.Library.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Client.Services
+namespace DatingApp.Client.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
@@ -32,7 +32,7 @@ namespace Client.Services
             _httpClient.BaseAddress = new Uri("https://localhost:5001/api/");
         }
 
-        public async Task<AuthenticatedUserModel> Login(AuthenticationUserModel loginUser)
+        public async Task<AuthUserModel> Login(LoginUserModel loginUser)
         {
             HttpResponseMessage authResult = await _httpClient.PostAsJsonAsync("Account/login", loginUser);
 
@@ -40,7 +40,7 @@ namespace Client.Services
             {
                 Console.WriteLine("Login successful.");
                 string authContent = await authResult.Content.ReadAsStringAsync();
-                AuthenticatedUserModel result = JsonSerializer.Deserialize<AuthenticatedUserModel>(authContent, _options);
+                AuthUserModel result = JsonSerializer.Deserialize<AuthUserModel>(authContent, _options);
                 await _localStorage.SetItemAsync("DatingApp.Token", result.Token);
                 ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(result.Token);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);

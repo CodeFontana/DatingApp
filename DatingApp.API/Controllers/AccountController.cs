@@ -1,16 +1,16 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using API.Data;
-using API.Entities;
-using API.Interfaces;
-using API.Models;
-using API.Services;
+using DatingApp.API.Data;
+using DatingApp.API.Entities;
+using DatingApp.API.Interfaces;
+using DatingApp.API.Services;
+using DatingApp.Library.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Controllers
+namespace DatingApp.API.Controllers
 {
     public class AccountController : BaseApiController
     {
@@ -29,7 +29,7 @@ namespace API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<AuthenticatedUser>> Register(AuthenticationUser userReg)
+        public async Task<ActionResult<AuthUserModel>> Register(LoginUserModel userReg)
         {
             if (await UserExists(userReg.Username))
             {
@@ -55,7 +55,7 @@ namespace API.Controllers
                 return BadRequest(result.Errors);
             }
 
-            return new AuthenticatedUser
+            return new AuthUserModel
             {
                 Username = user.UserName,
                 Token = await _tokenService.CreateToken(user)
@@ -63,7 +63,7 @@ namespace API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AuthenticatedUser>> Login(AuthenticationUser loginModel)
+        public async Task<ActionResult<AuthUserModel>> Login(LoginUserModel loginModel)
         {
             AppUser user = await _userManager.Users
                 .SingleOrDefaultAsync(u => u.UserName == loginModel.Username.ToLower());
@@ -81,7 +81,7 @@ namespace API.Controllers
                 return Unauthorized();
             }
 
-            return new AuthenticatedUser
+            return new AuthUserModel
             {
                 Username = user.UserName,
                 Token = await _tokenService.CreateToken(user)

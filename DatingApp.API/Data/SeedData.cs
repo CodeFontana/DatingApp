@@ -1,4 +1,4 @@
-﻿using API.Entities;
+﻿using DatingApp.API.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace API.Data
+namespace DatingApp.API.Data
 {
     public class SeedData
     {

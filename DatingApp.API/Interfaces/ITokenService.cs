@@ -1,7 +1,7 @@
-using API.Entities;
+using DatingApp.API.Entities;
 using System.Threading.Tasks;
 
-namespace API.Interfaces
+namespace DatingApp.API.Interfaces
 {
     public interface ITokenService
     {

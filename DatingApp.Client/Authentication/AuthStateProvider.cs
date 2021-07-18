@@ -8,7 +8,7 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Client.Authentication
+namespace DatingApp.Client.Authentication
 {
     public class AuthStateProvider : AuthenticationStateProvider
     {

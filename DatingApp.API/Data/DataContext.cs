@@ -1,9 +1,9 @@
-using API.Entities;
+using DatingApp.API.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Data
+namespace DatingApp.API.Data
 {
     public class DataContext : IdentityDbContext<
         AppUser, 

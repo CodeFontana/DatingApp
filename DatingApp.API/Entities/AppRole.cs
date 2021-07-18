@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Entities
+namespace DatingApp.API.Entities
 {
     public class AppRole : IdentityRole<int>
     {

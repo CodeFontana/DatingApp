@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using API.Data;
-using API.Extensions;
-using API.Services;
+using DatingApp.API.Data;
+using DatingApp.API.Extensions;
+using DatingApp.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,7 +19,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-namespace API
+namespace DatingApp.API
 {
     public class Startup
     {

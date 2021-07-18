@@ -5,13 +5,13 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using API.Entities;
-using API.Interfaces;
+using DatingApp.API.Entities;
+using DatingApp.API.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace API.Services
+namespace DatingApp.API.Services
 {
     public class TokenService : ITokenService
     {

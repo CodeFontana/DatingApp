@@ -28,14 +28,14 @@
 </EditForm>
 
 @code {
-    private AuthenticationUserModel loginUser = new();
+    private LoginUserModel loginUser = new();
     private bool showAuthenticationError = false;
     private string authenticationErrorText = "";
 
     private async Task HandleValidSubmit()
     {
         showAuthenticationError = false;
-        AuthenticatedUserModel result = await AuthService.Login(loginUser);
+        AuthUserModel result = await AuthService.Login(loginUser);
 
         if (result != null)
         {

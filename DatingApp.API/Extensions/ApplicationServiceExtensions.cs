@@ -1,11 +1,11 @@
-using API.Data;
-using API.Interfaces;
-using API.Services;
+using DatingApp.API.Data;
+using DatingApp.API.Interfaces;
+using DatingApp.API.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace API.Extensions
+namespace DatingApp.API.Extensions
 {
     public static class ApplicationServiceExtensions
     {

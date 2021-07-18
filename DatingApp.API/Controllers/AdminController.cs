@@ -1,4 +1,4 @@
-﻿using API.Entities;
+﻿using DatingApp.API.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace DatingApp.API.Controllers
 {
     public class AdminController : BaseApiController
     {

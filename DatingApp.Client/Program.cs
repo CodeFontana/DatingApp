@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Client.Services;
-using Client.Interfaces;
+using DatingApp.Client.Services;
+using DatingApp.Client.Interfaces;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
-using Client.Authentication;
+using DatingApp.Client.Authentication;
 
-namespace Client
+namespace DatingApp.Client
 {
     public class Program
     {
