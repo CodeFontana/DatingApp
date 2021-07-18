@@ -31,7 +31,7 @@ namespace DatingApp.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(LoginUserModel regUser)
+        public async Task<ActionResult<AuthUserModel>> Register(LoginUserModel regUser)
         {
             if (await UserExists(regUser.Username))
             {
@@ -58,15 +58,15 @@ namespace DatingApp.API.Controllers
                 return BadRequest(result.Errors);
             }
 
-            return new ObjectResult(new AuthUserModel
+            return new AuthUserModel
             {
                 Username = user.UserName,
                 Token = await _tokenService.CreateToken(user)
-            });
+            };
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginUserModel loginUser)
+        public async Task<ActionResult<AuthUserModel>> Login(LoginUserModel loginUser)
         {
             AppUser user = await _userManager.Users
                 .SingleOrDefaultAsync(u => u.UserName == loginUser.Username.ToLower());
@@ -84,11 +84,11 @@ namespace DatingApp.API.Controllers
                 return Unauthorized();
             }
 
-            return new ObjectResult(new AuthUserModel
+            return new AuthUserModel
             {
                 Username = user.UserName,
                 Token = await _tokenService.CreateToken(user)
-            });
+            };
         }
 
         private async Task<bool> UserExists(string username)
