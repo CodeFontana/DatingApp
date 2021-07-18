@@ -1,3 +1,4 @@
+using System;
 using System.Security.Claims;
 using System.Text;
 using DatingApp.API.Data;
@@ -34,7 +35,9 @@ namespace DatingApp.API.Extensions
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"])),
                         ValidateIssuer = false,
-                        ValidateAudience = false
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.FromMinutes(10)
                     };
                 });
 
