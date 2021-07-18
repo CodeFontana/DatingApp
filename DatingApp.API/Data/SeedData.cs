@@ -53,7 +53,7 @@ namespace DatingApp.API.Data
 
                 AppUser admin = new()
                 {
-                    UserName = "admin"
+                    UserName = "brian"
                 };
 
                 await userManager.CreateAsync(admin, "Passw0rd123!!");
