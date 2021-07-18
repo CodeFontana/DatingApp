@@ -35,7 +35,7 @@ else
         {
             isAuthenticated = true;
             Console.WriteLine(authState.User.Identity.Name);
-            userName = authState.User.Identity.Name;//.FindFirst(ClaimTypes.NameIdentifier).Value;
+            userName = authState.User.Identity.Name;
             isAdmin = authState.User.IsInRole("Admin");
             isModerator = authState.User.IsInRole("Moderator");
             isMember = authState.User.IsInRole("Member");
