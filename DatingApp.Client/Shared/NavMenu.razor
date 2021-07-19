@@ -1,21 +1,21 @@
 ﻿@inject IAuthenticationService AuthService
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="#">Dating App</a>
+    <div class="container-fluid">
+        <a class="navbar-brand mr-4" href="#">Dating App</a>
         <AuthorizeView Context="AuthContext">
             <Authorized>
                 <ul class="navbar-nav mr-auto">
-                    <NavLink class="nav-link text-light" href="#" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
                         <span class="oi oi-people" aria-hidden="true"></span> Matches
                     </NavLink>
-                    <NavLink class="nav-link text-light" href="#" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
                         <span class="oi oi-list" aria-hidden="true"></span> Lists
                     </NavLink>
-                    <NavLink class="nav-link text-light" href="#" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
                         <span class="oi oi-envelope-closed" aria-hidden="true"></span> Messages
                     </NavLink>
-                    <NavLink class="nav-link text-light" href="#" Match="NavLinkMatch.All" @onclick="() => HandleLogout()">
+                    <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All" @onclick="() => HandleLogout()">
                         <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
                     </NavLink>
                 </ul>
@@ -41,12 +41,13 @@
                 </div>
             </Authorized>
             <NotAuthorized>
-                <EditForm Model="@_loginUser" OnValidSubmit="HandleLogin" class="form-inline mt-2 mt-md-0">
+                <EditForm Model="@_loginUser" class="form-inline mt-2 mt-md-0">
                     <DataAnnotationsValidator />
                     <ValidationSummary />
                     <InputText @bind-Value="_loginUser.Username" class="form-control mr-sm-2" type="text" placeholder="Username" />
                     <InputText @bind-Value="_loginUser.Password" class="form-control mr-sm-2" type="password" placeholder="Password" />
-                    <button class="btn btn-info my-2 my-sm-0" type="submit"><span class="oi oi-account-login" aria-hidden="true"></span> Login</button>
+                    <button class="btn btn-info my-sm-0" type="submit" @onclick="() => HandleLogin()"><span class="oi oi-account-login" aria-hidden="true"></span> Login</button>
+                    <button class="btn btn-primary mx-2 my-sm-0" type="submit" @onclick="() => HandleRegister()"><span class="oi oi-pencil" aria-hidden="true"></span> Register</button>
                 </EditForm>
             </NotAuthorized>
         </AuthorizeView>
@@ -66,5 +67,10 @@
     private async Task HandleLogout()
     {
         await AuthService.Logout();
+    }
+
+    private void HandleRegister()
+    {
+        
     }
 }
