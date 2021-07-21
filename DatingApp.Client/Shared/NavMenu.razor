@@ -1,76 +1,106 @@
 ﻿@inject IAuthenticationService AuthService
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand mr-4" href="#">Dating App</a>
-        <AuthorizeView Context="AuthContext">
-            <Authorized>
-                <ul class="navbar-nav mr-auto">
-                    <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
+    <AuthorizeView Context="AuthContext">
+        <Authorized>
+            <button class="navbar-toggler" type="button" @onclick="() => _expandNavLinks = !_expandNavLinks">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            @if (_expandNavLinks)
+            {
+                <a class="navbar-brand mx-auto" href="#">Dating App</a>
+                <div class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => _expandNavLinks = !_expandNavLinks">
+                    <NavLink class="nav-link text-dark mx-2" href="#" Match="NavLinkMatch.All">
                         <span class="oi oi-people" aria-hidden="true"></span> Matches
                     </NavLink>
-                    <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link text-dark mx-2" href="#" Match="NavLinkMatch.All">
                         <span class="oi oi-list" aria-hidden="true"></span> Lists
                     </NavLink>
-                    <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link text-dark mx-2" href="#" Match="NavLinkMatch.All">
                         <span class="oi oi-envelope-closed" aria-hidden="true"></span> Messages
                     </NavLink>
-                    <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All" @onclick="() => HandleLogout()">
+                    <NavLink class="nav-link text-dark mx-2" href="#" Match="NavLinkMatch.All" @onclick="() => HandleLogout()">
                         <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
                     </NavLink>
-                </ul>
-
-                <div class="nav-item dropdown show">
-                    <NavLink class="nav-link text-light" @onclick="() => _expandSubNavSettings = !_expandSubNavSettings" id="navbarDropdown">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Welcome @AuthContext.User.Identity.Name
-                    </NavLink>
-
-                    @if (_expandSubNavSettings)
-                    {
-                        <div class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => _expandSubNavSettings = !_expandSubNavSettings">
-                            <NavLink class="nav-link text-dark" href="">
-                                <span class="oi oi-pencil" aria-hidden="true"></span> Edit Profile
-                            </NavLink>
-                            <div class="dropdown-divider"></div>
-                            <NavLink class="nav-link text-dark" href="" @onclick="() => HandleLogout()">
-                                <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
-                            </NavLink>
-                        </div>
-
-                    }
                 </div>
-            </Authorized>
-            <NotAuthorized>
-                <EditForm Model="@_loginUser" class="form-inline mt-2 mt-md-0">
-                    <DataAnnotationsValidator />
-                    <ValidationSummary />
-                    <InputText @bind-Value="_loginUser.Username" class="form-control mr-sm-2" type="text" placeholder="Username" />
-                    <InputText @bind-Value="_loginUser.Password" class="form-control mr-sm-2" type="password" placeholder="Password" />
-                    <button class="btn btn-info my-sm-0" type="submit" @onclick="() => HandleLogin()"><span class="oi oi-account-login" aria-hidden="true"></span> Login</button>
-                    <button class="btn btn-primary mx-2 my-sm-0" type="submit" @onclick="() => HandleRegister()"><span class="oi oi-pencil" aria-hidden="true"></span> Register</button>
-                </EditForm>
-            </NotAuthorized>
-        </AuthorizeView>
-    </div>
+            }
+            else
+            {
+                <a class="navbar-brand mr-4" href="#">Dating App</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav mr-auto">
+                        <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
+                            <span class="oi oi-people" aria-hidden="true"></span> Matches
+                        </NavLink>
+                        <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
+                            <span class="oi oi-list" aria-hidden="true"></span> Lists
+                        </NavLink>
+                        <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
+                            <span class="oi oi-envelope-closed" aria-hidden="true"></span> Messages
+                        </NavLink>
+                        <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All" @onclick="() => HandleLogout()">
+                            <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+                        </NavLink>
+                    </ul>
+                </div>
+            }
+
+            <div class="nav-item dropdown show">
+                <NavLink class="nav-link text-light" @onclick="() => _expandWelcomeMenu = !_expandWelcomeMenu" id="navbarDropdown">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Welcome @AuthContext.User.Identity.Name
+                </NavLink>
+
+                @if (_expandWelcomeMenu)
+                {
+                    <div class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => _expandWelcomeMenu = !_expandWelcomeMenu">
+                        <NavLink class="nav-link text-dark" href="">
+                            <span class="oi oi-pencil" aria-hidden="true"></span> Edit Profile
+                        </NavLink>
+                        <div class="dropdown-divider"></div>
+                        <NavLink class="nav-link text-dark" href="" @onclick="() => HandleLogout()">
+                            <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+                        </NavLink>
+                    </div>
+                }
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <a class="navbar-brand mr-4" href="#">Dating App</a>
+            <EditForm Model="@_loginUser" class="form-inline ml-auto mt-2 mt-md-0">
+                <div class="form-row">
+                    <div class="form-group d-flex">
+                        <InputText @bind-Value="_loginUser.Username" class="form-control mr-sm-2" type="text" placeholder="Username" />
+                        <InputText @bind-Value="_loginUser.Password" class="form-control mr-sm-2" type="password" placeholder="Password" />
+                    </div>
+                    <div class="form-group d-flex">
+                        <button class="btn btn-primary my-sm-0" type="submit" @onclick="() => HandleLogin()"><span class="oi oi-account-login" aria-hidden="true"></span> Login</button>
+                        <button class="btn btn-success mx-2 my-sm-0" type="submit" @onclick="() => HandleRegister()"><span class="oi oi-pencil" aria-hidden="true"></span> Register</button>
+                    </div>
+                </div>
+            </EditForm>
+        </NotAuthorized>
+    </AuthorizeView>
 </nav>
 
 @code {
     private LoginUserModel _loginUser = new();
-    private bool _expandSubNavSettings = false;
+    private bool _expandWelcomeMenu = false;
+    private bool _expandNavLinks = false;
 
     private async Task HandleLogin()
     {
-        await AuthService.Login(_loginUser);
+        await AuthService.LoginAsync(_loginUser);
         _loginUser = new();
     }
 
     private async Task HandleLogout()
     {
-        await AuthService.Logout();
+        await AuthService.LogoutAsync();
     }
 
     private void HandleRegister()
     {
-        
+
     }
 }
