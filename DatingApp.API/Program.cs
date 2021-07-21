@@ -29,7 +29,7 @@ namespace DatingApp.API
                 UserManager<AppUser> userManager = services.GetRequiredService<UserManager<AppUser>>();
                 RoleManager<AppRole> roleManager = services.GetRequiredService<RoleManager<AppRole>>();
                 await context.Database.MigrateAsync();
-                await SeedData.SeedUsers(logger, userManager, roleManager);
+                await SeedData.SeedUsersAsync(logger, userManager, roleManager);
             }
             catch (Exception ex)
             {

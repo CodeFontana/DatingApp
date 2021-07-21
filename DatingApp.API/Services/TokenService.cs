@@ -24,7 +24,7 @@ namespace DatingApp.API.Services
             _userManager = userManager;
         }
 
-        public async Task<string> CreateToken(AppUser user)
+        public async Task<string> CreateTokenAsync(AppUser user)
         {
             List<Claim> claims = new()
             {

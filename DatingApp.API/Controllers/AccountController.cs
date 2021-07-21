@@ -9,6 +9,7 @@ using DatingApp.Library.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using DatingApp.Library.Interfaces;
 
 namespace DatingApp.API.Controllers
 {
@@ -31,7 +32,7 @@ namespace DatingApp.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<AuthUserModel>> Register(LoginUserModel regUser)
+        public async Task<ActionResult<IAuthUserModel>> Register(ILoginUserModel regUser)
         {
             if (await UserExists(regUser.Username))
             {
@@ -61,12 +62,12 @@ namespace DatingApp.API.Controllers
             return new AuthUserModel
             {
                 Username = user.UserName,
-                Token = await _tokenService.CreateToken(user)
+                Token = await _tokenService.CreateTokenAsync(user)
             };
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AuthUserModel>> Login(LoginUserModel loginUser)
+        public async Task<ActionResult<IAuthUserModel>> Login(LoginUserModel loginUser)
         {
             AppUser user = await _userManager.Users
                 .SingleOrDefaultAsync(u => u.UserName == loginUser.Username.ToLower());
@@ -87,7 +88,7 @@ namespace DatingApp.API.Controllers
             return new AuthUserModel
             {
                 Username = user.UserName,
-                Token = await _tokenService.CreateToken(user)
+                Token = await _tokenService.CreateTokenAsync(user)
             };
         }
 

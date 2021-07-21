@@ -13,9 +13,9 @@ namespace DatingApp.API.Data
 {
     public class SeedData
     {
-        public static async Task SeedUsers(ILogger<Program> logger,
-                                           UserManager<AppUser> userManager,
-                                           RoleManager<AppRole> roleManager)
+        public static async Task SeedUsersAsync(ILogger<Program> logger,
+                                                UserManager<AppUser> userManager,
+                                                RoleManager<AppRole> roleManager)
         {
             if (await userManager.Users.AnyAsync())
             {

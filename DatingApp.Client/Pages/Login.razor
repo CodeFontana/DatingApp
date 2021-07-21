@@ -35,7 +35,7 @@
     private async Task HandleValidSubmit()
     {
         _showAuthError = false;
-        AuthUserModel result = await AuthService.Login(_loginUser);
+        IAuthUserModel result = await AuthService.LoginAsync(_loginUser);
 
         if (result != null)
         {
