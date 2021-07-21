@@ -37,6 +37,13 @@ namespace DatingApp.Client.Authentication
                 return _anonymous;
             }
 
+            bool isAuthenticated = await NotifyUserAuthenticationAsync(token);
+
+            if (isAuthenticated == false)
+            {
+                return _anonymous;
+            }
+
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
 
             return new AuthenticationState(
@@ -46,19 +53,44 @@ namespace DatingApp.Client.Authentication
                         "jwtAuthType")));
         }
 
-        public void NotifyUserAuthentication(string token)
+        public async Task<bool> NotifyUserAuthenticationAsync(string token)
         {
-            ClaimsPrincipal authenticatedUser = new(
+            bool isAuthenticated;
+            Task<AuthenticationState> authState;
+
+            try
+            {
+                ClaimsPrincipal authenticatedUser = new(
                     new ClaimsIdentity(
                         JwtParser.ParseClaimsFromJwt(token),
                         "jwtAuthType"));
-            var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
-            NotifyAuthenticationStateChanged(authState);
+
+                authState = Task.FromResult(new AuthenticationState(authenticatedUser));
+
+                string authTokenStorageKey = _config["authTokenStorageKey"];
+                await _localStorage.SetItemAsync(authTokenStorageKey, token);
+
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+
+                NotifyAuthenticationStateChanged(authState);
+                isAuthenticated = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                await NotifyUserLogoutAsync();
+                isAuthenticated = false;
+            }
+
+            return isAuthenticated;
         }
 
-        public void NotifyUserLogout()
+        public async Task NotifyUserLogoutAsync()
         {
-            var authState = Task.FromResult(_anonymous);
+            string authTokenStorageKey = _config["authTokenStorageKey"];
+            await _localStorage.RemoveItemAsync(authTokenStorageKey);
+            Task<AuthenticationState> authState = Task.FromResult(_anonymous);
+            _httpClient.DefaultRequestHeaders.Authorization = null;
             NotifyAuthenticationStateChanged(authState);
         }
     }
