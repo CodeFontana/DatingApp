@@ -1,8 +1,8 @@
 ﻿@inject IAuthenticationService AuthService
 
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <AuthorizeView Context="AuthContext">
-        <Authorized>
+<AuthorizeView Context="AuthContext">
+    <Authorized>
+        <nav id="navbarAuth" class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
             <button class="navbar-toggler" type="button" @onclick="() => _expandNavLinks = !_expandNavLinks">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -64,13 +64,15 @@
                     </div>
                 }
             </div>
-        </Authorized>
-        <NotAuthorized>
+        </nav>
+    </Authorized>
+    <NotAuthorized>
+        <nav id="navbarUnAuth" class="navbar navbar-expand navbar-dark fixed-top bg-dark">
             <a class="navbar-brand mr-4" href="#">Dating App</a>
             <LoginForm />
-        </NotAuthorized>
-    </AuthorizeView>
-</nav>
+        </nav>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private bool _expandWelcomeMenu = false;

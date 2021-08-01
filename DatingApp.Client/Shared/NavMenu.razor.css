@@ -1,0 +1,20 @@
+﻿#navbarAuth {
+    display: flex;
+    flex-wrap: nowrap;
+    min-width: 360px;
+}
+
+@media (min-width: 830px) {
+    #navbarUnAuth {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 830px) {
+    #navbarUnAuth {
+        display: block;
+        min-width: 350px;
+    }
+}
