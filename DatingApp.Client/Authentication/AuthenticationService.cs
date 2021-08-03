@@ -1,6 +1,4 @@
-﻿using Blazored.LocalStorage;
-using DatingApp.Client.Authentication;
-using DatingApp.Client.Interfaces;
+﻿using DatingApp.Client.Interfaces;
 using DatingApp.Library.Interfaces;
 using DatingApp.Library.Models;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -14,7 +12,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace DatingApp.Client.Services
+namespace DatingApp.Client.Authentication
 {
     public class AuthenticationService : IAuthenticationService
     {
