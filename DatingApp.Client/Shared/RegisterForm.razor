@@ -1,0 +1,32 @@
+﻿@inject IRegistrationService RegService
+@inject NavigationManager NavManager
+
+<EditForm Model="@_registerUser">
+    <h2 class="text-center text-primary">Sign up</h2>
+    <hr />
+    <div class="form-group">
+        <InputText @bind-Value="_registerUser.Username" class="form-control" type="text" placeholder="Username" />
+    </div>
+    <div class="form-group">
+        <InputText @bind-Value="_registerUser.Password" class="form-control" type="password" placeholder="Password" />
+    </div>
+    <div class="form-group text-center">
+        <button class="btn btn-success mx-2" type="submit" @onclick="() => HandleRegister()">Register</button>
+        <button class="btn btn-outline-danger mx-2" type="button" @onclick="() => HandleCancel()">Cancel</button>
+    </div>
+</EditForm>
+
+@code {
+    private RegisterUserModel _registerUser = new();
+
+    private async Task HandleRegister()
+    {
+        await RegService.RegisterAsync(_registerUser);
+        _registerUser = new();
+    }
+
+    private void HandleCancel()
+    {
+        NavManager.NavigateTo("/");
+    }
+}

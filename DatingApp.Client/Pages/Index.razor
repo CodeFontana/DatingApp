@@ -1,8 +1,40 @@
 ﻿@page "/"
 @inject HttpClient Http
 
-<h1>Dating App</h1>
+<AuthorizeView Context="AuthContext">
+    <Authorized>
+    </Authorized>
+    <NotAuthorized>
+        <div class="container">
+            @if (_registerMode == false)
+            {
+                <div class="text-center">
+                    <h1>Find your match</h1>
+                    <p class="lead">Come on in to view your matches... all you need to do is sign up!</p>
+                    <div class="text-center">
+                        <button class="btn btn-primary btn-lg mr-2" @onclick="() => _registerMode = !_registerMode">Register</button>
+                        <button class="btn btn-info btn-lg mr-2">Learn more</button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-4">
+                            <RegisterForm />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div id="fillspace">
+
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
-
+    private bool _registerMode = false;
 }
