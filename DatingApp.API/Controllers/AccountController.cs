@@ -10,11 +10,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DatingApp.Library.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DatingApp.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class AccountController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
@@ -32,7 +34,8 @@ namespace DatingApp.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<IAuthUserModel>> Register(ILoginUserModel regUser)
+        [AllowAnonymous]
+        public async Task<ActionResult<IAuthUserModel>> Register(RegisterUserModel regUser)
         {
             if (await UserExists(regUser.Username))
             {
@@ -67,6 +70,7 @@ namespace DatingApp.API.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<ActionResult<IAuthUserModel>> Login(LoginUserModel loginUser)
         {
             AppUser user = await _userManager.Users

@@ -12,6 +12,7 @@ namespace DatingApp.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class AdminController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
@@ -41,6 +42,7 @@ namespace DatingApp.API.Controllers
         }
 
         [HttpPost("edit-roles/{username}")]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<ActionResult> EditRoles(string username, [FromQuery] string roles)
         {
             string[] selectedRoles = roles.Split(",").ToArray();
