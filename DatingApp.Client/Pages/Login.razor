@@ -4,38 +4,38 @@
 
 <h3>Login</h3>
 
-@if (_showAuthError)
+@if (showAuthError)
 {
     <div class="alert alert-danger" role="alert">
-        <p>@_authErrorText</p>
+        <p>@authErrorText</p>
     </div>
 }
 
-<EditForm Model="@_loginUser" OnValidSubmit="HandleValidSubmit" class="card card-body bg-dark text-light mt-5">
+<EditForm Model="@loginUser" OnValidSubmit="HandleValidSubmit" class="card card-body bg-dark text-light mt-5">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="form-group">
         <label>Username</label>
-        <InputText @bind-Value="_loginUser.Username" class="form-control mr-sm-2" type="text" />
+        <InputText @bind-Value="loginUser.Username" class="form-control mr-sm-2" type="text" />
     </div>
     <div class="form-group">
         <label>Password</label>
-        <InputText @bind-Value="_loginUser.Password" class="form-control mr-sm-2" type="password" />
+        <InputText @bind-Value="loginUser.Password" class="form-control mr-sm-2" type="password" />
     </div>
     <button class="btn btn-primary my-2 my-sm-0" type="submit"><span class="oi oi-account-login" aria-hidden="true"></span> Login</button>
 
 </EditForm>
 
 @code {
-    private LoginUserModel _loginUser = new();
-    private bool _showAuthError = false;
-    private string _authErrorText = "";
+    private LoginUserModel loginUser = new();
+    private bool showAuthError = false;
+    private string authErrorText = "";
 
     private async Task HandleValidSubmit()
     {
-        _showAuthError = false;
-        IAuthUserModel result = await AuthService.LoginAsync(_loginUser);
+        showAuthError = false;
+        IAuthUserModel result = await AuthService.LoginAsync(loginUser);
 
         if (result != null)
         {
@@ -43,8 +43,8 @@
         }
         else
         {
-            _authErrorText = "Login failed";
-            _showAuthError = true;
+            authErrorText = "Login failed";
+            showAuthError = true;
         }
     }
 }

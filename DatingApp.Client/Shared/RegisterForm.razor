@@ -2,17 +2,17 @@
 @inject IAuthenticationService AuthService
 @inject NavigationManager NavManager
 
-<EditForm Model="@_registerUser" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="@registerUser" OnValidSubmit="HandleValidSubmit">
     <h2 class="text-center text-primary">Sign up</h2>
     <hr />
     <div class="form-group">
-        <InputText @bind-Value="_registerUser.Username" class="form-control" type="text" placeholder="Username" />
+        <InputText @bind-Value="registerUser.Username" class="form-control" type="text" placeholder="Username" />
     </div>
     <div class="form-group">
-        <InputText @bind-Value="_registerUser.Password" class="form-control" type="password" placeholder="Password" />
+        <InputText @bind-Value="registerUser.Password" class="form-control" type="password" placeholder="Password" />
     </div>
     <div class="form-group">
-        <InputText @bind-Value="_registerUser.ConfirmPassword" class="form-control" type="password" placeholder="Confirm password" />
+        <InputText @bind-Value="registerUser.ConfirmPassword" class="form-control" type="password" placeholder="Confirm password" />
     </div>
     <div class="form-group text-center">
         <button class="btn btn-success mx-2" type="submit">Register</button>
@@ -22,39 +22,39 @@
     <ValidationSummary />
 </EditForm>
 
-@if (_showRegError)
+@if (showRegError)
 {
     <div class="alert alert-danger" role="alert">
-        <p>@_regErrorText</p>
+        <p>@regErrorText</p>
     </div>
 }
 
 @code {
-    private RegisterUserModel _registerUser = new();
-    private bool _showRegError = false;
-    private string _regErrorText = "";
+    private RegisterUserModel registerUser = new();
+    private bool showRegError = false;
+    private string regErrorText = "";
 
     private async Task HandleValidSubmit()
     {
-        _showRegError = false;
-        _regErrorText = "";
+        showRegError = false;
+        regErrorText = "";
 
-        Tuple<bool, string> regResult = await RegService.RegisterAsync(_registerUser);
+        Tuple<bool, string> regResult = await RegService.RegisterAsync(registerUser);
 
         if (regResult.Item1)
         {
             LoginUserModel loginUser = new();
-            loginUser.Username = _registerUser.Username;
-            loginUser.Password = _registerUser.Password;
+            loginUser.Username = registerUser.Username;
+            loginUser.Password = registerUser.Password;
             await AuthService.LoginAsync(loginUser);
         }
         else
         {
-            _showRegError = true;
-            _regErrorText = regResult.Item2;
+            showRegError = true;
+            regErrorText = regResult.Item2;
         }
 
-        _registerUser = new();
+        registerUser = new();
     }
 
     private void HandleCancel()
