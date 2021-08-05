@@ -35,19 +35,19 @@ namespace DatingApp.API.Controllers
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<ActionResult<IAuthUserModel>> Register(RegisterUserModel regUser)
+        public async Task<ActionResult<IAuthUserModel>> Register(RegisterUserModel registerUser)
         {
-            if (await UserExists(regUser.Username))
+            if (await UserExists(registerUser.Username))
             {
                 return BadRequest("Username is taken.");
             }
 
             AppUser user = new()
             {
-                UserName = regUser.Username.ToLower()
+                UserName = registerUser.Username.ToLower()
             };
 
-            IdentityResult result = await _userManager.CreateAsync(user, regUser.Password);
+            IdentityResult result = await _userManager.CreateAsync(user, registerUser.Password);
 
             if (result.Succeeded == false)
             {

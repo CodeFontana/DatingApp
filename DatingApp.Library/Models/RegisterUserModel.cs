@@ -15,5 +15,9 @@ namespace DatingApp.Library.Models
 
         [Required(ErrorMessage = "Password is required.")]
         public string Password { get; set; }
+
+        [Required]
+        [Compare(nameof(Password), ErrorMessage = "Password does not match.")]
+        public string ConfirmPassword { get; set; }
     }
 }

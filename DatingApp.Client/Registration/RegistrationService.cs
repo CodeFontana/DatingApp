@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DatingApp.Client.Registration
@@ -16,33 +17,26 @@ namespace DatingApp.Client.Registration
     {
         private readonly IConfiguration _config;
         private readonly HttpClient _httpClient;
-        private readonly IAuthenticationService _authService;
 
         public RegistrationService(IConfiguration config,
-                                   HttpClient httpClient,
-                                   IAuthenticationService authService)
+                                   HttpClient httpClient)
         {
             _config = config;
             _httpClient = httpClient;
-            _authService = authService;
         }
 
-        public async Task<IAuthUserModel> RegisterAsync(IRegisterUserModel registerUser)
+        public async Task<Tuple<bool, string>> RegisterAsync(IRegisterUserModel registerUser)
         {
             string apiEndpoint = _config["apiLocation"] + _config["registerEndpoint"];
             HttpResponseMessage regResult = await _httpClient.PostAsJsonAsync(apiEndpoint, registerUser);
 
             if (regResult.IsSuccessStatusCode)
             {
-                LoginUserModel loginUser = new();
-                loginUser.Username = registerUser.Username;
-                loginUser.Password = registerUser.Password;
-                return await _authService.LoginAsync(loginUser);
+                return new Tuple<bool, string>(true, "User created successfully.");
             }
             else
             {
-                Console.WriteLine($"Register user failed: {regResult.ReasonPhrase}");
-                return null;
+                return new Tuple<bool, string>(false, regResult.Content.ReadAsStringAsync().GetAwaiter().GetResult());
             }
         }
     }
