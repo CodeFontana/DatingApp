@@ -12,13 +12,13 @@
                 <a class="navbar-brand mx-auto" href="#">Dating App</a>
                 <div class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => expandNavLinks = !expandNavLinks">
                     <NavLink class="nav-link text-dark mx-2" href="#" Match="NavLinkMatch.All">
-                        <span class="oi oi-people" aria-hidden="true"></span> Matches
+                        Matches
                     </NavLink>
                     <NavLink class="nav-link text-dark mx-2" href="#" Match="NavLinkMatch.All">
-                        <span class="oi oi-list" aria-hidden="true"></span> Lists
+                        Lists
                     </NavLink>
                     <NavLink class="nav-link text-dark mx-2" href="#" Match="NavLinkMatch.All">
-                        <span class="oi oi-envelope-closed" aria-hidden="true"></span> Messages
+                        Messages
                     </NavLink>
                 </div>
             }
@@ -28,13 +28,13 @@
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav mr-auto">
                         <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
-                            <span class="oi oi-people" aria-hidden="true"></span> Matches
+                            Matches
                         </NavLink>
                         <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
-                            <span class="oi oi-list" aria-hidden="true"></span> Lists
+                            Lists
                         </NavLink>
                         <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
-                            <span class="oi oi-envelope-closed" aria-hidden="true"></span> Messages
+                            Messages
                         </NavLink>
                     </ul>
                 </div>
@@ -42,18 +42,18 @@
 
             <div class="nav-item dropdown show">
                 <NavLink class="nav-link text-light" @onclick="() => expandWelcomeMenu = !expandWelcomeMenu" id="navbarDropdown">
-                    <span class="oi oi-list-rich" aria-hidden="true"></span> Welcome @AuthContext.User.Identity.Name
+                    Welcome @AuthContext.User.Identity.Name
                 </NavLink>
 
                 @if (expandWelcomeMenu)
                 {
                     <div class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => expandWelcomeMenu = !expandWelcomeMenu">
                         <NavLink class="nav-link text-dark" href="">
-                            <span class="oi oi-pencil" aria-hidden="true"></span> Edit Profile
+                            Edit Profile
                         </NavLink>
                         <div class="dropdown-divider"></div>
                         <NavLink class="nav-link text-dark" href="" @onclick="() => HandleLogout()">
-                            <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+                            Logout
                         </NavLink>
                     </div>
                 }

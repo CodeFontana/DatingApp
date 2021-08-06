@@ -2,7 +2,7 @@
     margin-top: 100px;
 }
 
-@media (max-width: 830px) {
+@media (max-width: 800px) {
     .main {
         margin-top: 220px;
     }

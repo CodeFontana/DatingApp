@@ -1,4 +1,4 @@
-﻿@media (min-width: 830px) {
+﻿@media (min-width: 800px) {
     #loginform {
         display: flex;
         align-items: flex-end;
@@ -12,7 +12,7 @@
     }
 }
 
-@media (max-width: 830px) {
+@media (max-width: 800px) {
     #loginform {
         display: flex;
         flex-wrap: wrap;
