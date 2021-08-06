@@ -46,14 +46,14 @@ namespace DatingApp.API.Data
 
                 foreach (AppUser user in users)
                 {
-                    user.UserName = user.UserName.ToLower();
+                    user.UserName = user.UserName;
                     await userManager.CreateAsync(user, "Passw0rd123!!");
                     await userManager.AddToRoleAsync(user, "Member");
                 }
 
                 AppUser admin = new()
                 {
-                    UserName = "brian"
+                    UserName = "Brian"
                 };
 
                 await userManager.CreateAsync(admin, "Passw0rd123!!");

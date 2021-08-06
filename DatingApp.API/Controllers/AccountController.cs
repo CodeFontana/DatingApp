@@ -44,7 +44,7 @@ namespace DatingApp.API.Controllers
 
             AppUser user = new()
             {
-                UserName = registerUser.Username.ToLower()
+                UserName = registerUser.Username
             };
 
             IdentityResult result = await _userManager.CreateAsync(user, registerUser.Password);
