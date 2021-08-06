@@ -1,12 +1,13 @@
 ﻿@inject IAuthenticationService AuthService
+@inject NavigationManager NavManager
 
 <EditForm Model="@loginUser" class="form-inline">
     <div id="loginform" class="form-row">
         <InputText @bind-Value="loginUser.Username" class="form-control userinput" type="text" placeholder="Username" />
         <InputText @bind-Value="loginUser.Password" class="form-control userinput" type="password" placeholder="Password" />
         <div id="buttongroup" class="form-group">
-            <button class="btn btn-primary" type="submit" @onclick="() => HandleLogin()"><span class="oi oi-account-login" aria-hidden="true"></span> Login</button>
-            <button class="btn btn-success mx-2" type="submit" @onclick="() => HandleRegister()"><span class="oi oi-pencil" aria-hidden="true"></span> Register</button>
+            <button class="btn btn-primary" type="submit" @onclick="() => HandleLogin()">Login</button>
+            <button class="btn btn-success mx-2" type="submit" @onclick="() => HandleRegister()">Register</button>
         </div>
     </div>
 </EditForm>
@@ -27,6 +28,6 @@
 
     private void HandleRegister()
     {
-
+        NavManager.NavigateTo("/register");
     }
 }

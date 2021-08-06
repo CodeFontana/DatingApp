@@ -1,40 +1,27 @@
 ﻿@page "/"
-@inject HttpClient Http
+@inject NavigationManager NavManager
 
 <AuthorizeView Context="AuthContext">
     <Authorized>
+        <p>Coming soon...</p>
     </Authorized>
     <NotAuthorized>
         <div class="container">
-            @if (registerMode == false)
-            {
+            <div class="text-center">
+                <h1>Find your match</h1>
+                <p class="lead">Come on in to view your matches... all you need to do is sign up!</p>
                 <div class="text-center">
-                    <h1>Find your match</h1>
-                    <p class="lead">Come on in to view your matches... all you need to do is sign up!</p>
-                    <div class="text-center">
-                        <button class="btn btn-primary btn-lg mr-2" @onclick="() => registerMode = !registerMode">Register</button>
-                        <button class="btn btn-info btn-lg mr-2">Learn more</button>
-                    </div>
+                    <button class="btn btn-primary btn-lg mr-2" @onclick="() => HandleRegister()">Register</button>
+                    <button class="btn btn-info btn-lg mr-2">Learn more</button>
                 </div>
-            }
-            else
-            {
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-4">
-                            <RegisterForm />
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-
-        <div id="fillspace">
-
+            </div>
         </div>
     </NotAuthorized>
 </AuthorizeView>
 
 @code {
-    private bool registerMode = false;
+    private void HandleRegister()
+    {
+        NavManager.NavigateTo("/register");
+    }
 }
