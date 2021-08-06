@@ -20,7 +20,7 @@
         <ValidationMessage For="(() => registerUser.ConfirmPassword)" />
     </div>
     <div class="form-group text-center">
-        <button class="btn btn-success mx-2" type="submit">Register</button>
+        <button class="btn btn-success mx-2" type="submit">Create Account</button>
         <button class="btn btn-outline-danger mx-2" type="button" @onclick="() => HandleClear()">Clear</button>
     </div>
 </EditForm>
@@ -35,7 +35,7 @@
 @code {
     private RegisterUserModel registerUser = new();
     private bool showRegError = false;
-    private string regErrorText = "";
+    private string regErrorText;
 
     private async Task HandleValidSubmit()
     {
@@ -46,10 +46,8 @@
 
         if (regResult.Item1)
         {
-            LoginUserModel loginUser = new();
-            loginUser.Username = registerUser.Username;
-            loginUser.Password = registerUser.Password;
-            await AuthService.LoginAsync(loginUser);
+
+            await AuthService.LoginAsync(new() { Username = registerUser.Username, Password = registerUser.Password });
         }
         else
         {
