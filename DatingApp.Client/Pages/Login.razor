@@ -13,29 +13,33 @@
 
 <EditForm Model="@loginUser" OnValidSubmit="HandleValidSubmit" class="card card-body bg-dark text-light mt-5">
     <DataAnnotationsValidator />
-    <ValidationSummary />
 
     <div class="form-group">
         <label>Username</label>
         <InputText @bind-Value="loginUser.Username" class="form-control mr-sm-2" type="text" />
+        <ValidationMessage For="(() => loginUser.Username)" />
     </div>
     <div class="form-group">
         <label>Password</label>
         <InputText @bind-Value="loginUser.Password" class="form-control mr-sm-2" type="password" />
+        <ValidationMessage For="(() => loginUser.Password)" />
     </div>
-    <button class="btn btn-primary my-2 my-sm-0" type="submit"><span class="oi oi-account-login" aria-hidden="true"></span> Login</button>
+    <button class="btn btn-success my-2 my-sm-0" type="submit">Login</button>
+    <button class="btn btn-primary my-2 my-sm-0" type="button" @onclick="() => HandleRegister()">Register</button>
 
 </EditForm>
 
 @code {
     private LoginUserModel loginUser = new();
     private bool showAuthError = false;
-    private string authErrorText = "";
+    private string authErrorText;
 
     private async Task HandleValidSubmit()
     {
         showAuthError = false;
-        IAuthUserModel result = await AuthService.LoginAsync(loginUser);
+        authErrorText = "";
+
+        AuthUserModel result = await AuthService.LoginAsync(loginUser);
 
         if (result != null)
         {
@@ -46,5 +50,10 @@
             authErrorText = "Login failed";
             showAuthError = true;
         }
+    }
+
+    private void HandleRegister()
+    {
+        NavManager.NavigateTo("/register");
     }
 }
