@@ -31,7 +31,7 @@ namespace DatingApp.Client.Authentication
             _authStateProvider = authStateProvider;
         }
 
-        public async Task<IAuthUserModel> LoginAsync(ILoginUserModel loginUser)
+        public async Task<AuthUserModel> LoginAsync(LoginUserModel loginUser)
         {
             string apiEndpoint = _config["apiLocation"] + _config["loginEndpoint"];
             HttpResponseMessage authResult = await _httpClient.PostAsJsonAsync(apiEndpoint, loginUser);
@@ -39,7 +39,7 @@ namespace DatingApp.Client.Authentication
             if (authResult.IsSuccessStatusCode)
             {
                 string authContent = await authResult.Content.ReadAsStringAsync();
-                IAuthUserModel result = JsonSerializer.Deserialize<AuthUserModel>(authContent, _options);
+                AuthUserModel result = JsonSerializer.Deserialize<AuthUserModel>(authContent, _options);
                 await ((AuthStateProvider)_authStateProvider).NotifyUserAuthenticationAsync(result.Token);
                 return result;
             }

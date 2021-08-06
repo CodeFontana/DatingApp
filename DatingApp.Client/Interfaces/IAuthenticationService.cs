@@ -6,7 +6,7 @@ namespace DatingApp.Client.Interfaces
 {
     public interface IAuthenticationService
     {
-        Task<IAuthUserModel> LoginAsync(ILoginUserModel loginUser);
+        Task<AuthUserModel> LoginAsync(LoginUserModel loginUser);
         Task LogoutAsync();
     }
 }

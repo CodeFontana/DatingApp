@@ -35,7 +35,7 @@ namespace DatingApp.API.Controllers
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<ActionResult<IAuthUserModel>> Register(RegisterUserModel registerUser)
+        public async Task<ActionResult<AuthUserModel>> Register(RegisterUserModel registerUser)
         {
             if (await UserExists(registerUser.Username))
             {
@@ -71,7 +71,7 @@ namespace DatingApp.API.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<ActionResult<IAuthUserModel>> Login(LoginUserModel loginUser)
+        public async Task<ActionResult<AuthUserModel>> Login(LoginUserModel loginUser)
         {
             AppUser user = await _userManager.Users
                 .SingleOrDefaultAsync(u => u.UserName == loginUser.Username.ToLower());
