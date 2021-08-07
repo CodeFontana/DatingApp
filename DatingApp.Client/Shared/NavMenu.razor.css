@@ -10,11 +10,41 @@
         align-items: flex-start;
         justify-content: space-between;
     }
+
+    #loginform {
+        display: flex;
+        align-items: flex-end;
+        flex-wrap: nowrap;
+        width: 100%;
+        margin-left: auto;
+    }
+
+    ::deep .userinput {
+        margin-right: 5px;
+    }
 }
 
 @media (max-width: 800px) {
     #navbarUnAuth {
         display: block;
         min-width: 350px;
+    }
+
+    #loginform {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    ::deep .userinput {
+        margin-bottom: 2px;
+    }
+
+    #buttongroup {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        margin-top: 5px;
     }
 }

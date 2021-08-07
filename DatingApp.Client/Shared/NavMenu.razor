@@ -1,4 +1,5 @@
 ﻿@inject IAuthenticationService AuthService
+@inject NavigationManager NavManager
 
 <AuthorizeView Context="AuthContext">
     <Authorized>
@@ -63,17 +64,38 @@
     <NotAuthorized>
         <nav id="navbarUnAuth" class="navbar navbar-expand navbar-dark fixed-top bg-dark">
             <a class="navbar-brand mr-4" href="#">Dating App</a>
-            <LoginForm />
+            <EditForm Model="@loginUser" class="form-inline">
+                <div id="loginform" class="form-row">
+                    <InputText @bind-Value="loginUser.Username" class="form-control userinput" type="text" placeholder="Username" />
+                    <InputText @bind-Value="loginUser.Password" class="form-control userinput" type="password" placeholder="Password" />
+                    <div id="buttongroup" class="form-group">
+                        <button class="btn btn-primary" type="submit" @onclick="() => HandleLogin()">Login</button>
+                        <button class="btn btn-success mx-2" type="submit" @onclick="() => HandleRegister()">Register</button>
+                    </div>
+                </div>
+            </EditForm>
         </nav>
     </NotAuthorized>
 </AuthorizeView>
 
 @code {
+    private LoginUserModel loginUser = new();
     private bool expandWelcomeMenu = false;
     private bool expandNavLinks = false;
+
+    private async Task HandleLogin()
+    {
+        await AuthService.LoginAsync(loginUser);
+        loginUser = new();
+    }
 
     private async Task HandleLogout()
     {
         await AuthService.LogoutAsync();
+    }
+
+    private void HandleRegister()
+    {
+        NavManager.NavigateTo("/register");
     }
 }
