@@ -6,22 +6,31 @@
         <p>Coming soon...</p>
     </Authorized>
     <NotAuthorized>
-        <div class="container">
-            <div class="text-center">
-                <h1>Find your match</h1>
-                <p class="lead">Come on in to view your matches... all you need to do is sign up!</p>
+        @if (registerMode)
+        {
+            <RegistrationComponent OnCancel="HandleOnCancel" />
+        }
+        else
+        {
+            <div class="container">
                 <div class="text-center">
-                    <button class="btn btn-primary btn-lg mr-2" @onclick="() => HandleRegister()">Register</button>
-                    <button class="btn btn-info btn-lg mr-2">Learn more</button>
+                    <h1>Find your match</h1>
+                    <p class="lead">Come on in to view your matches... all you need to do is sign up!</p>
+                    <div class="text-center">
+                        <button class="btn btn-primary btn-lg mr-2" @onclick="() => registerMode = !registerMode">Register</button>
+                        <button class="btn btn-info btn-lg mr-2">Learn more</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     </NotAuthorized>
 </AuthorizeView>
 
 @code {
-    private void HandleRegister()
+    private bool registerMode = false;
+
+    private void HandleOnCancel(bool result)
     {
-        NavManager.NavigateTo("/register");
+        registerMode = false;
     }
 }
