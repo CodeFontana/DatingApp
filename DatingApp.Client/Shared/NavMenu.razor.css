@@ -4,27 +4,7 @@
     min-width: 360px;
 }
 
-@media (min-width: 800px) {
-    #navbarUnAuth {
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: space-between;
-    }
-
-    #loginform {
-        display: flex;
-        align-items: flex-end;
-        flex-wrap: nowrap;
-        width: 100%;
-        margin-left: auto;
-    }
-
-    ::deep .userinput {
-        margin-right: 5px;
-    }
-}
-
-@media (max-width: 800px) {
+@media (max-width: 768px) {
     #navbarUnAuth {
         display: block;
         min-width: 350px;
@@ -46,5 +26,25 @@
         flex-direction: row;
         flex-wrap: nowrap;
         margin-top: 5px;
+    }
+}
+
+@media (min-width: 769px) {
+    #navbarUnAuth {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    #loginform {
+        display: flex;
+        align-items: flex-end;
+        flex-wrap: nowrap;
+        width: 100%;
+        margin-left: auto;
+    }
+
+    ::deep .userinput {
+        margin-right: 5px;
     }
 }
