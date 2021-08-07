@@ -40,7 +40,7 @@
 
 @code {
     [Parameter]
-    public EventCallback<bool> OnCancel { get; set; }
+    public EventCallback<bool> OnCancelRegistration { get; set; }
 
     private RegisterUserModel registerUser = new();
     private bool showRegError = false;
@@ -69,6 +69,6 @@
 
     private void HandleCancel()
     {
-        OnCancel.InvokeAsync(true);
+        OnCancelRegistration.InvokeAsync(true);
     }
 }

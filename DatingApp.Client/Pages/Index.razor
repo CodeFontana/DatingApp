@@ -8,7 +8,7 @@
     <NotAuthorized>
         @if (registerMode)
         {
-            <RegistrationComponent OnCancel="HandleOnCancel" />
+            <RegistrationComponent OnCancelRegistration="HandleOnCancelRegistration" />
         }
         else
         {
@@ -29,7 +29,7 @@
 @code {
     private bool registerMode = false;
 
-    private void HandleOnCancel(bool result)
+    private void HandleOnCancelRegistration(bool result)
     {
         registerMode = false;
     }
