@@ -11,7 +11,8 @@ using DatingApp.Client.Interfaces;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using DatingApp.Client.Authentication;
-using DatingApp.Client.Registration;
+using DatingApp.Client.Services;
+using Blazored.Toast;
 
 namespace DatingApp.Client
 {
@@ -23,6 +24,7 @@ namespace DatingApp.Client
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddBlazoredToast();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IRegistrationService, RegistrationService>();
