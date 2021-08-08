@@ -1,6 +1,7 @@
 ﻿@inject IAuthenticationService AuthService
 @inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavManager
+@inject IToastService ToastService
 
 <AuthorizeView Context="AuthContext">
     <Authorized>
@@ -97,12 +98,16 @@
 
     private async Task HandleLogin()
     {
-        AuthUserModel authUser = await AuthService.LoginAsync(loginUser);
+        var authResult = await AuthService.LoginAsync(loginUser);
         loginUser = new();
 
-        if (authUser != null && string.IsNullOrWhiteSpace(authUser.Token) == false)
+        if (authResult.Item1 != null)
         {
             NavManager.NavigateTo("/members");
+        }
+        else
+        {
+            ToastService.ShowError($"Login failed: {authResult.Item2}");
         }
     }
 

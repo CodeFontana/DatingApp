@@ -49,15 +49,15 @@
         showAuthError = false;
         authErrorText = "";
 
-        AuthUserModel result = await AuthService.LoginAsync(loginUser);
+        var authResult = await AuthService.LoginAsync(loginUser);
 
-        if (result != null)
+        if (authResult.Item1 != null)
         {
             NavManager.NavigateTo("/");
         }
         else
         {
-            authErrorText = "Login failed";
+            authErrorText = $"Login failed: {authResult.Item2}";
             showAuthError = true;
         }
     }

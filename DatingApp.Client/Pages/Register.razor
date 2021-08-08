@@ -2,6 +2,7 @@
 @inject IRegistrationService RegService
 @inject IAuthenticationService AuthService
 @inject NavigationManager NavManager
+@inject IToastService ToastService
 
 <AuthorizeView Context="AuthContext">
     <Authorized>
@@ -61,13 +62,24 @@
 
         if (regResult.Item1)
         {
-            await AuthService.LoginAsync(new() { Username = registerUser.Username, Password = registerUser.Password });
-            NavManager.NavigateTo("/");
+            var authResult = await AuthService.LoginAsync(new() { Username = registerUser.Username, Password = registerUser.Password });
+
+            if (authResult.Item1 != null)
+            {
+                NavManager.NavigateTo("/");
+            }
+            else
+            {
+                showRegError = true;
+                regErrorText = $"Login failed: {authResult.Item2}";
+                ToastService.ShowError($"Login failed: {authResult.Item2}");
+            }
         }
         else
         {
             showRegError = true;
-            regErrorText = regResult.Item2;
+            regErrorText = $"Registration failed: {regResult.Item2}";
+            ToastService.ShowError($"Registration failed: {regResult.Item2}");
         }
 
         registerUser = new();
