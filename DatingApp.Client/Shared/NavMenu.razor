@@ -5,7 +5,7 @@
 
 <AuthorizeView Context="AuthContext">
     <Authorized>
-        <nav id="navbarAuth" class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <nav id="navbarAuth" class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
             <button class="navbar-toggler" type="button" @onclick="() => expandNavLinks = !expandNavLinks">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -71,8 +71,7 @@
                     <InputText @bind-Value="loginUser.Username" class="form-control userinput" type="text" placeholder="Username" />
                     <InputText @bind-Value="loginUser.Password" class="form-control userinput" type="password" placeholder="Password" />
                     <div id="buttongroup" class="form-group">
-                        <button class="btn btn-primary" type="submit" @onclick="() => HandleLogin()">Login</button>
-                        <button class="btn btn-success mx-2" type="submit" @onclick="() => HandleRegister()">Register</button>
+                        <button class="btn btn-success" type="submit" @onclick="() => HandleLogin()">Login</button>
                     </div>
                 </div>
             </EditForm>
@@ -126,10 +125,5 @@
     {
         await AuthService.LogoutAsync();
         NavManager.NavigateTo("/");
-    }
-
-    private void HandleRegister()
-    {
-        NavManager.NavigateTo("/register");
     }
 }
