@@ -31,7 +31,7 @@ namespace DatingApp.Client.Authentication
             _authStateProvider = authStateProvider;
         }
 
-        public async Task<AuthUserModel> LoginAsync(LoginUserModel loginUser)
+        public async Task<Tuple<AuthUserModel, string>> LoginAsync(LoginUserModel loginUser)
         {
             string apiEndpoint = _config["apiLocation"] + _config["loginEndpoint"];
             HttpResponseMessage authResult = await _httpClient.PostAsJsonAsync(apiEndpoint, loginUser);
@@ -41,12 +41,11 @@ namespace DatingApp.Client.Authentication
                 string authContent = await authResult.Content.ReadAsStringAsync();
                 AuthUserModel result = JsonSerializer.Deserialize<AuthUserModel>(authContent, _options);
                 await ((AuthStateProvider)_authStateProvider).NotifyUserAuthenticationAsync(result.Token);
-                return result;
+                return new Tuple<AuthUserModel, string>(result, "Login successful");
             }
             else
             {
-                Console.WriteLine($"Login failed: {authResult.ReasonPhrase}");
-                return null;
+                return new Tuple<AuthUserModel, string>(null, authResult.ReasonPhrase);
             }
         }
 
