@@ -78,7 +78,7 @@ namespace DatingApp.API.Controllers
 
             if (user == null)
             {
-                return Unauthorized("Invalid username.");
+                return Unauthorized("Invalid username");
             }
 
             Microsoft.AspNetCore.Identity.SignInResult result = 
@@ -86,7 +86,7 @@ namespace DatingApp.API.Controllers
 
             if (result.Succeeded == false)
             {
-                return Unauthorized();
+                return Unauthorized("Invalid password");
             }
 
             return new AuthUserModel
