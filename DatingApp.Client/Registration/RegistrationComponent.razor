@@ -27,16 +27,16 @@
                     <button class="btn btn-outline-danger mx-2" type="button" @onclick="() => HandleCancel()">Cancel</button>
                 </div>
             </EditForm>
+
+            @if (showRegError)
+            {
+                <div class="alert alert-danger text-center" role="alert">
+                    @regErrorText
+                </div>
+            }
         </div>
     </div>
 </div>
-
-@if (showRegError)
-{
-    <div class="alert alert-danger" role="alert">
-        <p>@regErrorText</p>
-    </div>
-}
 
 @code {
     [Parameter]
