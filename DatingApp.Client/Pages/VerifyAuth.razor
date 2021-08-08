@@ -1,20 +1,24 @@
 ﻿@page "/verifyauth"
 
-<h3>Verify Auth</h3>
+<div class="container text-center">
+    
+    <h3 class="mb-3">Verify Auth</h3>
 
-<AuthorizeView Context="AuthContext">
-    <Authorized>
-        <h4>@AuthContext.User.Identity.Name is authenticated...</h4>
-        <ul>
-            <li>Access to Admin Role: @AuthContext.User.IsInRole("Admin")</li>
-            <li>Access to Moderator Role: @AuthContext.User.IsInRole("Moderator")</li>
-            <li>Access to Member Role: @AuthContext.User.IsInRole("Member")</li>
-        </ul>
-    </Authorized>
-    <NotAuthorized>
-        <h4>Not authenticated.</h4>
-    </NotAuthorized>
-</AuthorizeView>
+    <AuthorizeView Context="AuthContext">
+        <Authorized>
+            <h4>@AuthContext.User.Identity.Name is authenticated...</h4>
+            <ul class="list-unstyled">
+                <li>Admin Role: @AuthContext.User.IsInRole("Admin")</li>
+                <li>Moderator Role: @AuthContext.User.IsInRole("Moderator")</li>
+                <li>Member Role: @AuthContext.User.IsInRole("Member")</li>
+            </ul>
+        </Authorized>
+        <NotAuthorized>
+            <h4>Not authenticated.</h4>
+        </NotAuthorized>
+    </AuthorizeView>
+
+</div>
 
 @code {
     

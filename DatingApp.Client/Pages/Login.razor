@@ -2,32 +2,42 @@
 @inject IAuthenticationService AuthService 
 @inject NavigationManager NavManager
 
-<h3>Login</h3>
+<h3 class="text-center">Member Login</h3>
 
-@if (showAuthError)
-{
-    <div class="alert alert-danger" role="alert">
-        <p>@authErrorText</p>
-    </div>
-}
+<AuthorizeView Context="AuthContext">
+    <Authorized>
+        <p class="lead text-center mt-3">You are already logged in!</p>
+    </Authorized>
+    <NotAuthorized>
+        @if (showAuthError)
+        {
+            <div class="alert alert-danger" role="alert">
+                <p>@authErrorText</p>
+            </div>
+        }
+        
+        <div class="container">
+            <EditForm Model="@loginUser" OnValidSubmit="HandleValidSubmit" class="card card-body bg-dark text-light mt-5">
+                <DataAnnotationsValidator />
 
-<EditForm Model="@loginUser" OnValidSubmit="HandleValidSubmit" class="card card-body bg-dark text-light mt-5">
-    <DataAnnotationsValidator />
+                <div class="form-group">
+                    <label>Username</label>
+                    <InputText @bind-Value="loginUser.Username" class="form-control mr-sm-2" type="text" />
+                    <ValidationMessage For="(() => loginUser.Username)" />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <InputText @bind-Value="loginUser.Password" class="form-control mr-sm-2" type="password" />
+                    <ValidationMessage For="(() => loginUser.Password)" />
+                </div>
+                <button class="btn btn-success my-2" type="submit">Login</button>
+                <button class="btn btn-primary my-2" type="button" @onclick="() => HandleRegister()">Register</button>
 
-    <div class="form-group">
-        <label>Username</label>
-        <InputText @bind-Value="loginUser.Username" class="form-control mr-sm-2" type="text" />
-        <ValidationMessage For="(() => loginUser.Username)" />
-    </div>
-    <div class="form-group">
-        <label>Password</label>
-        <InputText @bind-Value="loginUser.Password" class="form-control mr-sm-2" type="password" />
-        <ValidationMessage For="(() => loginUser.Password)" />
-    </div>
-    <button class="btn btn-success my-2 my-sm-0" type="submit">Login</button>
-    <button class="btn btn-primary my-2 my-sm-0" type="button" @onclick="() => HandleRegister()">Register</button>
-
-</EditForm>
+            </EditForm>
+        </div>
+        
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private LoginUserModel loginUser = new();
