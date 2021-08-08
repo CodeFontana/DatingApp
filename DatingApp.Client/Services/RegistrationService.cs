@@ -11,7 +11,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace DatingApp.Client.Registration
+namespace DatingApp.Client.Services
 {
     public class RegistrationService : IRegistrationService
     {
