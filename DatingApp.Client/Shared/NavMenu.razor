@@ -1,4 +1,5 @@
 ﻿@inject IAuthenticationService AuthService
+@inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavManager
 
 <AuthorizeView Context="AuthContext">
@@ -12,13 +13,13 @@
             {
                 <a class="navbar-brand mx-auto" href="#">Dating App</a>
                 <div class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => expandNavLinks = !expandNavLinks">
-                    <NavLink class="nav-link text-dark mx-2" href="#" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link text-dark mx-2" href="/members" Match="NavLinkMatch.All">
                         Matches
                     </NavLink>
-                    <NavLink class="nav-link text-dark mx-2" href="#" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link text-dark mx-2" href="/lists" Match="NavLinkMatch.All">
                         Lists
                     </NavLink>
-                    <NavLink class="nav-link text-dark mx-2" href="#" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link text-dark mx-2" href="/messages" Match="NavLinkMatch.All">
                         Messages
                     </NavLink>
                 </div>
@@ -28,13 +29,13 @@
                 <a class="navbar-brand mr-4" href="#">Dating App</a>
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav mr-auto">
-                        <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
+                        <NavLink class="nav-link text-light mx-2" href="/members" Match="NavLinkMatch.All">
                             Matches
                         </NavLink>
-                        <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
+                        <NavLink class="nav-link text-light mx-2" href="/lists" Match="NavLinkMatch.All">
                             Lists
                         </NavLink>
-                        <NavLink class="nav-link text-light mx-2" href="#" Match="NavLinkMatch.All">
+                        <NavLink class="nav-link text-light mx-2" href="/messages" Match="NavLinkMatch.All">
                             Messages
                         </NavLink>
                     </ul>
@@ -53,7 +54,7 @@
                             Edit Profile
                         </NavLink>
                         <div class="dropdown-divider"></div>
-                        <NavLink class="nav-link text-dark" href="" @onclick="() => HandleLogout()">
+                        <NavLink class="nav-link text-dark" @onclick="() => HandleLogout()">
                             Logout
                         </NavLink>
                     </div>
@@ -83,15 +84,32 @@
     private bool expandWelcomeMenu = false;
     private bool expandNavLinks = false;
 
+    protected override async Task OnInitializedAsync()
+    {
+        AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        ClaimsPrincipal user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            NavManager.NavigateTo("/members");
+        }
+    }
+
     private async Task HandleLogin()
     {
-        await AuthService.LoginAsync(loginUser);
+        AuthUserModel authUser = await AuthService.LoginAsync(loginUser);
         loginUser = new();
+
+        if (authUser != null && string.IsNullOrWhiteSpace(authUser.Token) == false)
+        {
+            NavManager.NavigateTo("/members");
+        }
     }
 
     private async Task HandleLogout()
     {
         await AuthService.LogoutAsync();
+        NavManager.NavigateTo("/");
     }
 
     private void HandleRegister()
