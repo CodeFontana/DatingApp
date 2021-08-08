@@ -1,6 +1,19 @@
 ﻿@page "/members"
 
-<h3>Members</h3>
+<div class="container">
+    
+    <h3 class="text-center">Members</h3>
+
+    <AuthorizeView Context="AuthContext">
+        <Authorized>
+
+        </Authorized>
+        <NotAuthorized>
+
+        </NotAuthorized>
+    </AuthorizeView>
+
+</div>
 
 @code {
 

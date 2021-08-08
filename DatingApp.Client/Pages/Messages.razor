@@ -1,6 +1,19 @@
 ﻿@page "/messages"
 
-<h3>Messages</h3>
+<div class="container">
+
+    <h3 class="text-center">Messages</h3>
+
+    <AuthorizeView Context="AuthContext">
+        <Authorized>
+
+        </Authorized>
+        <NotAuthorized>
+
+        </NotAuthorized>
+    </AuthorizeView>
+
+</div>
 
 @code {
 
