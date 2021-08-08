@@ -11,7 +11,7 @@ namespace DatingApp.Client.Authentication
     {
         public static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
-            List<Claim> claims = new List<Claim>();
+            List<Claim> claims = new();
             string payload = jwt.Split('.')[1];
             byte[] jsonBytes = ParseBase64WithoutPadding(payload);
             Dictionary<string, object> keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
