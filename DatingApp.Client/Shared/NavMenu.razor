@@ -98,6 +98,17 @@
 
     private async Task HandleLogin()
     {
+        if (string.IsNullOrEmpty(loginUser.Username))
+        {
+            ToastService.ShowInfo("Please enter your username");
+            return;
+        }
+        else if (string.IsNullOrEmpty(loginUser.Password))
+        {
+            ToastService.ShowInfo("Please enter your password");
+            return;
+        }
+
         var authResult = await AuthService.LoginAsync(loginUser);
         loginUser = new();
 
