@@ -1,4 +1,8 @@
-﻿#navbarAuth {
+﻿.nav-link {
+    padding: 0.15rem 1rem;
+}
+
+#navbarAuth {
     display: flex;
     flex-wrap: nowrap;
     min-width: 360px;
