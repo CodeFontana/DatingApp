@@ -1,0 +1,14 @@
+﻿@inject NavigationManager NavManager
+
+<div class="container text-center">
+    <text class="lead">Sorry, there's nothing at this address.</text>
+    <hr />
+    <button class="btn btn-info btn-lg" type="button" @onclick="HandleClick">Take me Home!</button>
+</div>
+
+@code {
+    private void HandleClick()
+    {
+        NavManager.NavigateTo("/");
+    }
+}
