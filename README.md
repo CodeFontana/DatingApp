@@ -3,4 +3,5 @@ Based on Udemy course, "Build an app with ASPNET Core and Angular from scratch" 
 
 ## Great Articles
 https://dev.to/dotnet/why-build-single-page-apps-in-blazor-103m
+
 https://chrissainty.com/what-is-blazor-and-why-is-it-so-exciting/
