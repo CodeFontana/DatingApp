@@ -1,2 +1,7 @@
-# DatingApp
-Based on Udemy course, "Build an app with ASPNET Core and Angular from scratch" by Neil Cummings-- except I decided to build a Blazor Webassembly app for building the client, instead of the Angular application built in the course. I feel like when Neil produced this course in the .NET Core 3.1 era, an Angular app was absolutely the right choice. As I have the advantage of starting with .NET 5.0, I thought I would add a twist and attempt to develop the client-side app in Blazor WASM. This would be a good test of my recent Blazor skills, as well as a proof of concept to see if Blazor is up to the task against other frameworks.  It is also quite pleasant to be writing the entire stack in C#-- let’s hope it delivers!
+# Dating App
+Based on Udemy course, "*Build an app with ASPNET Core and Angular from scratch*" by Neil Cummings-- with ***One Major Twist***. Rather than building the client-side application in Angluar, I have implemented using C# Blazor Webassembly. This enables the entire application to be built on C# and ASP.NET technologies.
+
+## Great Articles
+https://dev.to/dotnet/why-build-single-page-apps-in-blazor-103m
+
+https://chrissainty.com/what-is-blazor-and-why-is-it-so-exciting/
