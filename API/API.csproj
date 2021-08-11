@@ -22,8 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataAccessLibrary\DataAccessLibrary.csproj" />
-    <ProjectReference Include="..\DatingApp.DataAccessLibrary\DataAccessLibrary.csproj" />
-    <ProjectReference Include="..\DatingApp.Library\DatingApp.DataAccessLibrary.csproj" />
   </ItemGroup>
 
 </Project>

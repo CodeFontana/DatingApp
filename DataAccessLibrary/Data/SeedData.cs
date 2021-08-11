@@ -24,6 +24,7 @@ namespace DataAccessLibrary.Data
 
             try
             {
+                
                 string userData = await File.ReadAllTextAsync(@"Data\UserSeedData.json");
                 List<AppUser> users = JsonSerializer.Deserialize<List<AppUser>>(userData);
 
