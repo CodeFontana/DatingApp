@@ -1,0 +1,103 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Text;
+using DataAccessLibrary.Entities;
+using API.Interfaces;
+using DataAccessLibrary.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+
+namespace API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize]
+    public class AccountController : ControllerBase
+    {
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly ITokenService _tokenService;
+
+        public AccountController(
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
+            ITokenService tokenService)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _tokenService = tokenService;
+        }
+
+        [HttpPost("register")]
+        [AllowAnonymous]
+        public async Task<ActionResult<AuthUser>> Register(RegisterUser registerUser)
+        {
+            if (await UserExists(registerUser.Username))
+            {
+                return BadRequest("Username is taken.");
+            }
+
+            AppUser user = new()
+            {
+                UserName = registerUser.Username
+            };
+
+            IdentityResult result = await _userManager.CreateAsync(user, registerUser.Password);
+
+            if (result.Succeeded == false)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            IdentityResult roleResult = await _userManager.AddToRoleAsync(user, "Member");
+
+            if (roleResult.Succeeded == false)
+            {
+                await _userManager.DeleteAsync(user);
+                return BadRequest(result.Errors);
+            }
+
+            return new AuthUser
+            {
+                Username = user.UserName,
+                Token = await _tokenService.CreateTokenAsync(user)
+            };
+        }
+
+        [HttpPost("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<AuthUser>> Login(LoginUser loginUser)
+        {
+            AppUser user = await _userManager.Users
+                .SingleOrDefaultAsync(u => u.UserName == loginUser.Username.ToLower());
+
+            if (user == null)
+            {
+                return Unauthorized("Invalid username");
+            }
+
+            Microsoft.AspNetCore.Identity.SignInResult result = 
+                await _signInManager.CheckPasswordSignInAsync(user, loginUser.Password, false);
+
+            if (result.Succeeded == false)
+            {
+                return Unauthorized("Invalid password");
+            }
+
+            return new AuthUser
+            {
+                Username = user.UserName,
+                Token = await _tokenService.CreateTokenAsync(user)
+            };
+        }
+
+        private async Task<bool> UserExists(string username)
+        {
+            return await _userManager.Users.AnyAsync(e => e.UserName == username.ToLower());
+        }
+    }
+}

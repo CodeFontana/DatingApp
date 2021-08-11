@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.6.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatingApp.API", "DatingApp.API\DatingApp.API.csproj", "{1981FFEE-6A89-44F6-8516-423071DAB9CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{1981FFEE-6A89-44F6-8516-423071DAB9CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatingApp.Client", "DatingApp.Client\DatingApp.Client.csproj", "{88EB8CB9-4163-4CE6-8932-7CD51630CFF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{88EB8CB9-4163-4CE6-8932-7CD51630CFF6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatingApp.Library", "DatingApp.Library\DatingApp.Library.csproj", "{3FFA00DA-20E7-4B77-BCB3-91ACB3BCD690}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessLibrary", "DataAccessLibrary\DataAccessLibrary.csproj", "{3FFA00DA-20E7-4B77-BCB3-91ACB3BCD690}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
