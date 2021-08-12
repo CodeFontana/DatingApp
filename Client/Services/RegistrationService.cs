@@ -24,7 +24,7 @@ namespace Client.Services
             _httpClient = httpClient;
         }
 
-        public async Task<Tuple<bool, string>> RegisterAsync(IRegisterUser registerUser)
+        public async Task<Tuple<bool, string>> RegisterAsync(IRegisterUserModel registerUser)
         {
             string apiEndpoint = _config["apiLocation"] + _config["registerEndpoint"];
             HttpResponseMessage regResult = await _httpClient.PostAsJsonAsync(apiEndpoint, registerUser);

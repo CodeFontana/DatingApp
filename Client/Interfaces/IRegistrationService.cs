@@ -6,6 +6,6 @@ namespace Client.Interfaces
 {
     public interface IRegistrationService
     {
-        Task<Tuple<bool, string>> RegisterAsync(IRegisterUser registerUser);
+        Task<Tuple<bool, string>> RegisterAsync(IRegisterUserModel registerUser);
     }
 }

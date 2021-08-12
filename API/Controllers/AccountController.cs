@@ -34,7 +34,7 @@ namespace API.Controllers
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<ActionResult<AuthUser>> Register(RegisterUser registerUser)
+        public async Task<ActionResult<AuthUserModel>> Register(RegisterUserModel registerUser)
         {
             if (await UserExists(registerUser.Username))
             {
@@ -61,7 +61,7 @@ namespace API.Controllers
                 return BadRequest(result.Errors);
             }
 
-            return new AuthUser
+            return new AuthUserModel
             {
                 Username = user.UserName,
                 Token = await _tokenService.CreateTokenAsync(user)
@@ -70,7 +70,7 @@ namespace API.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<ActionResult<AuthUser>> Login(LoginUser loginUser)
+        public async Task<ActionResult<AuthUserModel>> Login(LoginUserModel loginUser)
         {
             AppUser user = await _userManager.Users
                 .SingleOrDefaultAsync(u => u.UserName == loginUser.Username.ToLower());
@@ -88,7 +88,7 @@ namespace API.Controllers
                 return Unauthorized("Invalid password");
             }
 
-            return new AuthUser
+            return new AuthUserModel
             {
                 Username = user.UserName,
                 Token = await _tokenService.CreateTokenAsync(user)

@@ -31,7 +31,7 @@ namespace Client.Authentication
             _authStateProvider = authStateProvider;
         }
 
-        public async Task<Tuple<AuthUser, string>> LoginAsync(LoginUser loginUser)
+        public async Task<Tuple<AuthUserModel, string>> LoginAsync(LoginUserModel loginUser)
         {
             string apiEndpoint = _config["apiLocation"] + _config["loginEndpoint"];
             HttpResponseMessage authResult = await _httpClient.PostAsJsonAsync(apiEndpoint, loginUser);
@@ -39,13 +39,13 @@ namespace Client.Authentication
             if (authResult.IsSuccessStatusCode)
             {
                 string authContent = await authResult.Content.ReadAsStringAsync();
-                AuthUser result = JsonSerializer.Deserialize<AuthUser>(authContent, _options);
+                AuthUserModel result = JsonSerializer.Deserialize<AuthUserModel>(authContent, _options);
                 await ((AuthStateProvider)_authStateProvider).NotifyUserAuthenticationAsync(result.Token);
-                return new Tuple<AuthUser, string>(result, "Login successful");
+                return new Tuple<AuthUserModel, string>(result, "Login successful");
             }
             else
             {
-                return new Tuple<AuthUser, string>(null, authResult.ReasonPhrase);
+                return new Tuple<AuthUserModel, string>(null, authResult.ReasonPhrase);
             }
         }
 

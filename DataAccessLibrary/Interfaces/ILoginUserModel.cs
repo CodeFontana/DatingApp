@@ -1,8 +1,8 @@
 ﻿namespace DataAccessLibrary.Interfaces
 {
-    public interface IAuthUser
+    public interface ILoginUserModel
     {
-        string Token { get; set; }
+        string Password { get; set; }
         string Username { get; set; }
     }
 }

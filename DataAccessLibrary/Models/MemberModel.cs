@@ -1,25 +1,28 @@
-using DataAccessLibrary.Extensions;
-using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLibrary.Entities
+namespace DataAccessLibrary.Models
 {
-    public class AppUser : IdentityUser<int>
+    public class MemberModel
     {
-        public ICollection<AppUserRole> UserRoles { get; set; }
-        
-        public DateTime DateOfBirth { get; set; }
+        public int Id { get; set; }
+
+        public string Username { get; set; }
+
+        public string PhotoUrl { get; set; }
+
+        public int Age { get; set; }
 
         [MaxLength(50)]
         public string KnownAs { get; set; }
 
-        public DateTime Created { get; set; } = DateTime.UtcNow;
+        public DateTime Created { get; set; }
 
-        public DateTime LastActive { get; set; } = DateTime.UtcNow;
+        public DateTime LastActive { get; set; }
 
         [MaxLength(25)]
         public string Gender { get; set; }
@@ -39,6 +42,6 @@ namespace DataAccessLibrary.Entities
         [MaxLength(100)]
         public string Country { get; set; }
 
-        public ICollection<Photo> Photos { get; set; }
+        public ICollection<PhotoModel> Photos { get; set; }
     }
 }
