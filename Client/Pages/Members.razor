@@ -1,12 +1,55 @@
 ﻿@page "/members"
 @attribute [Authorize]
+@inject IMemberService MemberService
+@inject IToastService ToastService
 
 <div class="container">
 
     <h3 class="text-center">Members</h3>
 
+    @if (showError)
+    {
+        <div class="alert alert-danger text-center" role="alert">
+            @errorText
+        </div>
+    }
+    else if (members.Count > 0)
+    {
+        <div class="row">
+            @foreach (MemberModel m in members)
+            {
+                <div class="col-2">
+                    <MemberCard member="m" />
+                </div>
+            }
+        </div>
+    }
+
 </div>
 
 @code {
+    private List<MemberModel> members = new();
+    private bool showError = false;
+    private string errorText;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMembers();
+    }
+
+    private async Task LoadMembers()
+    {
+        Tuple<bool, string, List<MemberModel>> result = await MemberService.GetMembersAsync();
+
+        if (result.Item1)
+        {
+            members = result.Item3;
+        }
+        else
+        {
+            showError = true;
+            errorText = $"Request failed: {result.Item2}";
+            ToastService.ShowError($"Request failed: {result.Item2}");
+        }
+    }
 }
