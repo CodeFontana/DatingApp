@@ -25,7 +25,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<MemberModel>>> GetUsers()
         {
             return Ok(await _userRepository.GetMembersAsync());
