@@ -1,8 +1,10 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -30,27 +32,55 @@ namespace Client.Authentication
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            string token = await _localStorage.GetItemAsync<string>(_config["authTokenStorageKey"]);
-
-            if (string.IsNullOrWhiteSpace(token))
+            try
             {
+                string localToken = await _localStorage.GetItemAsync<string>(_config["authTokenStorageKey"]);
+
+                if (string.IsNullOrWhiteSpace(localToken))
+                {
+                    return _anonymous;
+                }
+
+                JwtSecurityTokenHandler tokenHandler = new();
+                SecurityToken token = tokenHandler.ReadToken(localToken);
+                var tokenExpiryDate = token.ValidTo;
+
+                Console.WriteLine($"Token expires: {tokenExpiryDate.ToLocalTime()}");
+
+                // If there is no valid 'exp' claim then 'ValidTo' returns DateTime.MinValue.
+                if (tokenExpiryDate == DateTime.MinValue)
+                {
+                    Console.WriteLine("Invalid JWT [Missing 'exp' claim].");
+                    return _anonymous;
+                }
+
+                // If the token is in the past then you can't use it.
+                if (tokenExpiryDate < DateTime.UtcNow)
+                {
+                    Console.WriteLine($"Invalid JWT [Token expired on {tokenExpiryDate}].");
+                    return _anonymous;
+                }
+
+                bool isAuthenticated = await NotifyUserAuthenticationAsync(localToken);
+
+                if (isAuthenticated == false)
+                {
+                    return _anonymous;
+                }
+
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", localToken);
+
+                return new AuthenticationState(
+                    new ClaimsPrincipal(
+                        new ClaimsIdentity(
+                            JwtParser.ParseClaimsFromJwt(localToken),
+                            "jwtAuthType")));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
                 return _anonymous;
             }
-
-            bool isAuthenticated = await NotifyUserAuthenticationAsync(token);
-
-            if (isAuthenticated == false)
-            {
-                return _anonymous;
-            }
-
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
-
-            return new AuthenticationState(
-                new ClaimsPrincipal(
-                    new ClaimsIdentity(
-                        JwtParser.ParseClaimsFromJwt(token), 
-                        "jwtAuthType")));
         }
 
         public async Task<bool> NotifyUserAuthenticationAsync(string token)
