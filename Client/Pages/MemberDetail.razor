@@ -5,7 +5,7 @@
 
 <div class="container">
 
-    <h1>@username</h1>
+    <h1>@Username</h1>
 
     @if (showError)
     {
@@ -64,7 +64,7 @@
                             <p>@member.Interests</p>
                         </TabPage>
                         <TabPage Text="Photos">
-                            <p>Photos will go here!</p>
+                            <PhotoGallery Photos="@member.Photos"/>
                         </TabPage>
                         <TabPage Text="Messages">
                             <p>Messages will go here!</p>
@@ -78,7 +78,7 @@
 
 @code {
     [Parameter]
-    public string username { get; set; }
+    public string Username { get; set; }
 
     private MemberModel member = new();
     private bool showError = false;
@@ -86,7 +86,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        Tuple<bool, string, MemberModel> result = await MemberService.GetMemberAsync(username);
+        Tuple<bool, string, MemberModel> result = await MemberService.GetMemberAsync(Username);
 
         if (result.Item1)
         {

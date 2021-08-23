@@ -1,0 +1,55 @@
+﻿<div>
+    <div class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            @for (int i = 0; i < Photos.Count; i++)
+            {
+                <div class="carousel-item @(i == position ? "active":"")">
+                    <img class="img-fluid rounded mx-auto d-block centerstage" src="@Photos[i].Url">
+                </div>
+            }
+        </div>
+        <a class="carousel-control-prev" role="button" data-slide="prev" @onclick="HandlePrev">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" role="button" data-slide="next" @onclick="HandleNext">
+            <span class="carousel-control-next-icon"></span>
+        </a>
+    </div>
+    <div class="text-center">
+        @for (int i = 0; i < Photos.Count; i++)
+        {
+            int buttonIndex = i;
+            <button class="btn mx-2 my-2" type="button" @onclick="() => HandleThumbnailClick(buttonIndex)">
+                <img class="img-thumbnail rounded" src="@Photos[i].Url">
+            </button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public IList<PhotoModel> Photos { get; set; }
+
+    private int position = 0;
+
+    private void HandleNext()
+    {
+        if (position < Photos.Count - 1)
+        {
+            position += 1;
+        }
+    }
+
+    private void HandlePrev()
+    {
+        if (position > 0)
+        {
+            position -= 1;
+        }
+    }
+
+    private void HandleThumbnailClick(int index)
+    {
+        position = index;
+    }
+}
