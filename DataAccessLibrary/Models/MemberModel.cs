@@ -42,6 +42,6 @@ namespace DataAccessLibrary.Models
         [MaxLength(100)]
         public string Country { get; set; }
 
-        public ICollection<PhotoModel> Photos { get; set; }
+        public IList<PhotoModel> Photos { get; set; }
     }
 }
