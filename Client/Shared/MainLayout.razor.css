@@ -1,9 +1,13 @@
-﻿.main {
+﻿.shortnav {
+    margin-top: 100px;
+}
+
+.tallnav {
     margin-top: 100px;
 }
 
 @media (max-width: 768px) {
-    .main {
+    .tallnav {
         margin-top: 220px;
     }
 }

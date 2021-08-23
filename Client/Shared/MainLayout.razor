@@ -13,8 +13,17 @@
 <div class="container-fluid">
     <NavMenu />
 
-    <div class="main">
-        @Body
-    </div>
+    <AuthorizeView>
+        <Authorized>
+            <div class="shortnav">
+                @Body
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <div class="tallnav">
+                @Body
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
 
 </div>
