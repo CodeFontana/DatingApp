@@ -45,8 +45,6 @@ namespace Client.Authentication
                 SecurityToken token = tokenHandler.ReadToken(localToken);
                 var tokenExpiryDate = token.ValidTo;
 
-                Console.WriteLine($"Token expires: {tokenExpiryDate.ToLocalTime()}");
-
                 // If there is no valid 'exp' claim then 'ValidTo' returns DateTime.MinValue.
                 if (tokenExpiryDate == DateTime.MinValue)
                 {
@@ -57,7 +55,7 @@ namespace Client.Authentication
                 // If the token is in the past then you can't use it.
                 if (tokenExpiryDate < DateTime.UtcNow)
                 {
-                    Console.WriteLine($"Invalid JWT [Token expired on {tokenExpiryDate}].");
+                    Console.WriteLine($"Invalid JWT [Token expired on {tokenExpiryDate.ToLocalTime()}].");
                     return _anonymous;
                 }
 
