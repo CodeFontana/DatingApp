@@ -1,4 +1,10 @@
-﻿.card:hover img {
+﻿hr {
+    width: 70%;
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+.card:hover img {
     transform: scale(1.2, 1.2);
     transition-duration: 500ms;
     transition-timing-function: ease-out;

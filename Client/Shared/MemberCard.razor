@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager NavManager
 
 <div class="card mb-4">
-    <div class="card-img-wrapper">
+    <div class="card-img-wrapper mb-2">
         <img class="card-img-top" src="@(string.IsNullOrWhiteSpace(Member.PhotoUrl) ? "./assets/user.png" : Member.PhotoUrl)" alt="@Member.KnownAs" />
         <ul class="list-inline member-icons animate text-center">
             <li class="list-inline-item">
@@ -12,13 +12,14 @@
         </ul>
     </div>
     <div class="card-body p-1">
-        <h6 class="card-title text-center mb-1">
+        <h5 class="card-title text-center mb-1">
             <i class="fa fa-user mr-2" />
             @Member.KnownAs
-        </h6>
-        <p class="card-text text-muted text-center">
+        </h5>
+        <hr />
+        <h6 class="card-text text-muted text-center">
             @Member.City
-        </p>
+        </h6>
     </div>
 </div>
 
