@@ -1,6 +1,6 @@
 ﻿<CascadingValue Value="this">
     <div class="btn-group" role="group">
-        @foreach (TabPage tabPage in Pages)
+        @foreach (TabPage tabPage in pages)
         {
             <button type="button" class="btn @GetButtonClass(tabPage)" @onclick=@(() => ActivatePage(tabPage))>
                 @tabPage.Text
@@ -16,13 +16,14 @@
     public RenderFragment ChildContent { get; set; }
 
     public TabPage ActivePage { get; set; }
-    List<TabPage> Pages = new List<TabPage>();
+
+    List<TabPage> pages = new List<TabPage>();
 
     public void AddPage(TabPage tabPage)
     {
-        Pages.Add(tabPage);
+        pages.Add(tabPage);
 
-        if (Pages.Count == 1)
+        if (pages.Count == 1)
         {
             ActivePage = tabPage;
         }

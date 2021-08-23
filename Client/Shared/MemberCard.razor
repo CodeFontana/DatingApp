@@ -2,7 +2,7 @@
 
 <div class="card mb-4">
     <div class="card-img-wrapper">
-        <img class="card-img-top" src="@member.PhotoUrl" alt="@member.KnownAs" />
+        <img class="card-img-top" src="@Member.PhotoUrl" alt="@Member.KnownAs" />
         <ul class="list-inline member-icons animate text-center">
             <li class="list-inline-item">
                 <button class="btn btn-primary" @onclick="HandleUserClick"><i class="fa fa-user" /></button>
@@ -14,29 +14,20 @@
     <div class="card-body p-1">
         <h6 class="card-title text-center mb-1">
             <i class="fa fa-user mr-2" />
-            @member.KnownAs
+            @Member.KnownAs
         </h6>
         <p class="card-text text-muted text-center">
-            @member.City
+            @Member.City
         </p>
     </div>
 </div>
 
 @code {
     [Parameter]
-    public MemberModel member { get; set; }
+    public MemberModel Member { get; set; }
 
     private void HandleUserClick()
     {
-        // Note: To eliminate an API call, we can set a 'SelectedMember'
-        //       property in the MemberService, which will essentailly
-        //       allow us to pass/share the MemberModel between this
-        //       page and the MemberDetail page.
-        //
-        //       For the moment, I will leave as-is, and let the
-        //       MemberDetail page make the addition request. I need to
-        //       understand the design/direction of the course as I
-        //       teanslate this to Blazor, before I make this change.
-        NavManager.NavigateTo($"/member/{member.Username}");
+        NavManager.NavigateTo($"/member/{Member.Username}");
     }
 }
