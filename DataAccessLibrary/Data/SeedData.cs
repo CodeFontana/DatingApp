@@ -54,7 +54,17 @@ namespace DataAccessLibrary.Data
 
                 AppUser admin = new()
                 {
-                    UserName = "Brian"
+                    UserName = "Brian",
+                    Gender = "male",
+                    DateOfBirth = DateTime.Parse("1984-09-13"),
+                    KnownAs = "Brian",
+                    Created = DateTime.Now,
+                    LastActive = DateTime.Now,
+                    Introduction = "Leave me alone, please.",
+                    LookingFor = "Judy, Piper and Horsie.",
+                    Interests = "C# + ASP.NET Core Blazor",
+                    City = "Center Moriches",
+                    Country = "USA"
                 };
 
                 await userManager.CreateAsync(admin, "Passw0rd123!!");
