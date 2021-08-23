@@ -1,4 +1,8 @@
-﻿.carousel {
+﻿a {
+    background-color: var(--primary);
+}
+
+.carousel {
     margin-bottom: 20px;
 }
 

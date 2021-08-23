@@ -11,3 +11,11 @@
         margin-top: 220px;
     }
 }
+
+@media (max-width: 420px) {
+    .container-fluid {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+}
+

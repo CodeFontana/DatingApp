@@ -1,7 +1,22 @@
-﻿.img-thumbnail {
+﻿div .row {
+    min-width: 375px;
+}
+
+.img-thumbnail {
     margin: 25px;
     width: 85%;
     height: 85%;
+}
+
+.card {
+    border-radius: 6px;
+    box-shadow: 0 0 0 0 rgb(0 0 0 / 5%), 0 2px 3px 0 rgb(0 0 0 / 10%);
+    margin-bottom: 30px;
+}
+
+.card img {
+    border-radius: 6px;
+    box-shadow: 0 0 0 0 rgb(0 0 0 / 5%), 0 2px 3px 0 rgb(0 0 0 / 10%);
 }
 
 .card-body {

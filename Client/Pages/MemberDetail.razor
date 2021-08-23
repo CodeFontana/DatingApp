@@ -20,11 +20,11 @@
                 <div class="card">
                     @if (string.IsNullOrWhiteSpace(member.PhotoUrl))
                     {
-                        <img class="card-img-top img-thumbnail" src="./assets/user.png" alt="@member.KnownAs" />
+                        <img class="card-img-top img-thumbnail mx-auto" src="./assets/user.png" alt="@member.KnownAs" />
                     }
                     else
                     {
-                        <img class="card-img-top img-thumbnail" src="@member.PhotoUrl" alt="@member.KnownAs" />
+                        <img class="card-img-top img-thumbnail mx-auto" src="@member.PhotoUrl" alt="@member.KnownAs" />
                     }
                     <div class="card-body">
                         <strong>Location:</strong>
@@ -44,33 +44,31 @@
                     </div>
                     <div class="card-footer">
                         <div class="btn-group d-flex">
-                            <button class="btn btn-primary">Like</button>
-                            <button class="btn btn-success">Message</button>
+                            <button class="btn btn-primary mx-1 col-6 text-nowrap">Like</button>
+                            <button class="btn btn-success mx-1 col-6 text-nowrap">Message</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-8">
-                <div class="member-tabcontrol">
-                    <TabControl>
-                        <TabPage Text=@($"About {@member.KnownAs}")>
-                            <h4>Description</h4>
-                            <p>@member.Introduction</p>
-                            <h4>Looking for</h4>
-                            <p>@member.LookingFor</p>
-                        </TabPage>
-                        <TabPage Text="Interests">
-                            <h4>Interests</h4>
-                            <p>@member.Interests</p>
-                        </TabPage>
-                        <TabPage Text="Photos">
-                            <PhotoGallery Photos="@member.Photos"/>
-                        </TabPage>
-                        <TabPage Text="Messages">
-                            <p>Messages will go here!</p>
-                        </TabPage>
-                    </TabControl>
-                </div>
+                <TabControl>
+                    <TabPage Text=@($"About {@member.KnownAs}")>
+                        <h4>Description</h4>
+                        <p class="pl-1">@member.Introduction</p>
+                        <h4>Looking for</h4>
+                        <p class="pl-1">@member.LookingFor</p>
+                    </TabPage>
+                    <TabPage Text="Interests">
+                        <h4>Interests</h4>
+                        <p class="pl-1">@member.Interests</p>
+                    </TabPage>
+                    <TabPage Text="Photos">
+                        <PhotoGallery Photos="@member.Photos" />
+                    </TabPage>
+                    <TabPage Text="Messages">
+                        <p>Messages will go here!</p>
+                    </TabPage>
+                </TabControl>
             </div>
         </div>
     }
