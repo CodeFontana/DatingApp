@@ -5,10 +5,10 @@
 
 <h3 class="text-center">Member Login</h3>
 
-@if (showAuthError)
+@if (showError)
 {
     <div class="alert alert-danger" role="alert">
-        @authErrorText
+        @errorText
     </div>
 }
 
@@ -34,8 +34,8 @@
 
 @code {
     private LoginUserModel loginUser = new();
-    private bool showAuthError = false;
-    private string authErrorText;
+    private bool showError = false;
+    private string errorText;
 
     protected override async Task OnInitializedAsync()
     {
@@ -50,8 +50,8 @@
 
     private async Task HandleValidSubmit()
     {
-        showAuthError = false;
-        authErrorText = "";
+        showError = false;
+        errorText = "";
 
         var authResult = await AuthService.LoginAsync(loginUser);
 
@@ -61,8 +61,8 @@
         }
         else
         {
-            authErrorText = $"Login failed: {authResult.Item2}";
-            showAuthError = true;
+            errorText = $"Login failed: {authResult.Item2}";
+            showError = true;
         }
     }
 
