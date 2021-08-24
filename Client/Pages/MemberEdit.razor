@@ -1,0 +1,38 @@
+﻿@page "/member/edit"
+@attribute [Authorize]
+@inject IAuthenticationService AuthService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IMemberService MemberService
+
+<h3 class="text-center">Edit Profile</h3>
+
+@if (showError)
+{
+    <div class="alert alert-danger" role="alert">
+        @errorText
+    </div>
+}
+
+@code {
+    private bool showError = false;
+    private string errorText;
+
+    public MemberModel Member { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        ClaimsPrincipal user = authState.User;
+        Tuple<bool, string, MemberModel> result = await MemberService.GetMemberAsync(user.Identity.Name);
+
+        if (result.Item1)
+        {
+            Member = result.Item3;
+        }
+        else
+        {
+            errorText = result.Item2;
+            showError = true;
+        }
+    }
+}
