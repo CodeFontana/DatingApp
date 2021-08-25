@@ -4,20 +4,112 @@
 @inject AuthenticationStateProvider AuthStateProvider
 @inject IMemberService MemberService
 
-<h3 class="text-center">Edit Profile</h3>
-
 @if (showError)
 {
     <div class="alert alert-danger" role="alert">
         @errorText
     </div>
 }
+else if (member != null)
+{
+    <div class="row">
+        <div class="col-12 col-md-4 text-center">
+            <h1>Your profile</h1>
+        </div>
+        <div class="col-12 col-md-8 text-center">
+            @if (changesMade)
+            {
+                <div class="alert alert-info" role="alert">
+                    <strong>Changes made: </strong>Remember to save your changes!
+                </div>
+            }
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card">
+                @if (string.IsNullOrWhiteSpace(member.PhotoUrl))
+                {
+                    <img class="card-img-top img-thumbnail mx-auto" src="./assets/user.png" alt="@member.KnownAs" />
+                }
+                else
+                {
+                    <img class="card-img-top img-thumbnail mx-auto" src="@member.PhotoUrl" alt="@member.KnownAs" />
+                }
+                <div class="card-body">
+                    <strong>Location:</strong>
+                    <p>@member.City, @member.Country</p>
+                </div>
+                <div class="card-body">
+                    <strong>Age:</strong>
+                    <p>@member.Age</p>
+                </div>
+                <div class="card-body">
+                    <strong>Last active:</strong>
+                    <p>@member.LastActive</p>
+                </div>
+                <div class="card-body">
+                    <strong>Member since:</strong>
+                    <p>@member.Created</p>
+                </div>
+                @if (changesMade)
+                {
+                    <div class="card-footer">
+                        <button class="btn btn-success btn-block">Save Changes</button>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-12 col-md-8">
+            <TabControl>
+                <TabPage Text=@($"About {@member.KnownAs}")>
+                    <EditForm Model="@member" @oninput="(e) => OnProfileUpdated(e)">
+                        <DataAnnotationsValidator />
+
+                        <h4>Description</h4>
+                        <InputTextArea class="form-control" rows="6" @bind-Value="member.Introduction" />
+                        <ValidationMessage For="(() => member.Introduction)" />
+
+                        <h4 class="mt-2">Looking for</h4>
+                        <InputTextArea class="form-control" rows="6" @bind-Value="member.LookingFor" />
+                        <ValidationMessage For="(() => member.LookingFor)" />
+
+                        <h4 class="mt-2">Interests</h4>
+                        <InputTextArea class="form-control" rows="6" @bind-Value="member.Interests" />
+                        <ValidationMessage For="(() => member.Interests)" />
+
+                        <h4 class="mt-2">Location Details:</h4>
+                        <div class="form-inline">
+
+                            <div class="col-6">
+                                <label>City:</label>
+                                <InputText class="form-control userinput" @bind-Value="member.City" />
+                            </div>
+                            
+                            <div class="col-6">
+                                <label>Country:</label>
+                                <InputText class="form-control userinput" @bind-Value="member.Country" />
+                            </div>
+                            
+
+                            <ValidationMessage For="(() => member.City)" />
+                            <ValidationMessage For="(() => member.Country)" />
+
+                        </div>
+
+                    </EditForm>
+                </TabPage>
+                <TabPage Text="Edit Photos">
+                    <p>Photo edit will go here!</p>
+                </TabPage>
+            </TabControl>
+        </div>
+    </div>
+}
 
 @code {
     private bool showError = false;
     private string errorText;
-
-    public MemberModel Member { get; set; }
+    private MemberModel member;
+    private bool changesMade = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -27,12 +119,17 @@
 
         if (result.Item1)
         {
-            Member = result.Item3;
+            member = result.Item3;
         }
         else
         {
             errorText = result.Item2;
             showError = true;
         }
+    }
+
+    private void OnProfileUpdated(ChangeEventArgs e)
+    {
+        changesMade = true;
     }
 }
