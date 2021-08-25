@@ -53,5 +53,20 @@ namespace Client.Services
                 return new Tuple<bool, string, MemberModel>(false, response.Content.ReadAsStringAsync().GetAwaiter().GetResult(), null);
             }
         }
+
+        public async Task<Tuple<bool, string>> UpdateMemberAsync(MemberUpdateModel memberUpdate)
+        {
+            string apiEndpoint = _config["apiLocation"] + _config["usersEndpoint"];
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiEndpoint, memberUpdate);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return new Tuple<bool, string>(true, "OK");
+            }
+            else
+            {
+                return new Tuple<bool, string>(false, response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+            }
+        }
     }
 }

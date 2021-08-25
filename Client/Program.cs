@@ -11,6 +11,7 @@ using Blazored.LocalStorage;
 using Client.Interfaces;
 using Client.Authentication;
 using Client.Services;
+using Client.Helpers;
 
 namespace Client
 {
@@ -23,6 +24,7 @@ namespace Client
 
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddBlazoredToast();
+            builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IRegistrationService, RegistrationService>();

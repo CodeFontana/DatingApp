@@ -9,5 +9,6 @@ namespace Client.Interfaces
     {
         Task<Tuple<bool, string, MemberModel>> GetMemberAsync(string username);
         Task<Tuple<bool, string, List<MemberModel>>> GetMembersAsync();
+        Task<Tuple<bool, string>> UpdateMemberAsync(MemberUpdateModel memberUpdate);
     }
 }
