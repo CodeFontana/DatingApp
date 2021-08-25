@@ -1,8 +1,19 @@
 ﻿@page "/member/edit"
 @attribute [Authorize]
-@inject IAuthenticationService AuthService
 @inject AuthenticationStateProvider AuthStateProvider
+@inject IAuthenticationService AuthService
 @inject IMemberService MemberService
+@inject IToastService ToastService
+
+@*TODO: 
+    As of .NET 5.0, Blazor does not support the prevention
+    of the user from navigating away from a page with
+    unsaved changes.
+
+    For this component, it means the user could make changes
+    and accidentally navigate away from the page without
+    saving them, which would be really annoying.
+*@
 
 @if (showError)
 {
@@ -53,7 +64,7 @@ else if (member != null)
                 @if (changesMade)
                 {
                     <div class="card-footer">
-                        <button class="btn btn-success btn-block">Save Changes</button>
+                        <button class="btn btn-success btn-block" type="submit" form="editForm">Save Changes</button>
                     </div>
                 }
             </div>
@@ -61,7 +72,7 @@ else if (member != null)
         <div class="col-12 col-md-8">
             <TabControl>
                 <TabPage Text=@($"About {@member.KnownAs}")>
-                    <EditForm Model="@member" @oninput="(e) => OnProfileUpdated(e)">
+                    <EditForm id="editForm" Model="@member" edit @oninput="(e) => OnProfileUpdated(e)" OnValidSubmit="HandleValidSubmit">
                         <DataAnnotationsValidator />
 
                         <h4>Description</h4>
@@ -83,12 +94,12 @@ else if (member != null)
                                 <label>City:</label>
                                 <InputText class="form-control userinput" @bind-Value="member.City" />
                             </div>
-                            
+
                             <div class="col-6">
                                 <label>Country:</label>
                                 <InputText class="form-control userinput" @bind-Value="member.Country" />
                             </div>
-                            
+
 
                             <ValidationMessage For="(() => member.City)" />
                             <ValidationMessage For="(() => member.Country)" />
@@ -131,5 +142,11 @@ else if (member != null)
     private void OnProfileUpdated(ChangeEventArgs e)
     {
         changesMade = true;
+    }
+
+    private void HandleValidSubmit()
+    {
+        ToastService.ShowSuccess("Profile updated successfully");
+        changesMade = false;
     }
 }
