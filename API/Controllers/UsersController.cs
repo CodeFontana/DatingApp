@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,6 +37,25 @@ namespace API.Controllers
         public async Task<ActionResult<MemberModel>> GetUser(string username)
         {
             return await _userRepository.GetMemberAsync(username);
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<ActionResult> UpdateUser(MemberUpdateModel memberUpdate)
+        {
+            string username = User.Identity.Name;
+            AppUser user = await _userRepository.GetUserByUsernameAsync(username);
+            _mapper.Map(memberUpdate, user);
+            _userRepository.Update(user);
+
+            if (await _userRepository.SaveAllAsync())
+            {
+                return NoContent();
+            }
+            else
+            {
+                return BadRequest("Failed to update user");
+            }
         }
     }
 }
