@@ -36,8 +36,15 @@ namespace API
         {
             services.AddApplicationServices(_config);
             services.AddControllers();
-            services.AddCors();
             services.AddIdentityServices(_config);
+            services.AddCors(policy =>
+            {
+                policy.AddPolicy("OpenCorsPolicy", options =>
+                    options
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DatingApp API", Version = "v1" });
@@ -78,13 +85,9 @@ namespace API
             }
 
             app.UseHttpsRedirection();
+            app.UseCors("OpenCorsPolicy");
 
             app.UseRouting();
-
-            app.UseCors(builder => builder
-                .WithOrigins("https://localhost:4200")
-                .AllowAnyMethod()
-                .AllowAnyHeader());
 
             app.UseAuthentication();
             app.UseAuthorization();
