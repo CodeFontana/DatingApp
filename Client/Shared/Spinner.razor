@@ -1,32 +1,53 @@
 ﻿@inject SpinnerService SpinnerService
 
-@if (IsVisible)
+@if (isVisible)
 {
-    <div class="spinner-container">
+<div class="spinner-container">
+    @if (spinType == 0)
+    {
         <Spinner_Wave />
-    </div>
+    }
+    else if (spinType == 1)
+    {
+        <Spinner_ChasingDots />
+    }
+    else if (spinType == 2)
+    {
+        <Spinner_ThreeDots />
+    }
+    else if (spinType == 3)
+    {
+        <Spinner_FadingCircle />
+    }
+    else
+    {
+        <Spinner_Wave />
+    }
+</div>
 }
 
 @code
 {
-
-    protected bool IsVisible { get; set; }
+    protected bool isVisible { get; set; }
+    protected int spinType = 0;
 
     protected override void OnInitialized()
     {
         SpinnerService.OnShow += ShowSpinner;
         SpinnerService.OnHide += HideSpinner;
+        Random rnd = new();
+        spinType = rnd.Next(4);
     }
 
     public void ShowSpinner()
     {
-        IsVisible = true;
+        isVisible = true;
         StateHasChanged();
     }
 
     public void HideSpinner()
     {
-        IsVisible = false;
+        isVisible = false;
         StateHasChanged();
     }
 }
