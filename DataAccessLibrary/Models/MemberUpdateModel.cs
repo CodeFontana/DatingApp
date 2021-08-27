@@ -9,6 +9,8 @@ namespace DataAccessLibrary.Models
 {
     public class MemberUpdateModel
     {
+        public string Username { get; set; }
+
         [MaxLength(1000)]
         public string Introduction { get; set; }
 

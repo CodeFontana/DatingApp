@@ -12,6 +12,7 @@ namespace Client.Helpers
         public AutoMapperProfiles()
         {
             CreateMap<MemberModel, MemberUpdateModel>();
+            CreateMap<MemberUpdateModel, MemberModel>();
         }
     }
 }
