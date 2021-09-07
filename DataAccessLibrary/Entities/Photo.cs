@@ -8,14 +8,11 @@ namespace DataAccessLibrary.Entities
     {
         public int Id { get; set; }
 
-        [MaxLength(1000)]
+        [MaxLength(500)]
         public string Url { get; set; }
 
         [Required]
         public bool IsMain { get; set; }
-
-        [MaxLength(50)]
-        public string PublicId { get; set; }
 
         public AppUser AppUser { get; set; }
 
