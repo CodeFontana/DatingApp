@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Models
 {
-    public class LoginUserModel : ILoginUserModel
+    public class LoginUserModel
     {
         [Required(ErrorMessage = "Username required.")]
         public string Username { get; set; }

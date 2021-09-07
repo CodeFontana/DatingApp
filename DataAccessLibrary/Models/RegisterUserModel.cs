@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Models
 {
-    public class RegisterUserModel : IRegisterUserModel
+    public class RegisterUserModel
     {
         [Required(ErrorMessage = "Username required.")]
         public string Username { get; set; }

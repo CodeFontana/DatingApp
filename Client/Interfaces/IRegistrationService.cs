@@ -7,6 +7,6 @@ namespace Client.Interfaces
 {
     public interface IRegistrationService
     {
-        Task<ServiceResponseModel<AuthUserModel>> RegisterAsync(IRegisterUserModel registerUser);
+        Task<ServiceResponseModel<AuthUserModel>> RegisterAsync(RegisterUserModel registerUser);
     }
 }

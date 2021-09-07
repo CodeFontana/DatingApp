@@ -27,7 +27,7 @@ namespace Client.Services
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
 
-        public async Task<ServiceResponseModel<AuthUserModel>> RegisterAsync(IRegisterUserModel registerUser)
+        public async Task<ServiceResponseModel<AuthUserModel>> RegisterAsync(RegisterUserModel registerUser)
         {
             string apiEndpoint = _config["apiLocation"] + _config["registerEndpoint"];
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, registerUser);
