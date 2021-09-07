@@ -1,6 +1,7 @@
 ﻿using Client.Authentication;
 using Client.Interfaces;
 using DataAccessLibrary.Interfaces;
+using DataAccessLibrary.Models;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -16,27 +17,21 @@ namespace Client.Services
     {
         private readonly IConfiguration _config;
         private readonly HttpClient _httpClient;
+        private readonly JsonSerializerOptions _options;
 
         public RegistrationService(IConfiguration config,
                                    HttpClient httpClient)
         {
             _config = config;
             _httpClient = httpClient;
+            _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
 
-        public async Task<Tuple<bool, string>> RegisterAsync(IRegisterUserModel registerUser)
+        public async Task<ServiceResponseModel<AuthUserModel>> RegisterAsync(IRegisterUserModel registerUser)
         {
             string apiEndpoint = _config["apiLocation"] + _config["registerEndpoint"];
-            HttpResponseMessage regResult = await _httpClient.PostAsJsonAsync(apiEndpoint, registerUser);
-
-            if (regResult.IsSuccessStatusCode)
-            {
-                return new Tuple<bool, string>(true, "User created successfully.");
-            }
-            else
-            {
-                return new Tuple<bool, string>(false, regResult.Content.ReadAsStringAsync().GetAwaiter().GetResult());
-            }
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, registerUser);
+            return await response.Content.ReadFromJsonAsync<ServiceResponseModel<AuthUserModel>>(_options);
         }
     }
 }

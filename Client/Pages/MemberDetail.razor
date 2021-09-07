@@ -84,17 +84,17 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        Tuple<bool, string, MemberModel> result = await MemberService.GetMemberAsync(Username);
+        ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(Username);
 
-        if (result.Item1)
+        if (result.Success)
         {
-            member = result.Item3;
+            member = result.Data;
         }
         else
         {
             showError = true;
-            errorText = $"Request failed: {result.Item2}";
-            ToastService.ShowError($"Request failed: {result.Item2}");
+            errorText = $"Request failed: {result.Message}";
+            ToastService.ShowError($"Request failed: {result.Message}");
         }
     }
 }

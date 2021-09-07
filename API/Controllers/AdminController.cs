@@ -1,8 +1,10 @@
-﻿using DataAccessLibrary.Entities;
+﻿using API.Interfaces;
+using API.Services;
+using DataAccessLibrary.Entities;
+using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,67 +17,59 @@ namespace API.Controllers
     [Authorize]
     public class AdminController : ControllerBase
     {
-        private readonly UserManager<AppUser> _userManager;
+        private readonly IAdminService _adminService;
 
-        public AdminController(UserManager<AppUser> userManager)
+        public AdminController(IAdminService adminService)
         {
-            _userManager = userManager;
+            _adminService = adminService;
         }
 
         [HttpGet("users-with-roles")]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<ActionResult> GetUsersWithRoles()
+        public async Task<IActionResult> GetUsersWithRoles()
         {
-            var users = await _userManager.Users
-                .Include(r => r.UserRoles)
-                .ThenInclude(r => r.Role)
-                .OrderBy(u => u.UserName)
-                .Select(u => new
-                {
-                    u.Id,
-                    Username = u.UserName,
-                    Roles = u.UserRoles.Select(r => r.Role.Name).ToList()
-                })
-                .ToListAsync();
+            ServiceResponseModel<List<UserWithRolesModel>> response = await _adminService.GetUsersWithRoles();
 
-            return Ok(User);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(response);
+            }
         }
 
         [HttpPost("edit-roles/{username}")]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<ActionResult> EditRoles(string username, [FromQuery] string roles)
+        public async Task<IActionResult> EditRoles(string username, [FromQuery] string roles)
         {
-            string[] selectedRoles = roles.Split(",").ToArray();
-            AppUser user = await _userManager.FindByNameAsync(username);
+            ServiceResponseModel<IList<string>> response = await _adminService.EditRoles(username, roles);
 
-            if (user == null)
+            if (response.Success)
             {
-                return NotFound($"Could not find user [{username}].");
+                return Ok(response);
             }
-
-            IList<string> userRoles = await _userManager.GetRolesAsync(user);
-            IdentityResult result = await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
-
-            if (result.Succeeded == false)
+            else
             {
-                return BadRequest("Failed to add user to roles.");
+                return BadRequest(response);
             }
-
-            result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
-
-            if (result.Succeeded == false)
-            {
-                return BadRequest("Failed to remove user from roles.");
-            }
-
-            return Ok(await _userManager.GetRolesAsync(user));
         }
 
         [HttpGet("photos-to-moderate")]
         [Authorize(Policy = "ModeratePhotoRole")]
-        public ActionResult GetPhotosForModeration()
+        public IActionResult GetPhotosForModeration()
         {
-            return Ok("Admins or moderators can see this.");
+            ServiceResponseModel<string> response = _adminService.GetPhotosForModeration();
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(response);
+            }
         }
     }
 }

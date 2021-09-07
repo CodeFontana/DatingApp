@@ -7,7 +7,7 @@ namespace Client.Interfaces
 {
     public interface IAuthenticationService
     {
-        Task<Tuple<AuthUserModel, string>> LoginAsync(LoginUserModel loginUser);
+        Task<ServiceResponseModel<AuthUserModel>> LoginAsync(LoginUserModel loginUser);
         Task LogoutAsync();
     }
 }

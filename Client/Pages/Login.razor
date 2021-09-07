@@ -53,15 +53,15 @@
         showError = false;
         errorText = "";
 
-        var authResult = await AuthService.LoginAsync(loginUser);
+        ServiceResponseModel<AuthUserModel> result = await AuthService.LoginAsync(loginUser);
 
-        if (authResult.Item1 != null)
+        if (result.Success)
         {
             NavManager.NavigateTo("/members");
         }
         else
         {
-            errorText = $"Login failed: {authResult.Item2}";
+            errorText = $"Login failed: {result.Message}";
             showError = true;
         }
     }

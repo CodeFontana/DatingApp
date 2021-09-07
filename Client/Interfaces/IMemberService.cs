@@ -7,8 +7,8 @@ namespace Client.Interfaces
 {
     public interface IMemberService
     {
-        Task<Tuple<bool, string, MemberModel>> GetMemberAsync(string username);
-        Task<Tuple<bool, string, List<MemberModel>>> GetMembersAsync();
-        Task<Tuple<bool, string>> UpdateMemberAsync(MemberUpdateModel memberUpdate);
+        Task<ServiceResponseModel<MemberModel>> GetMemberAsync(string username);
+        Task<ServiceResponseModel<IEnumerable<MemberModel>>> GetMembersAsync();
+        Task<ServiceResponseModel<string>> UpdateMemberAsync(MemberUpdateModel memberUpdate);
     }
 }

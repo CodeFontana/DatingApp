@@ -136,9 +136,9 @@ else if (member != null)
 
     private async Task HandleValidSubmit()
     {
-        Tuple<bool, string> result = await MemberService.UpdateMemberAsync(memberUpdate);
+        ServiceResponseModel<string> result = await MemberService.UpdateMemberAsync(memberUpdate);
 
-        if (result.Item1)
+        if (result.Success)
         {
             ToastService.ShowSuccess("Profile updated successfully");
             changesMade = false;
@@ -147,8 +147,8 @@ else if (member != null)
         else
         {
             showError = true;
-            errorText = $"Profile update failed: {result.Item2}";
-            ToastService.ShowError($"Profile update failed: {result.Item2}");
+            errorText = $"Profile update failed: {result.Message}";
+            ToastService.ShowError($"Profile update failed: {result.Message}");
         }
     }
 
@@ -156,16 +156,16 @@ else if (member != null)
     {
         AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
         ClaimsPrincipal user = authState.User;
-        Tuple<bool, string, MemberModel> result = await MemberService.GetMemberAsync(user.Identity.Name);
+        ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(user.Identity.Name);
 
-        if (result.Item1)
+        if (result.Success)
         {
-            member = result.Item3;
+            member = result.Data;
             Mapper.Map(member, memberUpdate);
         }
         else
         {
-            errorText = result.Item2;
+            errorText = result.Message;
             showError = true;
         }
     }

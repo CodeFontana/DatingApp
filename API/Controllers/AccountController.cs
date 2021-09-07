@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
-using DataAccessLibrary.Entities;
-using API.Interfaces;
 using DataAccessLibrary.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using API.Interfaces;
 
 namespace API.Controllers
 {
@@ -18,86 +15,43 @@ namespace API.Controllers
     [Authorize]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
-        private readonly ITokenService _tokenService;
+        private readonly IAccountService _accountService;
 
-        public AccountController(
-            UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager,
-            ITokenService tokenService)
+        public AccountController(IAccountService accountService)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _tokenService = tokenService;
+            _accountService = accountService;
         }
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<ActionResult<AuthUserModel>> Register(RegisterUserModel registerUser)
+        public async Task<IActionResult> Register(RegisterUserModel registerUser)
         {
-            if (await UserExists(registerUser.Username))
+            ServiceResponseModel<AuthUserModel> response = await _accountService.Register(registerUser);
+
+            if (response.Success)
             {
-                return BadRequest("Username is taken.");
+                return Ok(response);
             }
-
-            AppUser user = new()
+            else
             {
-                UserName = registerUser.Username
-            };
-
-            IdentityResult result = await _userManager.CreateAsync(user, registerUser.Password);
-
-            if (result.Succeeded == false)
-            {
-                return BadRequest(result.Errors);
+                return BadRequest(response);
             }
-
-            IdentityResult roleResult = await _userManager.AddToRoleAsync(user, "Member");
-
-            if (roleResult.Succeeded == false)
-            {
-                await _userManager.DeleteAsync(user);
-                return BadRequest(result.Errors);
-            }
-
-            return new AuthUserModel
-            {
-                Username = user.UserName,
-                Token = await _tokenService.CreateTokenAsync(user)
-            };
         }
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<ActionResult<AuthUserModel>> Login(LoginUserModel loginUser)
+        public async Task<IActionResult> Login(LoginUserModel loginUser)
         {
-            AppUser user = await _userManager.Users
-                .SingleOrDefaultAsync(u => u.UserName == loginUser.Username.ToLower());
+            ServiceResponseModel<AuthUserModel> response = await _accountService.Login(loginUser);
 
-            if (user == null)
+            if (response.Success)
             {
-                return Unauthorized("Invalid username");
+                return Ok(response);
             }
-
-            Microsoft.AspNetCore.Identity.SignInResult result = 
-                await _signInManager.CheckPasswordSignInAsync(user, loginUser.Password, false);
-
-            if (result.Succeeded == false)
+            else
             {
-                return Unauthorized("Invalid password");
+                return Unauthorized(response);
             }
-
-            return new AuthUserModel
-            {
-                Username = user.UserName,
-                Token = await _tokenService.CreateTokenAsync(user)
-            };
-        }
-
-        private async Task<bool> UserExists(string username)
-        {
-            return await _userManager.Users.AnyAsync(e => e.UserName == username.ToLower());
         }
     }
 }

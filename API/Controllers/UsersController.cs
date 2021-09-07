@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using DataAccessLibrary.Entities;
-using DataAccessLibrary.Interfaces;
+using API.Interfaces;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,45 +14,56 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
+        private readonly IUsersService _usersService;
 
-        public UsersController(IUserRepository userRepository, IMapper mapper)
+        public UsersController(IUsersService usersService)
         {
-            _userRepository = userRepository;
-            _mapper = mapper;
+            _usersService = usersService;
         }
 
         [HttpGet]
-        [Authorize]
-        public async Task<ActionResult<IEnumerable<MemberModel>>> GetUsers()
+        public async Task<IActionResult> GetUsers()
         {
-            return Ok(await _userRepository.GetMembersAsync());
-        }
+            ServiceResponseModel<IEnumerable<MemberModel>> response = await _usersService.GetUsers();
 
-        [HttpGet("{username}")]
-        [Authorize]
-        public async Task<ActionResult<MemberModel>> GetUser(string username)
-        {
-            return await _userRepository.GetMemberAsync(username);
-        }
-
-        [HttpPut]
-        [Authorize]
-        public async Task<ActionResult> UpdateUser(MemberUpdateModel memberUpdate)
-        {
-            string username = User.Identity.Name;
-            AppUser user = await _userRepository.GetUserByUsernameAsync(username);
-            _mapper.Map(memberUpdate, user);
-            _userRepository.Update(user);
-
-            if (await _userRepository.SaveAllAsync())
+            if (response.Success)
             {
-                return NoContent();
+                return Ok(response);
             }
             else
             {
-                return BadRequest("Failed to update user");
+                return BadRequest(response);
+            }
+        }
+
+        [HttpGet("{username}")]
+        public async Task<IActionResult> GetUser(string username)
+        {
+            ServiceResponseModel<MemberModel> response = await _usersService.GetUser(username);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(response);
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser(MemberUpdateModel memberUpdate)
+        {
+            string username = User.Identity.Name;
+            ServiceResponseModel<string> response = await _usersService.UpdateUser(username, memberUpdate);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(response);
             }
         }
     }

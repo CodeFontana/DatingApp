@@ -51,28 +51,28 @@
         showRegError = false;
         regErrorText = "";
 
-        Tuple<bool, string> regResult = await RegService.RegisterAsync(registerUser);
+        ServiceResponseModel<AuthUserModel> regResult = await RegService.RegisterAsync(registerUser);
 
-        if (regResult.Item1)
+        if (regResult.Success)
         {
-            var authResult = await AuthService.LoginAsync(new() { Username = registerUser.Username, Password = registerUser.Password });
+            ServiceResponseModel<AuthUserModel> authResult = await AuthService.LoginAsync(new() { Username = registerUser.Username, Password = registerUser.Password });
 
-            if (authResult.Item1 != null)
+            if (authResult.Success)
             {
                 NavManager.NavigateTo("/members");
             }
             else
             {
                 showRegError = true;
-                regErrorText = $"Login failed: {authResult.Item2}";
-                ToastService.ShowError($"Login failed: {authResult.Item2}");
+                regErrorText = $"Login failed: {authResult.Message}";
+                ToastService.ShowError($"Login failed: {authResult.Message}");
             }
         }
         else
         {
             showRegError = true;
-            regErrorText = $"Registration failed: {regResult.Item2}";
-            ToastService.ShowError($"Registration failed: {regResult.Item2}");
+            regErrorText = $"Registration failed: {regResult.Message}";
+            ToastService.ShowError($"Registration failed: {regResult.Message}");
         }
 
         registerUser = new();

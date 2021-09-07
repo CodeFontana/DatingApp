@@ -31,22 +31,18 @@ namespace Client.Authentication
             _authStateProvider = authStateProvider;
         }
 
-        public async Task<Tuple<AuthUserModel, string>> LoginAsync(LoginUserModel loginUser)
+        public async Task<ServiceResponseModel<AuthUserModel>> LoginAsync(LoginUserModel loginUser)
         {
             string apiEndpoint = _config["apiLocation"] + _config["loginEndpoint"];
-            HttpResponseMessage authResult = await _httpClient.PostAsJsonAsync(apiEndpoint, loginUser);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, loginUser);
+            ServiceResponseModel<AuthUserModel> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<AuthUserModel>>(_options);
 
-            if (authResult.IsSuccessStatusCode)
+            if (result.Success)
             {
-                string authContent = await authResult.Content.ReadAsStringAsync();
-                AuthUserModel result = JsonSerializer.Deserialize<AuthUserModel>(authContent, _options);
-                await ((AuthStateProvider)_authStateProvider).NotifyUserAuthenticationAsync(result.Token);
-                return new Tuple<AuthUserModel, string>(result, "Login successful");
+                await ((AuthStateProvider)_authStateProvider).NotifyUserAuthenticationAsync(result.Data.Token);
             }
-            else
-            {
-                return new Tuple<AuthUserModel, string>(null, authResult.ReasonPhrase);
-            }
+
+            return result;
         }
 
         public async Task LogoutAsync()

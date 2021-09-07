@@ -39,17 +39,17 @@
 
     private async Task LoadMembers()
     {
-        Tuple<bool, string, List<MemberModel>> result = await MemberService.GetMembersAsync();
+        ServiceResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync();
 
-        if (result.Item1)
+        if (result.Success)
         {
-            members = result.Item3;
+            members = result.Data.ToList();
         }
         else
         {
             showError = true;
-            errorText = $"Request failed: {result.Item2}";
-            ToastService.ShowError($"Request failed: {result.Item2}");
+            errorText = $"Request failed: {result.Message}";
+            ToastService.ShowError($"Request failed: {result.Message}");
         }
     }
 }
