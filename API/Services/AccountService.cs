@@ -35,7 +35,6 @@ namespace API.Services
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = $"Username is taken [{registerUser.Username}]";
-                    Console.WriteLine($"Username is taken [{registerUser.Username}]");
                     return serviceResponse;
                 }
 
@@ -50,8 +49,6 @@ namespace API.Services
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = $"Failed to register user [{user.UserName}]";
-                    Console.WriteLine(result.Errors);
-                    Console.WriteLine($"Failed to create user [{user.UserName}]");
                     return serviceResponse;
                 }
 
@@ -62,8 +59,6 @@ namespace API.Services
                     await _userManager.DeleteAsync(user);
                     serviceResponse.Success = false;
                     serviceResponse.Message = $"Failed to register user [{user.UserName}]";
-                    Console.WriteLine(result.Errors);
-                    Console.WriteLine($"Failed to add user [{user.UserName}] to role [Member]");
                     return serviceResponse;
                 }
 
@@ -74,14 +69,12 @@ namespace API.Services
                     Token = await _tokenService.CreateTokenAsync(user)
                 };
                 serviceResponse.Message = $"Successfully registered user [{user.UserName}]";
-                Console.WriteLine($"Successfully registered user [{user.UserName}]");
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = $"Failed to register user [{registerUser.Username}]";
                 Console.WriteLine(e.Message);
-                Console.WriteLine($"Failed to register user [{registerUser.Username}]");
             }
 
             return serviceResponse;
@@ -100,7 +93,6 @@ namespace API.Services
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = $"Invalid username [{loginUser.Username}]";
-                    Console.WriteLine($"Invalid username [{loginUser.Username}]");
                     return serviceResponse;
                 }
 
@@ -111,7 +103,6 @@ namespace API.Services
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "Invalid password";
-                    Console.WriteLine("Invalid password");
                     return serviceResponse;
                 }
 
@@ -122,14 +113,12 @@ namespace API.Services
                     Token = await _tokenService.CreateTokenAsync(user)
                 };
                 serviceResponse.Message = $"Successfully authenticated user [{user.UserName}]";
-                Console.WriteLine($"Successfully authenticated user [{user.UserName}]");
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = e.Message;
                 Console.WriteLine(e.Message);
-                Console.WriteLine($"Failed to login user [{loginUser.Username}]");
             }
 
             return serviceResponse;

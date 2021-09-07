@@ -30,14 +30,12 @@ namespace API.Services
                 serviceResponse.Success = true;
                 serviceResponse.Data = await _userRepository.GetMembersAsync();
                 serviceResponse.Message = "Successfully listed users";
-                Console.WriteLine("Successfully listed users");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine("Failed to list users");
                 serviceResponse.Success = false;
                 serviceResponse.Message = "Failed to list users";
+                Console.WriteLine(e.Message);
             }
 
             return serviceResponse;
@@ -52,14 +50,12 @@ namespace API.Services
                 serviceResponse.Success = true;
                 serviceResponse.Data = await _userRepository.GetMemberAsync(username);
                 serviceResponse.Message = $"Successfully retrieved user [{username}]";
-                Console.WriteLine($"Successfully retrieved user [{username}]");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine($"Failed to get user [{username}]");
                 serviceResponse.Success = false;
                 serviceResponse.Message = $"Failed to get user [{username}]";
+                Console.WriteLine(e.Message);
             }
 
             return serviceResponse;
@@ -80,22 +76,19 @@ namespace API.Services
                     serviceResponse.Success = true;
                     serviceResponse.Data = $"Successfully updated user [{username}]";
                     serviceResponse.Message = $"Successfully updated user [{username}]";
-                    Console.WriteLine($"Successfully updated user [{username}]");
                 }
                 else
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Data = $"Failed to update user [{username}]";
                     serviceResponse.Message = $"Failed to update user [{username}]";
-                    Console.WriteLine($"Failed to update user [{username}]");
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine($"Failed to update user [{memberUpdate.Username}]");
                 serviceResponse.Success = false;
                 serviceResponse.Message = $"Failed to update user [{memberUpdate.Username}]";
+                Console.WriteLine(e.Message);
             }
 
             return serviceResponse;

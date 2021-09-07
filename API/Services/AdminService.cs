@@ -51,14 +51,12 @@ namespace API.Services
 
                 serviceResponse.Success = true;
                 serviceResponse.Message = "Successfully listed User-Role relationships";
-                Console.WriteLine("Successfully listed User-Role relationships");
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = "Failed to get list of User-Role relationship";
                 Console.WriteLine(e.Message);
-                Console.WriteLine("Failed to get list of User-Role relationship");
             }
 
             return serviceResponse;
@@ -77,7 +75,6 @@ namespace API.Services
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = $"Could not find user [{username}].";
-                    Console.WriteLine($"Could not find user [{username}].");
                     return serviceResponse;
                 }
 
@@ -88,7 +85,6 @@ namespace API.Services
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = $"Failed to add user [{username}] to roles [{selectedRoles.Except(userRoles)}]";
-                    Console.WriteLine($"Failed to add user [{username}] to roles [{selectedRoles.Except(userRoles)}]");
                     return serviceResponse;
                 }
 
@@ -98,21 +94,18 @@ namespace API.Services
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = $"Failed to remove user [{username}] from roles [{userRoles.Except(selectedRoles)}]";
-                    Console.WriteLine($"Failed to remove user [{username}] from roles [{userRoles.Except(selectedRoles)}]");
                     return serviceResponse;
                 }
 
                 serviceResponse.Success = true;
                 serviceResponse.Data = await _userManager.GetRolesAsync(user);
                 serviceResponse.Message = $"Successfully editted roles for user [{username}]";
-                Console.WriteLine($"Successfully editted roles for user [{username}]");
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = $"Failed to add user [{username}] to roles [{roles}]";
                 Console.WriteLine(e.Message);
-                Console.WriteLine($"Failed to add user [{username}] to roles [{roles}]");
             }
 
             return serviceResponse;
@@ -134,7 +127,6 @@ namespace API.Services
                 serviceResponse.Success = false;
                 serviceResponse.Message = "Failed to get photos for moderation";
                 Console.WriteLine(e.Message);
-                Console.WriteLine("Failed to get photos for moderation");
             }
 
             return serviceResponse;
