@@ -8,6 +8,6 @@ namespace API.Interfaces
     {
         Task<ServiceResponseModel<IList<string>>> EditRoles(string username, string roles);
         ServiceResponseModel<string> GetPhotosForModeration();
-        Task<ServiceResponseModel<List<UserWithRolesModel>>> GetUsersWithRoles();
+        Task<ServiceResponseModel<List<UserWithRolesModel>>> GetUsersWithRoles(string requestor);
     }
 }

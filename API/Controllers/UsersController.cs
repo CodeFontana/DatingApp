@@ -28,7 +28,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            ServiceResponseModel<IEnumerable<MemberModel>> response = await _usersService.GetUsers();
+            ServiceResponseModel<IEnumerable<MemberModel>> response = await _usersService.GetUsers(User.Identity.Name);
 
             if (response.Success)
             {
@@ -43,7 +43,7 @@ namespace API.Controllers
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUser(string username)
         {
-            ServiceResponseModel<MemberModel> response = await _usersService.GetUser(username);
+            ServiceResponseModel<MemberModel> response = await _usersService.GetUser(username, User.Identity.Name);
 
             if (response.Success)
             {

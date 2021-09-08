@@ -28,7 +28,7 @@ namespace API.Controllers
         [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> GetUsersWithRoles()
         {
-            ServiceResponseModel<List<UserWithRolesModel>> response = await _adminService.GetUsersWithRoles();
+            ServiceResponseModel<List<UserWithRolesModel>> response = await _adminService.GetUsersWithRoles(User.Identity.Name);
 
             if (response.Success)
             {

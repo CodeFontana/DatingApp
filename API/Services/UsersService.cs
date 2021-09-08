@@ -24,7 +24,7 @@ namespace API.Services
             _logger = logger;
         }
 
-        public async Task<ServiceResponseModel<IEnumerable<MemberModel>>> GetUsers()
+        public async Task<ServiceResponseModel<IEnumerable<MemberModel>>> GetUsers(string requestor)
         {
             ServiceResponseModel<IEnumerable<MemberModel>> serviceResponse = new();
 
@@ -32,13 +32,13 @@ namespace API.Services
             {
                 serviceResponse.Success = true;
                 serviceResponse.Data = await _userRepository.GetMembersAsync();
-                serviceResponse.Message = "Successfully listed users";
+                serviceResponse.Message = $"Successfully listed users for user [{requestor}]";
                 _logger.LogInformation(serviceResponse.Message);
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = "Failed to list users";
+                serviceResponse.Message = $"Failed to list users for user [{requestor}]";
                 _logger.LogError(serviceResponse.Message);
                 _logger.LogError(e.Message);
             }
@@ -46,7 +46,7 @@ namespace API.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponseModel<MemberModel>> GetUser(string username)
+        public async Task<ServiceResponseModel<MemberModel>> GetUser(string username, string requestor)
         {
             ServiceResponseModel<MemberModel> serviceResponse = new();
 
@@ -54,13 +54,13 @@ namespace API.Services
             {
                 serviceResponse.Success = true;
                 serviceResponse.Data = await _userRepository.GetMemberAsync(username);
-                serviceResponse.Message = $"Successfully retrieved user [{username}]";
+                serviceResponse.Message = $"Successfully retrieved [{username}] for user [{requestor}]";
                 _logger.LogInformation(serviceResponse.Message);
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = $"Failed to get user [{username}]";
+                serviceResponse.Message = $"Failed to retrieve [{username}] for user [{requestor}]";
                 _logger.LogError(serviceResponse.Message);
                 _logger.LogError(e.Message);
             }

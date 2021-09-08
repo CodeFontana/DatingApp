@@ -22,7 +22,7 @@ namespace API.Services
             _logger = logger;
         }
 
-        public async Task<ServiceResponseModel<List<UserWithRolesModel>>> GetUsersWithRoles()
+        public async Task<ServiceResponseModel<List<UserWithRolesModel>>> GetUsersWithRoles(string requestor)
         {
             ServiceResponseModel<List<UserWithRolesModel>> serviceResponse = new();
 
@@ -53,13 +53,13 @@ namespace API.Services
                 }
 
                 serviceResponse.Success = true;
-                serviceResponse.Message = "Successfully listed User-Role relationships";
+                serviceResponse.Message = $"Successfully listed User-Role relationships for user [{requestor}]";
                 _logger.LogInformation(serviceResponse.Message);
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = "Failed to get list of User-Role relationship";
+                serviceResponse.Message = $"Failed to get list of User-Role relationship for user [{requestor}]";
                 _logger.LogError(serviceResponse.Message);
                 _logger.LogError(e.Message);
             }
