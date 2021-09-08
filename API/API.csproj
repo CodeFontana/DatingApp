@@ -25,4 +25,8 @@
     <ProjectReference Include="..\DataAccessLibrary\DataAccessLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\members\" />
+  </ItemGroup>
+
 </Project>
