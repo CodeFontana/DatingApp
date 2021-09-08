@@ -1,4 +1,5 @@
-﻿using DataAccessLibrary.Entities;
+﻿using API.Interfaces;
+using DataAccessLibrary.Entities;
 using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Hosting;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace API.Services
 {
-    public class PhotoService
+    public class PhotoService : IPhotoService
     {
         private readonly IWebHostEnvironment _env;
         private readonly IUserRepository _userRepository;

@@ -17,9 +17,9 @@ namespace API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUsersService _usersService;
-        private readonly PhotoService _photoService; // Change to interface later!
+        private readonly IPhotoService _photoService;
 
-        public UsersController(IUsersService usersService, PhotoService photoService)
+        public UsersController(IUsersService usersService, IPhotoService photoService)
         {
             _usersService = usersService;
             _photoService = photoService;
