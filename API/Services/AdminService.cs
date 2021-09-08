@@ -3,6 +3,7 @@ using DataAccessLibrary.Entities;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,12 @@ namespace API.Services
     public class AdminService : IAdminService
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly ILogger<AdminService> _logger;
 
-        public AdminService(UserManager<AppUser> userManager)
+        public AdminService(UserManager<AppUser> userManager, ILogger<AdminService> logger)
         {
             _userManager = userManager;
+            _logger = logger;
         }
 
         public async Task<ServiceResponseModel<List<UserWithRolesModel>>> GetUsersWithRoles()
@@ -51,12 +54,14 @@ namespace API.Services
 
                 serviceResponse.Success = true;
                 serviceResponse.Message = "Successfully listed User-Role relationships";
+                _logger.LogInformation(serviceResponse.Message);
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = "Failed to get list of User-Role relationship";
-                Console.WriteLine(e.Message);
+                _logger.LogError(serviceResponse.Message);
+                _logger.LogError(e.Message);
             }
 
             return serviceResponse;
@@ -75,6 +80,7 @@ namespace API.Services
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = $"Could not find user [{username}].";
+                    _logger.LogError(serviceResponse.Message);
                     return serviceResponse;
                 }
 
@@ -85,6 +91,7 @@ namespace API.Services
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = $"Failed to add user [{username}] to roles [{selectedRoles.Except(userRoles)}]";
+                    _logger.LogError(serviceResponse.Message);
                     return serviceResponse;
                 }
 
@@ -94,18 +101,21 @@ namespace API.Services
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = $"Failed to remove user [{username}] from roles [{userRoles.Except(selectedRoles)}]";
+                    _logger.LogError(serviceResponse.Message);
                     return serviceResponse;
                 }
 
                 serviceResponse.Success = true;
                 serviceResponse.Data = await _userManager.GetRolesAsync(user);
                 serviceResponse.Message = $"Successfully editted roles for user [{username}]";
+                _logger.LogInformation(serviceResponse.Message);
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = $"Failed to add user [{username}] to roles [{roles}]";
-                Console.WriteLine(e.Message);
+                _logger.LogError(serviceResponse.Message);
+                _logger.LogError(e.Message);
             }
 
             return serviceResponse;
@@ -120,13 +130,14 @@ namespace API.Services
                 serviceResponse.Success = true;
                 serviceResponse.Data = "TODO: Admins or moderators can see this";
                 serviceResponse.Message = "TODO: Admins or moderators can see this";
-
+                _logger.LogInformation(serviceResponse.Message);
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = "Failed to get photos for moderation";
-                Console.WriteLine(e.Message);
+                _logger.LogError(serviceResponse.Message);
+                _logger.LogError(e.Message);
             }
 
             return serviceResponse;

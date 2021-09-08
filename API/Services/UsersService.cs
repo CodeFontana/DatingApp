@@ -3,6 +3,7 @@ using AutoMapper;
 using DataAccessLibrary.Entities;
 using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,13 @@ namespace API.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<UsersService> _logger;
 
-        public UsersService(IUserRepository userRepository, IMapper mapper)
+        public UsersService(IUserRepository userRepository, IMapper mapper, ILogger<UsersService> logger)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<ServiceResponseModel<IEnumerable<MemberModel>>> GetUsers()
@@ -30,12 +33,14 @@ namespace API.Services
                 serviceResponse.Success = true;
                 serviceResponse.Data = await _userRepository.GetMembersAsync();
                 serviceResponse.Message = "Successfully listed users";
+                _logger.LogInformation(serviceResponse.Message);
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = "Failed to list users";
-                Console.WriteLine(e.Message);
+                _logger.LogError(serviceResponse.Message);
+                _logger.LogError(e.Message);
             }
 
             return serviceResponse;
@@ -50,12 +55,14 @@ namespace API.Services
                 serviceResponse.Success = true;
                 serviceResponse.Data = await _userRepository.GetMemberAsync(username);
                 serviceResponse.Message = $"Successfully retrieved user [{username}]";
+                _logger.LogInformation(serviceResponse.Message);
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = $"Failed to get user [{username}]";
-                Console.WriteLine(e.Message);
+                _logger.LogError(serviceResponse.Message);
+                _logger.LogError(e.Message);
             }
 
             return serviceResponse;
@@ -76,19 +83,22 @@ namespace API.Services
                     serviceResponse.Success = true;
                     serviceResponse.Data = $"Successfully updated user [{username}]";
                     serviceResponse.Message = $"Successfully updated user [{username}]";
+                    _logger.LogInformation(serviceResponse.Message);
                 }
                 else
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Data = $"Failed to update user [{username}]";
                     serviceResponse.Message = $"Failed to update user [{username}]";
+                    _logger.LogError(serviceResponse.Message);
                 }
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = $"Failed to update user [{memberUpdate.Username}]";
-                Console.WriteLine(e.Message);
+                _logger.LogError(serviceResponse.Message);
+                _logger.LogError(e.Message);
             }
 
             return serviceResponse;

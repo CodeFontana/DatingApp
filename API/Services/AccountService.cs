@@ -3,6 +3,7 @@ using DataAccessLibrary.Entities;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +16,17 @@ namespace API.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
+        private readonly ILogger<AccountService> _logger;
 
         public AccountService(UserManager<AppUser> userManager,
                               SignInManager<AppUser> signInManager,
-                              ITokenService tokenService)
+                              ITokenService tokenService,
+                              ILogger<AccountService> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _logger = logger;
         }
 
         public async Task<ServiceResponseModel<AuthUserModel>> Register(RegisterUserModel registerUser)
@@ -35,6 +39,7 @@ namespace API.Services
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = $"Username is taken [{registerUser.Username}]";
+                    _logger.LogError(serviceResponse.Message);
                     return serviceResponse;
                 }
 
@@ -49,6 +54,7 @@ namespace API.Services
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = $"Failed to register user [{user.UserName}]";
+                    _logger.LogError(serviceResponse.Message);
                     return serviceResponse;
                 }
 
@@ -59,6 +65,7 @@ namespace API.Services
                     await _userManager.DeleteAsync(user);
                     serviceResponse.Success = false;
                     serviceResponse.Message = $"Failed to register user [{user.UserName}]";
+                    _logger.LogError(serviceResponse.Message);
                     return serviceResponse;
                 }
 
@@ -69,12 +76,14 @@ namespace API.Services
                     Token = await _tokenService.CreateTokenAsync(user)
                 };
                 serviceResponse.Message = $"Successfully registered user [{user.UserName}]";
+                _logger.LogInformation(serviceResponse.Message);
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = $"Failed to register user [{registerUser.Username}]";
-                Console.WriteLine(e.Message);
+                _logger.LogError(serviceResponse.Message);
+                _logger.LogError(e.Message);
             }
 
             return serviceResponse;
@@ -93,6 +102,7 @@ namespace API.Services
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = $"Invalid username [{loginUser.Username}]";
+                    _logger.LogError(serviceResponse.Message);
                     return serviceResponse;
                 }
 
@@ -102,7 +112,8 @@ namespace API.Services
                 if (result.Succeeded == false)
                 {
                     serviceResponse.Success = false;
-                    serviceResponse.Message = "Invalid password";
+                    serviceResponse.Message = $"Invalid password for user [{loginUser.Username}]";
+                    _logger.LogError(serviceResponse.Message);
                     return serviceResponse;
                 }
 
@@ -113,12 +124,14 @@ namespace API.Services
                     Token = await _tokenService.CreateTokenAsync(user)
                 };
                 serviceResponse.Message = $"Successfully authenticated user [{user.UserName}]";
+                _logger.LogInformation(serviceResponse.Message);
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = e.Message;
-                Console.WriteLine(e.Message);
+                _logger.LogError(serviceResponse.Message);
+                _logger.LogError(e.Message);
             }
 
             return serviceResponse;
