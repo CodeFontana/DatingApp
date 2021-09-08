@@ -110,7 +110,10 @@ else if (member != null)
                     </EditForm>
                 </TabPage>
                 <TabPage Text="Edit Photos">
-                    <p>Photo edit will go here!</p>
+                    <div class="form-group drag-drop-zone">
+                        Upload image files here.
+                        <InputFile disabled="@uploading" OnChange="OnInputFileChange" />
+                    </div>
                 </TabPage>
             </TabControl>
         </div>
@@ -123,6 +126,7 @@ else if (member != null)
     private MemberModel member;
     private MemberUpdateModel memberUpdate = new();
     private bool changesMade = false;
+    private bool uploading = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -167,6 +171,37 @@ else if (member != null)
         {
             errorText = result.Message;
             showError = true;
+        }
+    }
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            // Disable upload pane.
+            uploading = true;
+            await InvokeAsync(StateHasChanged);
+
+            // Re-size to no more than 400x400.
+            var format = "image/png";
+            var resizedImageFile = await e.File.RequestImageFileAsync(format, 400, 400);
+
+            // Read resized PNG data into a buffer.
+            var buffer = new byte[resizedImageFile.Size];
+            await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+
+            // Get new filename.
+            string friendlyName = Path.GetFileNameWithoutExtension(e.File.Name);
+            string shortName = $"{friendlyName}--{DateTime.Now.Ticks}.png";
+            string fileName = $"{Environment.CurrentDirectory}\\Uploads\\{shortName}";
+
+            
+        }
+        catch (Exception)
+        {
+            uploading = false;
+            await InvokeAsync(StateHasChanged);
+            throw;
         }
     }
 }
