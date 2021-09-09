@@ -2,11 +2,11 @@
 using DataAccessLibrary.Entities;
 using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,12 +47,23 @@ namespace API.Services
                     serviceResponse.Message = $"failed to add photo for user [{username}]: {file.FileName} of size [{file.Length} bytes] is larger than the limit of [{maxFileSize} bytes]";
                     _logger.LogError(serviceResponse.Message);
                 }
+                else if (IsValidImageFile(file) == false)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = $"failed to add photo for user [{username}]: {file.FileName} is not a supported image";
+                    _logger.LogError(serviceResponse.Message);
+                }
                 else if (file.Length > 0)
                 {
-                    string path = Path.Combine(Directory.GetCurrentDirectory(), $@"uploads\members\{appUser.UserName}", file.FileName);
-                    Directory.CreateDirectory(path);
-                    await using FileStream fs = new(path, FileMode.Create);
-                    await file.OpenReadStream().CopyToAsync(fs);
+                    string trustedName = Guid.NewGuid().ToString() + ".jpg";
+                    string basePath = Directory.GetCurrentDirectory();
+                    string uploadPath = Path.Combine(basePath, $@"uploads\members\{appUser.UserName}");
+                    string fileName = Path.Combine(uploadPath, trustedName);
+                    
+                    Directory.CreateDirectory(uploadPath);
+                    using FileStream stream = File.Create(fileName);
+                    await file.CopyToAsync(stream);
+
                     serviceResponse.Success = true;
                     serviceResponse.Message = $"Successfully added photo for user [{username}]";
                     _logger.LogInformation(serviceResponse.Message);
@@ -87,6 +98,20 @@ namespace API.Services
             }
 
             return serviceResponse;
+        }
+
+        private static bool IsValidImageFile(IFormFile file)
+        {
+            try
+            {
+                Image isValidImage = Image.FromStream(file.OpenReadStream());
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
