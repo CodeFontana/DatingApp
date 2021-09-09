@@ -15,20 +15,17 @@ namespace API.Services
 {
     public class PhotoService : IPhotoService
     {
-        private readonly IWebHostEnvironment _env;
         private readonly IUserRepository _userRepository;
         private readonly ILogger<PhotoService> _logger;
 
-        public PhotoService(IWebHostEnvironment env,
-                            IUserRepository userRepository,
+        public PhotoService(IUserRepository userRepository,
                             ILogger<PhotoService> logger)
         {
-            _env = env;
             _userRepository = userRepository;
             _logger = logger;
         }
 
-        public async Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string username, IFormFile file)
+        public async Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string username, IEnumerable<IFormFile> files)
         {
             ServiceResponseModel<PhotoModel> serviceResponse = new();
             long maxFileSize = 1024 * 1024 * 5;
@@ -36,22 +33,24 @@ namespace API.Services
             try
             {
                 AppUser appUser = await _userRepository.GetUserByUsernameAsync(username);
+                IFormFile file = files.FirstOrDefault();
 
-                if (file.Length == 0)
+                if (file == null || file.Length == 0)
                 {
                     serviceResponse.Success = false;
-                    serviceResponse.Message = $"{file.FileName} size is 0 bytes, failed to add photo for user [{username}]";
+                    serviceResponse.Message = $"Failed to add photo for user [{username}]: Empty file";
                     _logger.LogError(serviceResponse.Message);
                 }
                 else if (file.Length > maxFileSize)
                 {
                     serviceResponse.Success = false;
-                    serviceResponse.Message = $"{file.FileName} of size [{file.Length} bytes] is larger than the limit of [{maxFileSize} bytes], failed to add photo for user [{username}]";
+                    serviceResponse.Message = $"failed to add photo for user [{username}]: {file.FileName} of size [{file.Length} bytes] is larger than the limit of [{maxFileSize} bytes]";
                     _logger.LogError(serviceResponse.Message);
                 }
                 else if (file.Length > 0)
                 {
-                    var path = Path.Combine(_env.ContentRootPath, $@"uploads\members\{appUser.UserName}", file.FileName);
+                    string path = Path.Combine(Directory.GetCurrentDirectory(), $@"uploads\members\{appUser.UserName}", file.FileName);
+                    Directory.CreateDirectory(path);
                     await using FileStream fs = new(path, FileMode.Create);
                     await file.OpenReadStream().CopyToAsync(fs);
                     serviceResponse.Success = true;

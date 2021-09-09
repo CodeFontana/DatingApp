@@ -71,9 +71,9 @@ namespace API.Controllers
         }
 
         [HttpPost("add-photo")]
-        public async Task<IActionResult> AddPhoto(IFormFile file)
+        public async Task<IActionResult> AddPhoto([FromForm] IEnumerable<IFormFile> files)
         {
-            ServiceResponseModel<PhotoModel> response = await _photoService.AddPhotoAsync(User.Identity.Name, file);
+            ServiceResponseModel<PhotoModel> response = await _photoService.AddPhotoAsync(User.Identity.Name, files);
 
             if (response.Success)
             {

@@ -22,7 +22,8 @@
         @errorText
     </div>
 }
-else if (member != null)
+
+@if (member != null)
 {
     <div class="row">
         <div class="col-12 col-md-4 text-center">
@@ -101,7 +102,6 @@ else if (member != null)
                                 <InputText class="form-control userinput" @bind-Value="memberUpdate.Country" />
                             </div>
 
-
                             <ValidationMessage For="(() => memberUpdate.City)" />
                             <ValidationMessage For="(() => memberUpdate.Country)" />
 
@@ -112,7 +112,7 @@ else if (member != null)
                 <TabPage Text="Edit Photos">
                     <div class="form-group drag-drop-zone">
                         Upload image files here.
-                        <InputFile disabled="@uploading" OnChange="OnInputFileChange" />
+                        <InputFile disabled="@uploading" OnChange="HandleImageUpload" accept="image/*" />
                     </div>
                 </TabPage>
             </TabControl>
@@ -126,6 +126,7 @@ else if (member != null)
     private MemberModel member;
     private MemberUpdateModel memberUpdate = new();
     private bool changesMade = false;
+    long maxFileSize = 1024 * 1024 * 10;
     private bool uploading = false;
 
     protected override async Task OnInitializedAsync()
@@ -146,6 +147,7 @@ else if (member != null)
         {
             ToastService.ShowSuccess("Profile updated successfully");
             changesMade = false;
+            showError = false;
             await LoadMember();
         }
         else
@@ -174,34 +176,55 @@ else if (member != null)
         }
     }
 
-    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
     {
         try
         {
-            // Disable upload pane.
             uploading = true;
-            await InvokeAsync(StateHasChanged);
+            IBrowserFile imageFile = await e.File.RequestImageFileAsync("image/jpeg", 500, 500);
 
-            // Re-size to no more than 400x400.
-            var format = "image/png";
-            var resizedImageFile = await e.File.RequestImageFileAsync(format, 400, 400);
+            if (imageFile == null)
+            {
+                throw new Exception("image file not found");
+            }
+            else if (imageFile.Size > maxFileSize)
+            {
+                throw new Exception($"image file exceeds maximum size [{maxFileSize} bytes]");
+            }
 
-            // Read resized PNG data into a buffer.
-            var buffer = new byte[resizedImageFile.Size];
-            await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+            StreamContent fileContent = new(imageFile.OpenReadStream(maxFileSize));
 
-            // Get new filename.
-            string friendlyName = Path.GetFileNameWithoutExtension(e.File.Name);
-            string shortName = $"{friendlyName}--{DateTime.Now.Ticks}.png";
-            string fileName = $"{Environment.CurrentDirectory}\\Uploads\\{shortName}";
+            using MultipartFormDataContent content = new();
+            content.Add(
+                content: fileContent,
+                name: "\"files\"",
+                fileName: imageFile.Name);
 
-            
+            ServiceResponseModel<PhotoModel> result = await MemberService.AddPhotoAsync(content);
+
+            if (result.Success)
+            {
+                ToastService.ShowSuccess("Photo added successfully");
+                changesMade = false;
+                showError = false;
+                await LoadMember();
+            }
+            else
+            {
+                showError = true;
+                errorText = $"{result.Message}";
+                ToastService.ShowError($"{result.Message}");
+            }
         }
-        catch (Exception)
+        catch (Exception ex)
+        {
+            showError = true;
+            errorText = $"{ex.Message}";
+            ToastService.ShowError($"{ex.Message}");
+        }
+        finally
         {
             uploading = false;
-            await InvokeAsync(StateHasChanged);
-            throw;
         }
     }
 }

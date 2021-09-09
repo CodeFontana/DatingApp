@@ -90,5 +90,12 @@ namespace Client.Services
 
             return result;
         }
+
+        public async Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(MultipartFormDataContent content)
+        {
+            string apiEndpoint = _config["apiLocation"] + _config["addPhotoEndpoint"];
+            HttpResponseMessage response = await _httpClient.PostAsync(apiEndpoint, content);
+            return await response.Content.ReadFromJsonAsync<ServiceResponseModel<PhotoModel>>(_options);
+        }
     }
 }
