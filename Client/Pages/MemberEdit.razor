@@ -185,11 +185,11 @@
 
             if (imageFile == null)
             {
-                throw new Exception("image file not found");
+                throw new Exception("Image file not found");
             }
             else if (imageFile.Size > maxFileSize)
             {
-                throw new Exception($"image file exceeds maximum size [{maxFileSize} bytes]");
+                throw new Exception($"Image file exceeds maximum size [{maxFileSize} bytes]");
             }
 
             StreamContent fileContent = new(imageFile.OpenReadStream(maxFileSize));
