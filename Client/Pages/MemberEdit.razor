@@ -110,6 +110,7 @@
                     </EditForm>
                 </TabPage>
                 <TabPage Text="Edit Photos">
+                    <PhotoGallery Photos="@member.Photos" />
                     <div class="form-group drag-drop-zone">
                         Upload image files here.
                         <InputFile disabled="@uploading" OnChange="HandleImageUpload" accept="image/*" />
