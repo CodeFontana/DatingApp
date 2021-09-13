@@ -29,8 +29,9 @@ namespace Client
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IRegistrationService, RegistrationService>();
-            builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
             builder.Services.AddScoped<IMemberService, MemberService>();
+            builder.Services.AddScoped<IImageService, ImageService>();
+            builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped<SpinnerService>();
             builder.Services.AddScoped<SpinnerHandler>();
