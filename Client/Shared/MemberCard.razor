@@ -33,6 +33,7 @@
     protected override async Task OnParametersSetAsync()
     {
         photoUrl = await ImageService.RequestImageAsync(Member.PhotoUrl);
+        Member.PhotoUrl = photoUrl;
     }
 
     private void HandleUserClick()
