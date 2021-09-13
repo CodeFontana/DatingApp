@@ -1,4 +1,5 @@
 ﻿using API.Interfaces;
+using AutoMapper;
 using DataAccessLibrary.Entities;
 using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
@@ -16,12 +17,15 @@ namespace API.Services
     public class PhotoService : IPhotoService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
         private readonly ILogger<PhotoService> _logger;
 
         public PhotoService(IUserRepository userRepository,
+                            IMapper mapper,
                             ILogger<PhotoService> logger)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
             _logger = logger;
         }
 
@@ -37,42 +41,66 @@ namespace API.Services
 
                 if (file == null || file.Length == 0)
                 {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = $"Failed to add photo for user [{username}]: Empty file";
-                    _logger.LogError(serviceResponse.Message);
+                    throw new ArgumentNullException($"Failed to add photo for user [{username}]: Empty file");
                 }
                 else if (file.Length > maxFileSize)
                 {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = $"failed to add photo for user [{username}]: {file.FileName} of size [{file.Length} bytes] is larger than the limit of [{maxFileSize} bytes]";
-                    _logger.LogError(serviceResponse.Message);
+                    throw new BadImageFormatException($"Failed to add photo for user [{username}]: {file.FileName} of size [{file.Length} bytes] is larger than the limit of [{maxFileSize} bytes]");
                 }
                 else if (IsValidImageFile(file) == false)
                 {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = $"failed to add photo for user [{username}]: {file.FileName} is not a supported image";
-                    _logger.LogError(serviceResponse.Message);
+                    throw new BadImageFormatException($"Failed to add photo for user [{username}]: {file.FileName} is not a supported image");
+                }
+                else if (appUser.Photos.Count >= 8)
+                {
+                    throw new Exception($"Failed to add photo for user [{username}]: Photo storage limit reached [8 photos]");
                 }
                 else if (file.Length > 0)
                 {
+                    // TODO: Use wwwroot path with upload folder for storing/hosting images to client. Can't use local files.
+
                     string trustedName = Guid.NewGuid().ToString() + ".jpg";
-                    string basePath = Directory.GetCurrentDirectory();
-                    string uploadPath = Path.Combine(basePath, $@"uploads\members\{appUser.UserName}");
+                    string basePath = Path.GetTempPath();
+                    string uploadPath = Path.Combine(basePath, $@"DatingApp\uploads\members\{appUser.UserName}");
                     string fileName = Path.Combine(uploadPath, trustedName);
+                    string fileUrl = "file://" + fileName.Replace("\\", "/");
                     
                     Directory.CreateDirectory(uploadPath);
                     using FileStream stream = File.Create(fileName);
                     await file.CopyToAsync(stream);
 
-                    serviceResponse.Success = true;
-                    serviceResponse.Message = $"Successfully added photo for user [{username}]";
-                    _logger.LogInformation(serviceResponse.Message);
+                    Photo newPhoto = new()
+                    {
+                        Url = fileUrl,
+                        IsMain = false,
+                    };
+
+                    if (appUser.Photos.Count == 0)
+                    {
+                        newPhoto.IsMain = true;
+                    }
+
+                    appUser.Photos.Add(newPhoto);
+
+                    if (await _userRepository.SaveAllAsync())
+                    {
+                        serviceResponse.Success = true;
+                        serviceResponse.Data = _mapper.Map<PhotoModel>(newPhoto);
+                        serviceResponse.Message = $"Successfully added photo for user [{username}]";
+                        _logger.LogInformation(serviceResponse.Message);
+                    }
+                    else
+                    {
+                        serviceResponse.Success = false;
+                        serviceResponse.Message = $"Failed to add photo for user [{username}]: Error saving to database";
+                        _logger.LogInformation(serviceResponse.Message);
+                    }
                 }
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = $"Failed to add photo for user [{username}]";
+                serviceResponse.Message = e.Message;
                 _logger.LogError(serviceResponse.Message);
                 _logger.LogError(e.Message);
             }
