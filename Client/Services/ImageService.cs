@@ -3,7 +3,6 @@ using DataAccessLibrary.Models;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -50,23 +49,21 @@ namespace Client.Services
 
             if (imageUrl.ToLower().StartsWith(_config["apiLocation"].ToLower()))
             {
-                // https://localhost:5001/api/images
+                // Images endpoint -- https://localhost:5001/api/images
                 string apiEndpoint = _config["apiLocation"].ToLower() + _config["imageEndpoint"].ToLower();
 
-                // https://localhost:5001/api/images/brian/xyz.jpg --> /brian/xyz.jpg
+                // Parse request fields -- https://localhost:5001/api/images/brian/xyz.jpg --> /brian/xyz.jpg
                 string requestItems = imageUrl.ToLower().Replace(apiEndpoint, "");
+                string username = requestItems[1..requestItems.LastIndexOf("/")];
+                string filename = requestItems[(requestItems.LastIndexOf("/") + 1)..];
 
                 HttpResponseMessage response = await _httpClient.GetAsync($"{apiEndpoint}{requestItems}");
                 ServiceResponseModel<byte[]> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<byte[]>>(_options);
 
                 if (result.Success)
                 {
-                    string username = requestItems.Substring(1, requestItems.LastIndexOf("/") - 1);
-                    string filename = requestItems.Substring(requestItems.LastIndexOf("/") + 1);
-                    string downloadFile = Path.Combine(Directory.GetCurrentDirectory(), $@"MemberData/{username}/{filename}");
-                    // Save to wwwroot\MemberData\{username}\image.jpg
-                    // Return new local URL
-                    return "./assets/user.png"; // downloadFile
+                    string imageBase64 = Convert.ToBase64String(result.Data);
+                    return string.Format("data:image/jpg;base64,{0}", imageBase64);
                 }
                 else
                 {
