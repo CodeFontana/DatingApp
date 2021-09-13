@@ -65,22 +65,22 @@ namespace API.Services
                 else if (file.Length > 0)
                 {
                     // Resize the image to 500x500
-                    using MemoryStream memoryStream = new();
-                    await file.CopyToAsync(memoryStream);
-                    Bitmap resizedFile = ResizeImage(Image.FromStream(memoryStream), 500, 500);
+                    //using MemoryStream memoryStream = new();
+                    //await file.CopyToAsync(memoryStream);
+                    //Bitmap resizedFile = ResizeImage(Image.FromStream(memoryStream), 500, 500);
 
-                    // Build MemberData save path and URL
+                    // Build wwwroot/MemberData save path and URL
                     string trustedName = Guid.NewGuid().ToString() + ".jpg";
                     string uploadPath = Path.Combine(_appEnv.ContentRootPath, $@"MemberData\{appUser.UserName}");
                     string fileName = Path.Combine(uploadPath, trustedName);
 
-                    // URL for API access
-                    string apiUrl = $@"{requestUrl}api/Images/{appUser.UserName}/{trustedName}"; // https://localhost:5001/api/images/brian/xyz.jpg
+                    // URL for API access -- https://localhost:5001/api/images/brian/xyz.jpg
+                    string apiUrl = $@"{requestUrl}api/Images/{appUser.UserName}/{trustedName}";
 
                     Directory.CreateDirectory(uploadPath);
-                    resizedFile.Save(fileName);
-                    //using FileStream stream = File.Create(fileName);
-                    //await file.CopyToAsync(stream);
+                    //resizedFile.Save(fileName);
+                    using FileStream stream = File.Create(fileName);
+                    await file.CopyToAsync(stream);
 
                     Photo newPhoto = new()
                     {
