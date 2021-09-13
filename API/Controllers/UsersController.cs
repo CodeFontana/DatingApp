@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [ApiController]
     [Authorize]
+    [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
@@ -73,7 +73,8 @@ namespace API.Controllers
         [HttpPost("add-photo")]
         public async Task<IActionResult> AddPhoto([FromForm] IEnumerable<IFormFile> files)
         {
-            ServiceResponseModel<PhotoModel> response = await _photoService.AddPhotoAsync(User.Identity.Name, files);
+            var requestUrl = $"{Request.Scheme}://{Request.Host.Value}/";
+            ServiceResponseModel<PhotoModel> response = await _photoService.AddPhotoAsync(requestUrl, User.Identity.Name, files);
 
             if (response.Success)
             {

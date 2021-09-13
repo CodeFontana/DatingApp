@@ -3,11 +3,15 @@ using AutoMapper;
 using DataAccessLibrary.Entities;
 using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,18 +22,21 @@ namespace API.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _appEnv;
         private readonly ILogger<PhotoService> _logger;
 
         public PhotoService(IUserRepository userRepository,
                             IMapper mapper,
+                            IWebHostEnvironment appEnv,
                             ILogger<PhotoService> logger)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _appEnv = appEnv;
             _logger = logger;
         }
 
-        public async Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string username, IEnumerable<IFormFile> files)
+        public async Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string requestUrl, string username, IEnumerable<IFormFile> files)
         {
             ServiceResponseModel<PhotoModel> serviceResponse = new();
             long maxFileSize = 1024 * 1024 * 5;
@@ -57,21 +64,27 @@ namespace API.Services
                 }
                 else if (file.Length > 0)
                 {
-                    // TODO: Use wwwroot path with upload folder for storing/hosting images to client. Can't use local files.
+                    // Resize the image to 500x500
+                    using MemoryStream memoryStream = new();
+                    await file.CopyToAsync(memoryStream);
+                    Bitmap resizedFile = ResizeImage(Image.FromStream(memoryStream), 500, 500);
 
+                    // Build MemberData save path and URL
                     string trustedName = Guid.NewGuid().ToString() + ".jpg";
-                    string basePath = Path.GetTempPath();
-                    string uploadPath = Path.Combine(basePath, $@"DatingApp\uploads\members\{appUser.UserName}");
+                    string uploadPath = Path.Combine(_appEnv.ContentRootPath, $@"MemberData\{appUser.UserName}");
                     string fileName = Path.Combine(uploadPath, trustedName);
-                    string fileUrl = "file://" + fileName.Replace("\\", "/");
-                    
+
+                    // URL for API access
+                    string apiUrl = $@"{requestUrl}api/Images/{appUser.UserName}/{trustedName}"; // https://localhost:5001/api/images/brian/xyz.jpg
+
                     Directory.CreateDirectory(uploadPath);
-                    using FileStream stream = File.Create(fileName);
-                    await file.CopyToAsync(stream);
+                    resizedFile.Save(fileName);
+                    //using FileStream stream = File.Create(fileName);
+                    //await file.CopyToAsync(stream);
 
                     Photo newPhoto = new()
                     {
-                        Url = fileUrl,
+                        Url = apiUrl,
                         IsMain = false,
                     };
 
@@ -140,6 +153,32 @@ namespace API.Services
             }
 
             return true;
+        }
+
+        // https://stackoverflow.com/questions/1922040/how-to-resize-an-image-c-sharp
+        private static Bitmap ResizeImage(Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighSpeed;
+                graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                graphics.SmoothingMode = SmoothingMode.HighSpeed;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
         }
     }
 }
