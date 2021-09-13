@@ -447,4 +447,8 @@ $RECYCLE.BIN/
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# From Udemy Course
 StudentAssets.zip
+
+# MemberData directory
+MemberData
