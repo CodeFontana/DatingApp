@@ -20,7 +20,7 @@ namespace Client.Helpers
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             _spinnerService.Show();
-            //await Task.Delay(3000);
+            //await Task.Delay(3000); // artificial delay for testing
             var response = await base.SendAsync(request, cancellationToken);
             _spinnerService.Hide();
             return response;
