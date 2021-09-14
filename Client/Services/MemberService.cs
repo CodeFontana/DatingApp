@@ -18,13 +18,18 @@ namespace Client.Services
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _options;
         private readonly IMapper _mapper;
+        private readonly IImageService _imageService;
 
-        public MemberService(IConfiguration config, HttpClient httpClient, IMapper mapper)
+        public MemberService(IConfiguration config,
+                             HttpClient httpClient,
+                             IMapper mapper,
+                             IImageService imageService)
         {
             _config = config;
             _httpClient = httpClient;
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             _mapper = mapper;
+            _imageService = imageService;
         }
 
         private List<MemberModel> Members { get; set; } = new();
@@ -104,7 +109,11 @@ namespace Client.Services
 
                 if (result.Data.IsMain)
                 {
-                    // member.PhotoUrl = // Inject ImageService and use it to update here!!!
+                    // Main photo -- set as Member's PhotoUrl
+                    member.PhotoUrl = result.Data.Url;
+
+                    // Request the new image from the service (this is bc our API requires authentication for images)
+                    member.PhotoUrl = await _imageService.RequestImageAsync(member.PhotoUrl);
                 }
             }
 
