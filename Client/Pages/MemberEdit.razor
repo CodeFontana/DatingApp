@@ -201,7 +201,8 @@
                 name: "\"files\"",
                 fileName: imageFile.Name);
 
-            ServiceResponseModel<PhotoModel> result = await MemberService.AddPhotoAsync(content);
+            // Double check source of username
+            ServiceResponseModel<PhotoModel> result = await MemberService.AddPhotoAsync(member.Username, content);
 
             if (result.Success)
             {

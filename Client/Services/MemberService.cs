@@ -91,11 +91,24 @@ namespace Client.Services
             return result;
         }
 
-        public async Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(MultipartFormDataContent content)
+        public async Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string username, MultipartFormDataContent content)
         {
             string apiEndpoint = _config["apiLocation"] + _config["addPhotoEndpoint"];
             HttpResponseMessage response = await _httpClient.PostAsync(apiEndpoint, content);
-            return await response.Content.ReadFromJsonAsync<ServiceResponseModel<PhotoModel>>(_options);
+            ServiceResponseModel <PhotoModel> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<PhotoModel>>(_options);
+
+            if (result.Success)
+            {
+                MemberModel member = Members.FirstOrDefault(x => x.Username.ToLower().Equals(username.ToLower()));
+                member.Photos.Add(result.Data);
+
+                if (result.Data.IsMain)
+                {
+                    // member.PhotoUrl = // Inject ImageService and use it to update here!!!
+                }
+            }
+
+            return result;
         }
     }
 }
