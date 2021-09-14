@@ -65,9 +65,9 @@ namespace API.Services
                 else if (file.Length > 0)
                 {
                     // Resize the image to 500x500
-                    //using MemoryStream memoryStream = new();
-                    //await file.CopyToAsync(memoryStream);
-                    //Bitmap resizedFile = ResizeImage(Image.FromStream(memoryStream), 500, 500);
+                    using MemoryStream memoryStream = new();
+                    await file.CopyToAsync(memoryStream);
+                    Bitmap resizedFile = ResizeImage(Image.FromStream(memoryStream), 500, 500);
 
                     // Build wwwroot/MemberData save path and URL
                     string trustedName = Guid.NewGuid().ToString() + ".jpg";
@@ -78,9 +78,7 @@ namespace API.Services
                     string apiUrl = $@"{requestUrl}api/Images/{appUser.UserName}/{trustedName}";
 
                     Directory.CreateDirectory(uploadPath);
-                    //resizedFile.Save(fileName);
-                    using FileStream stream = File.Create(fileName);
-                    await file.CopyToAsync(stream);
+                    resizedFile.Save(fileName);
 
                     Photo newPhoto = new()
                     {
@@ -167,7 +165,7 @@ namespace API.Services
             {
                 graphics.CompositingMode = CompositingMode.SourceCopy;
                 graphics.CompositingQuality = CompositingQuality.HighSpeed;
-                graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                graphics.InterpolationMode = InterpolationMode.Low;
                 graphics.SmoothingMode = SmoothingMode.HighSpeed;
                 graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
 

@@ -182,7 +182,7 @@
         try
         {
             uploading = true;
-            IBrowserFile imageFile = await e.File.RequestImageFileAsync("image/jpeg", 500, 500);
+            IBrowserFile imageFile = e.File;
 
             if (imageFile == null)
             {
