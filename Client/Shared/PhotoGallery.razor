@@ -1,4 +1,6 @@
-﻿<div>
+﻿@inject IImageService ImageService
+
+<div>
     <div class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
             @for (int i = 0; i < Photos.Count; i++)
@@ -31,6 +33,14 @@
     public IList<PhotoModel> Photos { get; set; }
 
     private int position = 0;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        foreach (PhotoModel p in Photos)
+        {
+            p.Url = await ImageService.RequestImageAsync(p.Url);
+        }
+    }
 
     private void HandleNext()
     {
