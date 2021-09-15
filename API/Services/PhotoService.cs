@@ -156,7 +156,7 @@ namespace API.Services
         {
             RectangleF sourceBounds = new(0.0f, 0.0f, (float)sourceImage.Width, (float)sourceImage.Height);
             Image destinationImage = new Bitmap((int)destBounds.Width, (int)destBounds.Height);
-            Graphics g = Graphics.FromImage(destinationImage);
+            using Graphics g = Graphics.FromImage(destinationImage);
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.FillRectangle(new SolidBrush(Color.Black), destBounds);
 
