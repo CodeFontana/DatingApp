@@ -57,7 +57,7 @@ namespace Client.Services
                 string username = requestItems[1..requestItems.LastIndexOf("/")];
                 string filename = requestItems[(requestItems.LastIndexOf("/") + 1)..];
 
-                HttpResponseMessage response = await _httpClient.GetAsync($"{apiEndpoint}{requestItems}");
+                using HttpResponseMessage response = await _httpClient.GetAsync($"{apiEndpoint}{requestItems}");
                 ServiceResponseModel<byte[]> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<byte[]>>(_options);
 
                 if (result.Success)

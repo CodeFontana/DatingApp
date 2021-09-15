@@ -21,7 +21,7 @@ namespace Client.Helpers
         {
             _spinnerService.Show();
             //await Task.Delay(3000); // artificial delay for testing
-            var response = await base.SendAsync(request, cancellationToken);
+            HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
             _spinnerService.Hide();
             return response;
         }

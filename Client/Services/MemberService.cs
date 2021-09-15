@@ -47,7 +47,7 @@ namespace Client.Services
             }
 
             string apiEndpoint = _config["apiLocation"] + _config["usersEndpoint"];
-            HttpResponseMessage response = await _httpClient.GetAsync(apiEndpoint);
+            using HttpResponseMessage response = await _httpClient.GetAsync(apiEndpoint);
             ServiceResponseModel<IEnumerable<MemberModel>> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<IEnumerable<MemberModel>>>(_options);
 
             if (result.Success)
@@ -77,14 +77,14 @@ namespace Client.Services
             }
 
             string apiEndpoint = _config["apiLocation"] + _config["usersEndpoint"] + $"/{username}";
-            HttpResponseMessage response = await _httpClient.GetAsync(apiEndpoint);
+            using HttpResponseMessage response = await _httpClient.GetAsync(apiEndpoint);
             return await response.Content.ReadFromJsonAsync<ServiceResponseModel<MemberModel>>(_options);
         }
 
         public async Task<ServiceResponseModel<string>> UpdateMemberAsync(MemberUpdateModel memberUpdate)
         {
             string apiEndpoint = _config["apiLocation"] + _config["usersEndpoint"];
-            HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiEndpoint, memberUpdate);
+            using HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiEndpoint, memberUpdate);
             ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>>(_options);
 
             if (result.Success)
@@ -99,7 +99,7 @@ namespace Client.Services
         public async Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string username, MultipartFormDataContent content)
         {
             string apiEndpoint = _config["apiLocation"] + _config["addPhotoEndpoint"];
-            HttpResponseMessage response = await _httpClient.PostAsync(apiEndpoint, content);
+            using HttpResponseMessage response = await _httpClient.PostAsync(apiEndpoint, content);
             ServiceResponseModel <PhotoModel> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<PhotoModel>>(_options);
 
             if (result.Success)

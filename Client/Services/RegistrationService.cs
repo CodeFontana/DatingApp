@@ -30,7 +30,7 @@ namespace Client.Services
         public async Task<ServiceResponseModel<AuthUserModel>> RegisterAsync(RegisterUserModel registerUser)
         {
             string apiEndpoint = _config["apiLocation"] + _config["registerEndpoint"];
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, registerUser);
+            using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, registerUser);
             return await response.Content.ReadFromJsonAsync<ServiceResponseModel<AuthUserModel>>(_options);
         }
     }

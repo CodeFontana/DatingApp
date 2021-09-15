@@ -34,7 +34,7 @@ namespace Client.Authentication
         public async Task<ServiceResponseModel<AuthUserModel>> LoginAsync(LoginUserModel loginUser)
         {
             string apiEndpoint = _config["apiLocation"] + _config["loginEndpoint"];
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, loginUser);
+            using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, loginUser);
             ServiceResponseModel<AuthUserModel> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<AuthUserModel>>(_options);
 
             if (result.Success)
