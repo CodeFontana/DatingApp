@@ -64,11 +64,6 @@ namespace API.Services
                 }
                 else if (file.Length > 0)
                 {
-                    // Resize the image to 500x500
-                    using MemoryStream memoryStream = new();
-                    await file.CopyToAsync(memoryStream);
-                    Bitmap resizedFile = ResizeImage(Image.FromStream(memoryStream), 500, 500);
-
                     // Build wwwroot/MemberData save path and URL
                     string trustedName = Guid.NewGuid().ToString() + ".jpg";
                     string uploadPath = Path.Combine(_appEnv.ContentRootPath, $@"MemberData\{appUser.UserName}");
@@ -78,7 +73,8 @@ namespace API.Services
                     string apiUrl = $@"{requestUrl}api/Images/{appUser.UserName}/{trustedName}";
 
                     Directory.CreateDirectory(uploadPath);
-                    resizedFile.Save(fileName);
+                    using FileStream stream = File.Create(fileName);
+                    await file.CopyToAsync(stream);
 
                     Photo newPhoto = new()
                     {
@@ -151,30 +147,6 @@ namespace API.Services
             }
 
             return true;
-        }
-
-        // https://stackoverflow.com/questions/1922040/how-to-resize-an-image-c-sharp
-        private static Bitmap ResizeImage(Image image, int width, int height)
-        {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
-
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighSpeed;
-                graphics.InterpolationMode = InterpolationMode.Low;
-                graphics.SmoothingMode = SmoothingMode.HighSpeed;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-
-                using var wrapMode = new ImageAttributes();
-                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-            }
-
-            return destImage;
         }
     }
 }
