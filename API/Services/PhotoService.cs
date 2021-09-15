@@ -5,13 +5,11 @@ using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -67,7 +65,7 @@ namespace API.Services
                     // Resize the image to 500x500
                     using MemoryStream memoryStream = new();
                     await file.CopyToAsync(memoryStream);
-                    Bitmap resizedFile = ResizeImage(Image.FromStream(memoryStream), 500, 500);
+                    Image resizedFile = ResizeImage(Image.FromStream(memoryStream), new RectangleF(0, 0, 500, 500));
 
                     // Build wwwroot/MemberData save path and URL
                     string trustedName = Guid.NewGuid().ToString() + ".jpg";
@@ -153,28 +151,38 @@ namespace API.Services
             return true;
         }
 
-        // https://stackoverflow.com/questions/1922040/how-to-resize-an-image-c-sharp
-        private static Bitmap ResizeImage(Image image, int width, int height)
+        // Ref: https://stackoverflow.com/questions/1922040/how-to-resize-an-image-c-sharp
+        public static Image ResizeImage(Image sourceImage, RectangleF destBounds)
         {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
+            RectangleF sourceBounds = new(0.0f, 0.0f, (float)sourceImage.Width, (float)sourceImage.Height);
+            Image destinationImage = new Bitmap((int)destBounds.Width, (int)destBounds.Height);
+            using Graphics g = Graphics.FromImage(destinationImage);
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.FillRectangle(new SolidBrush(Color.Black), destBounds);
 
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+            float resizeRatio, sourceRatio;
+            float scaleWidth, scaleHeight;
 
-            using (var graphics = Graphics.FromImage(destImage))
+            sourceRatio = (float)sourceImage.Width / (float)sourceImage.Height;
+
+            if (sourceRatio >= 1.0f)
             {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighSpeed;
-                graphics.InterpolationMode = InterpolationMode.Low;
-                graphics.SmoothingMode = SmoothingMode.HighSpeed;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-
-                using var wrapMode = new ImageAttributes();
-                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                // Landscape
+                resizeRatio = destBounds.Width / sourceBounds.Width;
+                scaleHeight = sourceBounds.Height * resizeRatio;
+                float trimValue = destBounds.Height - scaleHeight;
+                g.DrawImage(sourceImage, 0, (trimValue / 2), destBounds.Width, scaleHeight);
+            }
+            else
+            {
+                // Portrait
+                resizeRatio = destBounds.Height / sourceBounds.Height;
+                scaleWidth = sourceBounds.Width * resizeRatio;
+                float trimValue = destBounds.Width - scaleWidth;
+                g.DrawImage(sourceImage, (trimValue / 2), 0, scaleWidth, destBounds.Height);
             }
 
-            return destImage;
+            return destinationImage;
         }
     }
 }

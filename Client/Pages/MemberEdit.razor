@@ -110,11 +110,7 @@
                     </EditForm>
                 </TabPage>
                 <TabPage Text="Edit Photos">
-                    <PhotoGallery Photos="@member.Photos" />
-                    <div class="form-group drag-drop-zone">
-                        Upload image files here.
-                        <InputFile disabled="@uploading" OnChange="HandleImageUpload" accept="image/*" />
-                    </div>
+                    <PhotoEditor member="@member" OnImageUpload="ImageUploadCallback" />
                 </TabPage>
             </TabControl>
         </div>
@@ -127,12 +123,28 @@
     private MemberModel member;
     private MemberUpdateModel memberUpdate = new();
     private bool changesMade = false;
-    long maxFileSize = 1024 * 1024 * 10;
-    private bool uploading = false;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadMember();
+    }
+
+    private async Task LoadMember()
+    {
+        AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        ClaimsPrincipal user = authState.User;
+        ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(user.Identity.Name);
+
+        if (result.Success)
+        {
+            member = result.Data;
+            Mapper.Map(member, memberUpdate);
+        }
+        else
+        {
+            errorText = result.Message;
+            showError = true;
+        }
     }
 
     private void OnProfileUpdated(ChangeEventArgs e)
@@ -159,73 +171,8 @@
         }
     }
 
-    private async Task LoadMember()
+    private async Task ImageUploadCallback()
     {
-        AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        ClaimsPrincipal user = authState.User;
-        ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(user.Identity.Name);
-
-        if (result.Success)
-        {
-            member = result.Data;
-            Mapper.Map(member, memberUpdate);
-        }
-        else
-        {
-            errorText = result.Message;
-            showError = true;
-        }
-    }
-
-    private async Task HandleImageUpload(InputFileChangeEventArgs e)
-    {
-        try
-        {
-            uploading = true;
-            IBrowserFile imageFile = e.File;
-
-            if (imageFile == null)
-            {
-                throw new Exception("Image file not found");
-            }
-            else if (imageFile.Size > maxFileSize)
-            {
-                throw new Exception($"Image file exceeds maximum size [{maxFileSize} bytes]");
-            }
-
-            StreamContent fileContent = new(imageFile.OpenReadStream(maxFileSize));
-
-            using MultipartFormDataContent content = new();
-            content.Add(
-                content: fileContent,
-                name: "\"files\"",
-                fileName: imageFile.Name);
-
-            ServiceResponseModel<PhotoModel> result = await MemberService.AddPhotoAsync(member.Username, content);
-
-            if (result.Success)
-            {
-                ToastService.ShowSuccess("Photo added successfully");
-                changesMade = false;
-                showError = false;
-                await LoadMember();
-            }
-            else
-            {
-                showError = true;
-                errorText = $"{result.Message}";
-                ToastService.ShowError($"{result.Message}");
-            }
-        }
-        catch (Exception ex)
-        {
-            showError = true;
-            errorText = $"{ex.Message}";
-            ToastService.ShowError($"{ex.Message}");
-        }
-        finally
-        {
-            uploading = false;
-        }
+        await LoadMember();
     }
 }

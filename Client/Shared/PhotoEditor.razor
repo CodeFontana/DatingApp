@@ -1,0 +1,101 @@
+﻿@inject IToastService ToastService
+@inject IMemberService MemberService
+@inject IImageService ImageService
+
+@if (showError)
+{
+    <div class="alert alert-danger" role="alert">
+        @errorText
+    </div>
+}
+
+<div>
+    <div class="row">
+        @foreach (PhotoModel p in member.Photos)
+        {
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <img class="img-thumbnail rounded p-1" src="@p.Url">
+                <div class="text-center">
+                    <button class="btn">Main</button>
+                    <button class="btn btn-danger"><i class="fa fa-trash" /></button>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="form-group drag-drop-zone">
+        Upload image files here.
+        <InputFile disabled="@uploading" OnChange="HandleImageUpload" accept="image/*" />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public MemberModel member { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnImageUpload { get; set; }
+
+    private long maxFileSize = 1024 * 1024 * 10;
+    private bool uploading = false;
+    private bool showError = false;
+    private string errorText;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        foreach (PhotoModel p in member.Photos)
+        {
+            p.Url = await ImageService.RequestImageAsync(p.Url);
+        }
+    }
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            uploading = true;
+            IBrowserFile imageFile = e.File;
+
+            if (imageFile == null)
+            {
+                throw new Exception("Image file not found");
+            }
+            else if (imageFile.Size > maxFileSize)
+            {
+                throw new Exception($"Image file exceeds maximum size [{maxFileSize} bytes]");
+            }
+
+            StreamContent fileContent = new(imageFile.OpenReadStream(maxFileSize));
+
+            using MultipartFormDataContent content = new();
+            content.Add(
+                content: fileContent,
+                name: "\"files\"",
+                fileName: imageFile.Name);
+
+            ServiceResponseModel<PhotoModel> result = await MemberService.AddPhotoAsync(member.Username, content);
+
+            if (result.Success)
+            {
+                ToastService.ShowSuccess("Photo added successfully");
+                showError = false;
+                await OnImageUpload.InvokeAsync();
+            }
+            else
+            {
+                showError = true;
+                errorText = $"{result.Message}";
+                ToastService.ShowError($"{result.Message}");
+            }
+        }
+        catch (Exception ex)
+        {
+            showError = true;
+            errorText = $"{ex.Message}";
+            ToastService.ShowError($"{ex.Message}");
+        }
+        finally
+        {
+            uploading = false;
+        }
+    }
+}
