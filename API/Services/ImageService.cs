@@ -1,4 +1,5 @@
 ﻿using API.Interfaces;
+using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
@@ -13,11 +14,15 @@ namespace API.Services
     public class ImageService : IImageService
     {
         private readonly IWebHostEnvironment _appEnv;
+        private readonly IUserRepository _userRepository;
         private readonly ILogger<ImageService> _logger;
 
-        public ImageService(IWebHostEnvironment appEnv, ILogger<ImageService> logger)
+        public ImageService(IWebHostEnvironment appEnv,
+                            IUserRepository userRepository,
+                            ILogger<ImageService> logger)
         {
             _appEnv = appEnv;
+            _userRepository = userRepository;
             _logger = logger;
         }
 
@@ -70,17 +75,40 @@ namespace API.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponseModel<List<byte[]>>> GetImages(string username)
+        public async Task<ServiceResponseModel<List<PhotoDownloadModel>>> GetImages(string username)
         {
-            ServiceResponseModel<List<byte[]>> serviceResponse = new();
-            List<byte[]> output = new();
+            ServiceResponseModel<List<PhotoDownloadModel>> serviceResponse = new();
+            List<PhotoDownloadModel> output = new();
 
             try
             {
-                foreach (string filename in reqImages)
+                _ = username ?? throw new ArgumentException("Invalid username");
+                MemberModel member = await _userRepository.GetMemberAsync(username);
+                _ = member ?? throw new Exception($"Member with username [{username}] does not exist");
+                
+                string userImageDir = Path.Combine(_appEnv.ContentRootPath, $@"MemberData\{username}");
+
+                if (Directory.Exists(userImageDir) == false)
                 {
-                    byte[] imageBytes = await File.ReadAllBytesAsync(filename);
-                    output.Add(imageBytes);
+                    throw new DirectoryNotFoundException($"No images available for user {username}");
+                }
+
+                List<string> userImages = Directory.GetFiles(userImageDir)?.ToList();
+
+                if (userImages.Count == 0)
+                {
+                    throw new FileNotFoundException($"No images available for user {username}");
+                }
+
+                foreach (string file in userImages)
+                {
+                    PhotoDownloadModel p = new()
+                    {
+                        Filename = file[(file.LastIndexOf('\\') + 1)..],
+                        Data = await File.ReadAllBytesAsync(file)
+                    };
+
+                    output.Add(p);
                 }
 
                 serviceResponse.Success = true;

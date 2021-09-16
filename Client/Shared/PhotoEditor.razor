@@ -11,7 +11,7 @@
 
 <div>
     <div class="row">
-        @foreach (PhotoModel p in member.Photos)
+        @foreach (PhotoModel p in Member.Photos)
         {
             <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
                 <img class="img-thumbnail rounded p-1" src="@p.Url">
@@ -30,10 +30,12 @@
 
 @code {
     [Parameter]
-    public MemberModel member { get; set; }
+    public MemberModel Member { get; set; }
 
     [Parameter]
     public EventCallback<string> OnImageUpload { get; set; }
+
+    public List<PhotoDownloadModel> MemberPhotos { get; set; }
 
     private long maxFileSize = 1024 * 1024 * 10;
     private bool uploading = false;
@@ -42,7 +44,9 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        foreach (PhotoModel p in member.Photos)
+        // MemberPhotos = await ImageService.   -- LEFT OFF HERE
+
+        foreach (PhotoModel p in Member.Photos)
         {
             p.Url = await ImageService.RequestImageAsync(p.Url);
         }
@@ -72,7 +76,7 @@
                 name: "\"files\"",
                 fileName: imageFile.Name);
 
-            ServiceResponseModel<PhotoModel> result = await MemberService.AddPhotoAsync(member.Username, content);
+            ServiceResponseModel<PhotoModel> result = await MemberService.AddPhotoAsync(Member.Username, content);
 
             if (result.Success)
             {

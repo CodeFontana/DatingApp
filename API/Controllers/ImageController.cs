@@ -39,7 +39,7 @@ namespace API.Controllers
         [HttpGet("{username}")]
         public async Task<IActionResult> Get(string username)
         {
-            ServiceResponseModel<List<byte[]>> response = await _imagesService.GetImages(username);
+            ServiceResponseModel<List<PhotoDownloadModel>> response = await _imagesService.GetImages(username);
 
             if (response.Success)
             {
