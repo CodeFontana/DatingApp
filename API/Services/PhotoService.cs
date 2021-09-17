@@ -72,8 +72,8 @@ namespace API.Services
                     string uploadPath = Path.Combine(_appEnv.ContentRootPath, $@"MemberData\{appUser.UserName}");
                     string fileName = Path.Combine(uploadPath, trustedName);
 
-                    // URL for API access -- https://localhost:5001/api/images/brian/xyz.jpg
-                    string apiUrl = $@"{requestUrl}api/Images/{appUser.UserName}/{trustedName}";
+                    // URL for API access -- https://localhost:5001/api/image/brian/xyz.jpg
+                    string apiUrl = $@"{requestUrl}api/Image/{appUser.UserName}/{trustedName}";
 
                     Directory.CreateDirectory(uploadPath);
                     resizedFile.Save(fileName);

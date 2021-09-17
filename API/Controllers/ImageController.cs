@@ -14,32 +14,17 @@ namespace API.Controllers
     [Authorize]
     public class ImageController : ControllerBase
     {
-        private readonly IImageService _imagesService;
+        private readonly IImageService _imageService;
 
-        public ImageController(IImageService imagesService)
+        public ImageController(IImageService imageService)
         {
-            _imagesService = imagesService;
+            _imageService = imageService;
         }
 
         [HttpGet("{username}/{filename}")]
         public async Task<IActionResult> Get(string username, string filename)
         {
-            ServiceResponseModel<byte[]> response = await _imagesService.GetImage(username, filename);
-
-            if (response.Success)
-            {
-                return Ok(response);
-            }
-            else
-            {
-                return BadRequest(response);
-            }
-        }
-
-        [HttpGet("{username}")]
-        public async Task<IActionResult> Get(string username)
-        {
-            ServiceResponseModel<List<PhotoDownloadModel>> response = await _imagesService.GetImages(username);
+            ServiceResponseModel<byte[]> response = await _imageService.GetImage(username, filename);
 
             if (response.Success)
             {

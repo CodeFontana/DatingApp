@@ -7,6 +7,5 @@ namespace API.Interfaces
     public interface IImageService
     {
         Task<ServiceResponseModel<byte[]>> GetImage(string username, string filename);
-        Task<ServiceResponseModel<List<PhotoDownloadModel>>> GetImages(string username);
     }
 }

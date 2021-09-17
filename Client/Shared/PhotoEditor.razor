@@ -35,8 +35,6 @@
     [Parameter]
     public EventCallback<string> OnImageUpload { get; set; }
 
-    public List<PhotoDownloadModel> MemberPhotos { get; set; }
-
     private long maxFileSize = 1024 * 1024 * 10;
     private bool uploading = false;
     private bool showError = false;
@@ -44,8 +42,6 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        // MemberPhotos = await ImageService.   -- LEFT OFF HERE
-
         foreach (PhotoModel p in Member.Photos)
         {
             p.Url = await ImageService.RequestImageAsync(p.Url);

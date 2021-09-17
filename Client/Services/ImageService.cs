@@ -28,7 +28,7 @@ namespace Client.Services
         public async Task<string> RequestImageAsync(string imageUrl)
         {
             // Sample URL per API/Services/PhotoService.cs:
-            // https://localhost:5001/api/images/brian/xyz.jpg
+            // https://localhost:5001/api/image/brian/xyz.jpg
 
             if (string.IsNullOrWhiteSpace(imageUrl))
             {
@@ -49,10 +49,10 @@ namespace Client.Services
 
             if (imageUrl.ToLower().StartsWith(_config["apiLocation"].ToLower()))
             {
-                // Images endpoint -- https://localhost:5001/api/images
+                // Images endpoint -- https://localhost:5001/api/image
                 string apiEndpoint = _config["apiLocation"].ToLower() + _config["imageEndpoint"].ToLower();
 
-                // Parse request fields -- https://localhost:5001/api/images/brian/xyz.jpg --> /brian/xyz.jpg
+                // Parse request fields -- https://localhost:5001/api/image/brian/xyz.jpg --> /brian/xyz.jpg
                 string requestItems = imageUrl.ToLower().Replace(apiEndpoint, "");
                 string username = requestItems[1..requestItems.LastIndexOf("/")];
                 string filename = requestItems[(requestItems.LastIndexOf("/") + 1)..];

@@ -74,57 +74,5 @@ namespace API.Services
 
             return serviceResponse;
         }
-
-        public async Task<ServiceResponseModel<List<PhotoDownloadModel>>> GetImages(string username)
-        {
-            ServiceResponseModel<List<PhotoDownloadModel>> serviceResponse = new();
-            List<PhotoDownloadModel> output = new();
-
-            try
-            {
-                _ = username ?? throw new ArgumentException("Invalid username");
-                MemberModel member = await _userRepository.GetMemberAsync(username);
-                _ = member ?? throw new Exception($"Member with username [{username}] does not exist");
-                
-                string userImageDir = Path.Combine(_appEnv.ContentRootPath, $@"MemberData\{username}");
-
-                if (Directory.Exists(userImageDir) == false)
-                {
-                    throw new DirectoryNotFoundException($"No images available for user {username}");
-                }
-
-                List<string> userImages = Directory.GetFiles(userImageDir)?.ToList();
-
-                if (userImages.Count == 0)
-                {
-                    throw new FileNotFoundException($"No images available for user {username}");
-                }
-
-                foreach (string file in userImages)
-                {
-                    PhotoDownloadModel p = new()
-                    {
-                        Filename = file[(file.LastIndexOf('\\') + 1)..],
-                        Data = await File.ReadAllBytesAsync(file)
-                    };
-
-                    output.Add(p);
-                }
-
-                serviceResponse.Success = true;
-                serviceResponse.Data = output;
-                serviceResponse.Message = $"Successfully loaded images for [{username}]";
-                _logger.LogInformation(serviceResponse.Message);
-            }
-            catch (Exception e)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = $"Failed to get requested images for [{username ?? "null"}]";
-                _logger.LogError(serviceResponse.Message);
-                _logger.LogError(e.Message);
-            }
-
-            return serviceResponse;
-        }
     }
 }
