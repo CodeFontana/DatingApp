@@ -1,6 +1,7 @@
 ﻿@inject IToastService ToastService
 @inject IMemberService MemberService
 @inject IImageService ImageService
+@inject ISpinnerService SpinnerService
 
 @if (showError)
 {
@@ -9,24 +10,31 @@
     </div>
 }
 
-<div>
-    <div class="row">
-        @foreach (PhotoModel p in Member.Photos)
-        {
-            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <img class="img-thumbnail rounded p-1" src="@p.Url">
-                <div class="text-center">
-                    <button class="btn">Main</button>
-                    <button class="btn btn-danger"><i class="fa fa-trash" /></button>
+@if (SpinnerService.HoldSpinner == false)
+{
+    <div>
+        <div class="row">
+            @foreach (PhotoModel p in Member.Photos)
+            {
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <img class="img-thumbnail rounded p-1" src="@p.Url">
+                    <div class="text-center">
+                        <button class="btn">Main</button>
+                        <button class="btn btn-danger"><i class="fa fa-trash" /></button>
+                    </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
+
+        <h3 class="mt-2">Add Photos</h3>
+
+        <div class="form-group drag-drop-zone">
+            <i class="fa fa-upload fa-3x"></i>
+            Drop new photo here
+            <InputFile disabled="@uploading" OnChange="HandleImageUpload" accept="image/*" />
+        </div>
     </div>
-    <div class="form-group drag-drop-zone">
-        Upload image files here.
-        <InputFile disabled="@uploading" OnChange="HandleImageUpload" accept="image/*" />
-    </div>
-</div>
+}
 
 @code {
     [Parameter]
@@ -40,12 +48,16 @@
     private bool showError = false;
     private string errorText;
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
+        SpinnerService.HoldSpinner = true;
+
         foreach (PhotoModel p in Member.Photos)
         {
             p.Url = await ImageService.RequestImageAsync(p.Url);
         }
+
+        SpinnerService.HoldSpinner = false;
     }
 
     private async Task HandleImageUpload(InputFileChangeEventArgs e)

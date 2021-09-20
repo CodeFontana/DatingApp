@@ -1,31 +1,34 @@
 ﻿@inject IImageService ImageService
 @inject ISpinnerService SpinnerService
 
-<div class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
+@if (SpinnerService.HoldSpinner == false)
+{
+    <div class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            @for (int i = 0; i < Photos.Count; i++)
+            {
+                <div class="carousel-item @(i == position ? "active":"")">
+                    <img class="img-fluid rounded mx-auto d-block centerstage" src="@Photos[i].Url">
+                </div>
+            }
+        </div>
+        <a class="carousel-control-prev" role="button" data-slide="prev" @onclick="HandlePrev">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" role="button" data-slide="next" @onclick="HandleNext">
+            <span class="carousel-control-next-icon"></span>
+        </a>
+    </div>
+    <div class="row">
         @for (int i = 0; i < Photos.Count; i++)
         {
-            <div class="carousel-item @(i == position ? "active":"")">
-                <img class="img-fluid rounded mx-auto d-block centerstage" src="@Photos[i].Url">
+            int buttonIndex = i;
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <img class="img-thumbnail rounded" src="@Photos[i].Url" @onclick="() => HandleThumbnailClick(buttonIndex)">
             </div>
         }
-    </div>
-    <a class="carousel-control-prev" role="button" data-slide="prev" @onclick="HandlePrev">
-        <span class="carousel-control-prev-icon"></span>
-    </a>
-    <a class="carousel-control-next" role="button" data-slide="next" @onclick="HandleNext">
-        <span class="carousel-control-next-icon"></span>
-    </a>
-</div>
-<div class="row">
-    @for (int i = 0; i < Photos.Count; i++)
-    {
-        int buttonIndex = i;
-        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-            <img class="img-thumbnail rounded" src="@Photos[i].Url" @onclick="() => HandleThumbnailClick(buttonIndex)">
-        </div>
-    }
-</div>
+    </div>   
+}
 
 @code {
     [Parameter]
