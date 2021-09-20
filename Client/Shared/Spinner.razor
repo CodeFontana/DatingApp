@@ -2,28 +2,28 @@
 
 @if (isVisible)
 {
-<div class="spinner-container">
-    @if (spinType == 0)
-    {
-        <Spinner_Wave />
-    }
-    else if (spinType == 1)
-    {
-        <Spinner_ChasingDots />
-    }
-    else if (spinType == 2)
-    {
-        <Spinner_ThreeDots />
-    }
-    else if (spinType == 3)
-    {
-        <Spinner_FadingCircle />
-    }
-    else
-    {
-        <Spinner_Wave />
-    }
-</div>
+    <div class="spinner-container">
+        @if (spinType == 0)
+        {
+            <Spinner_Wave />
+        }
+        else if (spinType == 1)
+        {
+            <Spinner_ChasingDots />
+        }
+        else if (spinType == 2)
+        {
+            <Spinner_ThreeDots />
+        }
+        else if (spinType == 3)
+        {
+            <Spinner_FadingCircle />
+        }
+        else
+        {
+            <Spinner_Wave />
+        }
+    </div>
 }
 
 @code
