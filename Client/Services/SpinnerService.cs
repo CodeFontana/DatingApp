@@ -1,23 +1,40 @@
-﻿using System;
+﻿using Client.Helpers;
+using Client.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Client.Services
 {
-    public class SpinnerService
+    public class SpinnerService : ISpinnerService
     {
-		public event Action OnShow;
-		public event Action OnHide;
+        public event Action OnShow;
+        public event Action OnHide;
 
-		public void Show()
-		{
-			OnShow?.Invoke();
-		}
+        private bool _holdSpinner = false;
 
-		public void Hide()
-		{
-			OnHide?.Invoke();
-		}
-	}
+        public bool HoldSpinner
+        {
+            get { return _holdSpinner; }
+            set
+            {
+                _holdSpinner = value;
+                Hide();
+            }
+        }
+
+        public void Show()
+        {
+            OnShow?.Invoke();
+        }
+
+        public void Hide()
+        {
+            if (HoldSpinner == false)
+            {
+                OnHide?.Invoke();
+            }
+        }
+    }
 }

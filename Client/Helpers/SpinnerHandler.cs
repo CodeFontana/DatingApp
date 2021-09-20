@@ -1,4 +1,5 @@
-﻿using Client.Services;
+﻿using Client.Interfaces;
+using Client.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,9 @@ namespace Client.Helpers
 {
     public class SpinnerHandler : DelegatingHandler
     {
-        private readonly SpinnerService _spinnerService;
+        private readonly ISpinnerService _spinnerService;
 
-        public SpinnerHandler(SpinnerService spinnerService)
+        public SpinnerHandler(ISpinnerService spinnerService)
         {
             _spinnerService = spinnerService;
         }

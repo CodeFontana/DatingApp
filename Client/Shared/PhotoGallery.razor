@@ -1,4 +1,5 @@
 ﻿@inject IImageService ImageService
+@inject ISpinnerService SpinnerService
 
 <div class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
@@ -34,10 +35,14 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        SpinnerService.HoldSpinner = true;
+
         foreach (PhotoModel p in Photos)
         {
             p.Url = await ImageService.RequestImageAsync(p.Url);
         }
+
+        SpinnerService.HoldSpinner = false;
     }
 
     private void HandleNext()

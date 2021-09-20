@@ -32,7 +32,7 @@ namespace Client
             builder.Services.AddScoped<IMemberService, MemberService>();
             builder.Services.AddScoped<IImageService, ImageService>();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
-            builder.Services.AddScoped<SpinnerService>();
+            builder.Services.AddScoped<ISpinnerService, SpinnerService>();
             builder.Services.AddScoped<SpinnerHandler>();
             builder.Services.AddScoped(s =>
             {
