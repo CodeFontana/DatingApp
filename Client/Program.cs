@@ -32,17 +32,15 @@ namespace Client
             builder.Services.AddScoped<IMemberService, MemberService>();
             builder.Services.AddScoped<IImageService, ImageService>();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped<SpinnerService>();
             builder.Services.AddScoped<SpinnerHandler>();
             builder.Services.AddScoped(s =>
             {
                 SpinnerHandler spinHandler = s.GetRequiredService<SpinnerHandler>();
                 spinHandler.InnerHandler = new HttpClientHandler();
-                NavigationManager navManager = s.GetRequiredService<NavigationManager>();
                 return new HttpClient(spinHandler)
                 {
-                    BaseAddress = new Uri(navManager.BaseUri)
+                    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
                 };
             });
 
