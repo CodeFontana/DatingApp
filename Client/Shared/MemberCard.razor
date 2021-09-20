@@ -30,7 +30,7 @@
 
     private string photoUrl = "./assets/user.png";
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
         photoUrl = await ImageService.RequestImageAsync(Member.PhotoUrl);
         Member.PhotoUrl = photoUrl;

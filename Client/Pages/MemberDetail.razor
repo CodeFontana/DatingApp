@@ -75,7 +75,7 @@
     private bool showError = false;
     private string errorText;
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
         ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(Username);
 
