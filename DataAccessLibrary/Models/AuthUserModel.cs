@@ -2,9 +2,9 @@ using DataAccessLibrary.Interfaces;
 
 namespace DataAccessLibrary.Models
 {
-    public class AuthUserModel
+    public record AuthUserModel
     {
-        public string Username { get; set; }
-        public string Token { get; set; }
+        public string Username { get; init; }
+        public string Token { get; init; }
     }
 }
