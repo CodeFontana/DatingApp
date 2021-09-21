@@ -120,21 +120,21 @@ namespace Client.Services
             return result;
         }
 
-        public async Task<string> GetPhotoAsync(string imageUrl)
+        public async Task<string> GetPhotoAsync(string photoUrl)
         {
             // Sample URL per API/Services/PhotoService.cs:
-            // https://localhost:5001/api/image/brian/xyz.jpg
+            // https://localhost:5001/api/users/brian/xyz.jpg
 
-            if (string.IsNullOrWhiteSpace(imageUrl))
+            if (string.IsNullOrWhiteSpace(photoUrl))
             {
                 return "./assets/user.png";
             }
-            else if (imageUrl.ToLower().Contains(_config["imageEndpoint"].ToLower()) == false)
+            else if (photoUrl.ToLower().Contains(_config["usersEndpoint"].ToLower()) == false)
             {
-                return imageUrl;
+                return photoUrl;
             }
 
-            bool validUrl = Uri.TryCreate(imageUrl, UriKind.Absolute, out Uri uriResult)
+            bool validUrl = Uri.TryCreate(photoUrl, UriKind.Absolute, out Uri uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
 
             if (validUrl == false)
@@ -142,13 +142,13 @@ namespace Client.Services
                 return "./assets/user.png";
             }
 
-            if (imageUrl.ToLower().StartsWith(_config["apiLocation"].ToLower()))
+            if (photoUrl.ToLower().StartsWith(_config["apiLocation"].ToLower()))
             {
-                // Images endpoint -- https://localhost:5001/api/image
-                string apiEndpoint = _config["apiLocation"].ToLower() + _config["imageEndpoint"].ToLower();
+                // Endpoint -- https://localhost:5001/api/users
+                string apiEndpoint = _config["apiLocation"].ToLower() + _config["usersEndpoint"].ToLower();
 
-                // Parse request fields -- https://localhost:5001/api/image/brian/xyz.jpg --> /brian/xyz.jpg
-                string requestItems = imageUrl.ToLower().Replace(apiEndpoint, "");
+                // Parse request fields -- https://localhost:5001/api/users/brian/xyz.jpg --> /brian/xyz.jpg
+                string requestItems = photoUrl.ToLower().Replace(apiEndpoint, "");
                 string username = requestItems[1..requestItems.LastIndexOf("/")];
                 string filename = requestItems[(requestItems.LastIndexOf("/") + 1)..];
 
@@ -167,7 +167,7 @@ namespace Client.Services
             }
             else
             {
-                return imageUrl;
+                return photoUrl;
             }
         }
     }
