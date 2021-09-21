@@ -1,10 +1,8 @@
 ﻿using API.Interfaces;
-using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,15 +12,12 @@ namespace API.Services
     public class ImageService : IImageService
     {
         private readonly IWebHostEnvironment _appEnv;
-        private readonly IUserRepository _userRepository;
         private readonly ILogger<ImageService> _logger;
 
         public ImageService(IWebHostEnvironment appEnv,
-                            IUserRepository userRepository,
                             ILogger<ImageService> logger)
         {
             _appEnv = appEnv;
-            _userRepository = userRepository;
             _logger = logger;
         }
 
