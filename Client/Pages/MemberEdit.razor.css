@@ -48,7 +48,7 @@
 }
 
 ::deep .drag-drop-zone {
-    border: 3px dashed #e68710;
+    border: 1px solid black;
     padding: 3rem;
     display: flex;
     align-items: center;
@@ -64,6 +64,7 @@
 
     ::deep .drag-drop-zone:hover {
         background-color: #f5f5f5;
+        border: 3px dotted red;
     }
 
     ::deep .drag-drop-zone input[type=file] {
