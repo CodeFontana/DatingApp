@@ -57,6 +57,11 @@ namespace Client.Services
 
         public async Task<ServiceResponseModel<MemberModel>> GetMemberAsync(string username)
         {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                throw new ArgumentNullException("Invalid username");
+            }
+            
             MemberModel member = Members.FirstOrDefault(x => x.Username.ToLower().Equals(username.ToLower()));
 
             if (member != null)
@@ -169,6 +174,29 @@ namespace Client.Services
             {
                 return photoUrl;
             }
+        }
+
+        public async Task<ServiceResponseModel<string>> DeletePhotoAsync(string username, PhotoModel photo)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                throw new ArgumentNullException("Invalid username");
+            }
+
+            _ = photo ?? throw new ArgumentNullException("Invalid photo");
+
+            string apiEndpoint = _config["apiLocation"] + _config["deletePhotoEndpoint"] + $"/{username}";
+            using HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiEndpoint, photo);
+            ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>>(_options);
+
+            if (result.Success)
+            {
+                MemberModel member = Members.FirstOrDefault(x => x.Username.ToLower().Equals(username.ToLower()));
+                PhotoModel p = member.Photos.FirstOrDefault(x => x.Id == photo.Id);
+                member.Photos.Remove(p);
+            }
+
+            return result;
         }
     }
 }

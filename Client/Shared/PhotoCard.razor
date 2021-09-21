@@ -1,4 +1,5 @@
 ﻿@inject IMemberService MemberService
+@inject IToastService ToastService
 
 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
     <img class="img-thumbnail rounded p-1" src="@ResultUrl">
@@ -10,17 +11,33 @@
 
 @code {
     [Parameter]
+    public string Username { get; set; }
+    
+    [Parameter]
     public PhotoModel Photo { get; set; }
 
-    public string ResultUrl { get; set; } = "./assets/user.png";
+    [Parameter]
+    public EventCallback<string> OnImageChanged { get; set; }
+
+    private string ResultUrl { get; set; } = "./assets/user.png";
 
     protected override async Task OnInitializedAsync()
     {
         ResultUrl = await MemberService.GetPhotoAsync(Photo.Url);
     }
 
-    private void HandleDelete()
+    private async Task HandleDelete()
     {
-        
+        ServiceResponseModel<string> result = await MemberService.DeletePhotoAsync(Username, Photo);
+
+        if (result.Success)
+        {
+            ToastService.ShowSuccess("Photo deleted successfully");
+            await OnImageChanged.InvokeAsync();
+        }
+        else
+        {
+            ToastService.ShowError($"{result.Message}");
+        }
     }
 }

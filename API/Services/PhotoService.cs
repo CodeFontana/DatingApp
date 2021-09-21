@@ -44,7 +44,11 @@ namespace API.Services
                 AppUser appUser = await _userRepository.GetUserByUsernameAsync(username);
                 IFormFile file = files.FirstOrDefault();
 
-                if (file == null || file.Length == 0)
+                if (appUser == null)
+                {
+                    throw new ArgumentNullException($"Invalid username");
+                }
+                else if (file == null || file.Length == 0)
                 {
                     throw new ArgumentNullException($"Failed to add photo for user [{username}]: Empty file");
                 }
@@ -73,7 +77,7 @@ namespace API.Services
                     string fileName = Path.Combine(uploadPath, trustedName);
 
                     // URL for API access -- https://localhost:5001/api/image/brian/xyz.jpg
-                    string apiUrl = $@"{requestUrl}api/Image/{appUser.UserName}/{trustedName}";
+                    string apiUrl = $@"{requestUrl}api/Users/{appUser.UserName}/{trustedName}";
 
                     Directory.CreateDirectory(uploadPath);
                     resizedFile.Save(fileName);
@@ -102,7 +106,7 @@ namespace API.Services
                     {
                         serviceResponse.Success = false;
                         serviceResponse.Message = $"Failed to add photo for user [{username}]: Error saving to database";
-                        _logger.LogInformation(serviceResponse.Message);
+                        _logger.LogError(serviceResponse.Message);
                     }
                 }
             }
@@ -151,19 +155,49 @@ namespace API.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponseModel<string>> DeletePhotoAsync(string username, int photoId)
+        public async Task<ServiceResponseModel<string>> DeletePhotoAsync(string username, PhotoModel photo)
         {
             ServiceResponseModel<string> serviceResponse = new();
 
             try
             {
                 AppUser appUser = await _userRepository.GetUserByUsernameAsync(username);
+                
+                _ = username ?? throw new ArgumentException("Invalid username");
+                _ = photo ?? throw new ArgumentException("Invalid photo for deletion");
 
+                Photo p = appUser.Photos.FirstOrDefault(x => x.Id == photo.Id);
+
+                if (p is not null)
+                {
+                    appUser.Photos.Remove(p);
+
+                    string uploadPath = Path.Combine(_appEnv.ContentRootPath, $@"MemberData\{appUser.UserName}");
+                    string fileName = Path.Combine(uploadPath, photo.Url[(photo.Url.LastIndexOf("/") + 1)..]);
+
+                    if (File.Exists(fileName))
+                    {
+                        File.Delete(fileName);
+                    }
+                }
+
+                if (await _userRepository.SaveAllAsync())
+                {
+                    serviceResponse.Success = true;
+                    serviceResponse.Message = $"Successfully delete photo for user [{username}]";
+                    _logger.LogInformation(serviceResponse.Message);
+                }
+                else
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = $"Failed to delete photo for user [{username}]: Error saving to database";
+                    _logger.LogError(serviceResponse.Message);
+                }
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = $"Failed to delete photo for [{username}]";
+                serviceResponse.Message = e.Message;
                 _logger.LogError(serviceResponse.Message);
                 _logger.LogError(e.Message);
             }

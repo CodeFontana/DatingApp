@@ -13,7 +13,7 @@
     <div class="row">
         @foreach (PhotoModel p in Member.Photos)
         {
-            <PhotoCard Photo="@p" />
+            <PhotoCard Username="@Member.Username" Photo="@p" OnImageChanged="HandleImageDeleted" />
         }
     </div>
 
@@ -31,7 +31,7 @@
     public MemberModel Member { get; set; }
 
     [Parameter]
-    public EventCallback<string> OnImageUpload { get; set; }
+    public EventCallback<string> OnImageChanged { get; set; }
 
     private long maxFileSize = 1024 * 1024 * 10;
     private bool uploading = false;
@@ -68,7 +68,7 @@
             {
                 ToastService.ShowSuccess("Photo added successfully");
                 showError = false;
-                await OnImageUpload.InvokeAsync();
+                await OnImageChanged.InvokeAsync();
             }
             else
             {
@@ -87,5 +87,10 @@
         {
             uploading = false;
         }
+    }
+
+    private async Task HandleImageDeleted()
+    {
+        await OnImageChanged.InvokeAsync();
     }
 }

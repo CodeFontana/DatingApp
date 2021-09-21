@@ -110,7 +110,7 @@
                     </EditForm>
                 </TabPage>
                 <TabPage Text="Edit Photos">
-                    <PhotoEditor member="@member" OnImageUpload="ImageUploadCallback" />
+                    <PhotoEditor member="@member" OnImageChanged="ImageChangedCallback" />
                 </TabPage>
             </TabControl>
         </div>
@@ -171,7 +171,7 @@
         }
     }
 
-    private async Task ImageUploadCallback()
+    private async Task ImageChangedCallback()
     {
         await LoadMember();
     }

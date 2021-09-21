@@ -100,5 +100,20 @@ namespace API.Controllers
                 return BadRequest(response);
             }
         }
+
+        [HttpPut("delete-photo/{username}")]
+        public async Task<IActionResult> DeletePhoto(string username, [FromBody] PhotoModel photo)
+        {
+            ServiceResponseModel<string> response = await _photoService.DeletePhotoAsync(username, photo);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(response);
+            }
+        }
     }
 }
