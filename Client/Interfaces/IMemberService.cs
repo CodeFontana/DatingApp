@@ -11,6 +11,7 @@ namespace Client.Interfaces
         Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string username, MultipartFormDataContent content);
         Task<ServiceResponseModel<MemberModel>> GetMemberAsync(string username);
         Task<ServiceResponseModel<IEnumerable<MemberModel>>> GetMembersAsync();
+        Task<string> GetPhotoAsync(string imageUrl);
         Task<ServiceResponseModel<string>> UpdateMemberAsync(MemberUpdateModel memberUpdate);
     }
 }

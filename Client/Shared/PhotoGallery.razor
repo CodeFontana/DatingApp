@@ -1,4 +1,4 @@
-﻿@inject IImageService ImageService
+﻿@inject IMemberService MemberService
 @inject ISpinnerService SpinnerService
 
 @if (SpinnerService.HoldSpinner == false)
@@ -42,7 +42,7 @@
 
         foreach (PhotoModel p in Photos)
         {
-            p.Url = await ImageService.RequestImageAsync(p.Url);
+            p.Url = await MemberService.GetPhotoAsync(p.Url);
         }
 
         SpinnerService.HoldSpinner = false;

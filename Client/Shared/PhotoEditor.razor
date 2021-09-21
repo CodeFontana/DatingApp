@@ -1,6 +1,5 @@
 ﻿@inject IToastService ToastService
 @inject IMemberService MemberService
-@inject IImageService ImageService
 @inject ISpinnerService SpinnerService
 
 @if (showError)
@@ -14,7 +13,7 @@
     <div class="row">
         @foreach (PhotoModel p in Member.Photos)
         {
-            <PhotoCard PhotoUrl="@p.Url" />
+            <PhotoCard Photo="@p" />
         }
     </div>
 

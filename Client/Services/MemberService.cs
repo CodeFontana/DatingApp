@@ -18,18 +18,15 @@ namespace Client.Services
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _options;
         private readonly IMapper _mapper;
-        private readonly IImageService _imageService;
 
         public MemberService(IConfiguration config,
                              HttpClient httpClient,
-                             IMapper mapper,
-                             IImageService imageService)
+                             IMapper mapper)
         {
             _config = config;
             _httpClient = httpClient;
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             _mapper = mapper;
-            _imageService = imageService;
         }
 
         private List<MemberModel> Members { get; set; } = new();
@@ -100,7 +97,7 @@ namespace Client.Services
         {
             string apiEndpoint = _config["apiLocation"] + _config["addPhotoEndpoint"];
             using HttpResponseMessage response = await _httpClient.PostAsync(apiEndpoint, content);
-            ServiceResponseModel <PhotoModel> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<PhotoModel>>(_options);
+            ServiceResponseModel<PhotoModel> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<PhotoModel>>(_options);
 
             if (result.Success)
             {
@@ -109,15 +106,69 @@ namespace Client.Services
 
                 if (result.Data.IsMain)
                 {
-                    // Main photo -- set as Member's PhotoUrl
-                    member.PhotoUrl = result.Data.Url;
-
-                    // Request the new image from the service (this is bc our API requires authentication for images)
-                    member.PhotoUrl = await _imageService.RequestImageAsync(member.PhotoUrl);
+                    // Download image from URL
+                    // --> The API stores images securely, requiring a JWT bearer
+                    //     token to view/download the member's images. Because of
+                    //     this, we cannot just place the image URL inside an img
+                    //     tag. Instead, the image must be requested from an
+                    //     HttpClient that contains the proper JWT bearer token,
+                    //     which is what is happening here.
+                    member.PhotoUrl = await GetPhotoAsync(result.Data.Url);
                 }
             }
 
             return result;
+        }
+
+        public async Task<string> GetPhotoAsync(string imageUrl)
+        {
+            // Sample URL per API/Services/PhotoService.cs:
+            // https://localhost:5001/api/image/brian/xyz.jpg
+
+            if (string.IsNullOrWhiteSpace(imageUrl))
+            {
+                return "./assets/user.png";
+            }
+            else if (imageUrl.ToLower().Contains(_config["imageEndpoint"].ToLower()) == false)
+            {
+                return imageUrl;
+            }
+
+            bool validUrl = Uri.TryCreate(imageUrl, UriKind.Absolute, out Uri uriResult)
+                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+
+            if (validUrl == false)
+            {
+                return "./assets/user.png";
+            }
+
+            if (imageUrl.ToLower().StartsWith(_config["apiLocation"].ToLower()))
+            {
+                // Images endpoint -- https://localhost:5001/api/image
+                string apiEndpoint = _config["apiLocation"].ToLower() + _config["imageEndpoint"].ToLower();
+
+                // Parse request fields -- https://localhost:5001/api/image/brian/xyz.jpg --> /brian/xyz.jpg
+                string requestItems = imageUrl.ToLower().Replace(apiEndpoint, "");
+                string username = requestItems[1..requestItems.LastIndexOf("/")];
+                string filename = requestItems[(requestItems.LastIndexOf("/") + 1)..];
+
+                using HttpResponseMessage response = await _httpClient.GetAsync($"{apiEndpoint}{requestItems}");
+                ServiceResponseModel<byte[]> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<byte[]>>(_options);
+
+                if (result.Success)
+                {
+                    string imageBase64 = Convert.ToBase64String(result.Data);
+                    return string.Format("data:image/jpg;base64,{0}", imageBase64);
+                }
+                else
+                {
+                    return "./assets/user.png";
+                }
+            }
+            else
+            {
+                return imageUrl;
+            }
         }
     }
 }

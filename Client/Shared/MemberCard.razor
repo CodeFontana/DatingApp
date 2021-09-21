@@ -1,5 +1,5 @@
 ﻿@inject NavigationManager NavManager
-@inject IImageService ImageService
+@inject IMemberService MemberService
 
 <div class="card mb-4">
     <div class="card-img-wrapper mb-2">
@@ -32,7 +32,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        photoUrl = await ImageService.RequestImageAsync(Member.PhotoUrl);
+        photoUrl = await MemberService.GetPhotoAsync(Member.PhotoUrl);
         Member.PhotoUrl = photoUrl;
     }
 

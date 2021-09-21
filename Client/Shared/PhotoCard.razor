@@ -1,21 +1,26 @@
-﻿@inject IImageService ImageService
+﻿@inject IMemberService MemberService
 
 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
     <img class="img-thumbnail rounded p-1" src="@ResultUrl">
     <div class="text-center">
         <button class="btn">Main</button>
-        <button class="btn btn-danger"><i class="fa fa-trash" /></button>
+        <button class="btn btn-danger" @onclick="HandleDelete"><i class="fa fa-trash" /></button>
     </div>
 </div>
 
 @code {
     [Parameter]
-    public string PhotoUrl { get; set; }
+    public PhotoModel Photo { get; set; }
 
     public string ResultUrl { get; set; } = "./assets/user.png";
 
     protected override async Task OnInitializedAsync()
     {
-        ResultUrl = await ImageService.RequestImageAsync(PhotoUrl);
+        ResultUrl = await MemberService.GetPhotoAsync(Photo.Url);
+    }
+
+    private void HandleDelete()
+    {
+        
     }
 }
