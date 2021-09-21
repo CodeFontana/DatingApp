@@ -26,7 +26,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsersAsync()
         {
             ServiceResponseModel<IEnumerable<MemberModel>> response = await _usersService.GetUsers(User.Identity.Name);
 
@@ -41,9 +41,24 @@ namespace API.Controllers
         }
 
         [HttpGet("{username}")]
-        public async Task<IActionResult> GetUser(string username)
+        public async Task<IActionResult> GetUserAsync(string username)
         {
             ServiceResponseModel<MemberModel> response = await _usersService.GetUser(username, User.Identity.Name);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(response);
+            }
+        }
+
+        [HttpGet("{username}/{filename}")]
+        public async Task<IActionResult> GetUserPhotoAsync(string username, string filename)
+        {
+            ServiceResponseModel<byte[]> response = await _photoService.GetPhotoAsync(username, filename);
 
             if (response.Success)
             {

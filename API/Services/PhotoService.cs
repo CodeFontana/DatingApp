@@ -117,6 +117,40 @@ namespace API.Services
             return serviceResponse;
         }
 
+        public async Task<ServiceResponseModel<byte[]>> GetPhotoAsync(string username, string filename)
+        {
+            ServiceResponseModel<byte[]> serviceResponse = new();
+
+            try
+            {
+                _ = username ?? throw new ArgumentException("Invalid username");
+                _ = filename ?? throw new ArgumentException("Invalid filename");
+
+                string imageFile = Path.Combine(_appEnv.ContentRootPath, $@"MemberData\{username}\{filename}");
+
+                if (File.Exists(imageFile) == false)
+                {
+                    throw new FileNotFoundException($"Image not found [{imageFile ?? "null"}]");
+                }
+
+                byte[] imageBytes = await File.ReadAllBytesAsync(imageFile);
+
+                serviceResponse.Success = true;
+                serviceResponse.Data = imageBytes;
+                serviceResponse.Message = $"Successfully loaded image for [{username}]";
+                _logger.LogInformation(serviceResponse.Message);
+            }
+            catch (Exception e)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Failed to get requested image [{filename ?? "null"}] for user [{username ?? "null"}]";
+                _logger.LogError(serviceResponse.Message);
+                _logger.LogError(e.Message);
+            }
+
+            return serviceResponse;
+        }
+
         public async Task<ServiceResponseModel<string>> DeletePhotoAsync(string username, int photoId)
         {
             ServiceResponseModel<string> serviceResponse = new();

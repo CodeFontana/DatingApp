@@ -9,5 +9,6 @@ namespace API.Interfaces
     {
         Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string requestUrl, string username, IEnumerable<IFormFile> file);
         Task<ServiceResponseModel<string>> DeletePhotoAsync(string username, int photoId);
+        Task<ServiceResponseModel<byte[]>> GetPhotoAsync(string username, string filename);
     }
 }
