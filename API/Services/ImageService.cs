@@ -40,7 +40,6 @@ namespace API.Services
             catch (Exception e)
             {
                 _logger.LogError($"Failed to get requested image [{filename ?? "null"}] for user [{username ?? "null"}]");
-
                 _logger.LogError(e.Message);
                 return null;
             }
