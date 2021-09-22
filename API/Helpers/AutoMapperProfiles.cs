@@ -14,8 +14,8 @@ namespace API.Helpers
         public AutoMapperProfiles()
         {
             CreateMap<AppUser, MemberModel>()
-                .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src =>
-                    src.Photos.FirstOrDefault(x => x.IsMain).Url))
+                .ForMember(dest => dest.MainPhotoFilename, opt => opt.MapFrom(src =>
+                    src.Photos.FirstOrDefault(x => x.IsMain).Filename))
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
             CreateMap<Photo, PhotoModel>();
             CreateMap<MemberUpdateModel, AppUser>();

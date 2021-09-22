@@ -9,7 +9,7 @@ namespace DataAccessLibrary.Entities
         public int Id { get; set; }
 
         [MaxLength(500)]
-        public string Url { get; set; }
+        public string Filename { get; set; }
 
         [Required]
         public bool IsMain { get; set; }

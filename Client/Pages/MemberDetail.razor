@@ -18,10 +18,17 @@
         <div class="row">
             <div class="col-12 col-md-4">
                 <div class="card">
-                    <img class="card-img-top img-thumbnail mx-auto" src="@member.PhotoUrl" alt="@member.KnownAs" />
+                    @if (string.IsNullOrWhiteSpace(member.MainPhotoFilename))
+                    {
+                        <img class="card-img-top img-thumbnail mx-auto" src="./assets/user.png" alt="@member.KnownAs" />
+                    }
+                    else
+                    {
+                        <img class="card-img-top img-thumbnail mx-auto" src="@member.MainPhotoFilename" alt="@member.KnownAs" />
+                    }
                     <div class="card-body">
                         <strong>Location:</strong>
-                        <p>@member.City, @member.Country</p>
+                        <p>@member.City, @member.State</p>
                     </div>
                     <div class="card-body">
                         <strong>Age:</strong>
@@ -56,7 +63,7 @@
                         <p class="pl-1">@member.Interests</p>
                     </TabPage>
                     <TabPage Text="Photos">
-                        <PhotoGallery Photos="@member.Photos" />
+                        <PhotoGallery Member="@member" />
                     </TabPage>
                     <TabPage Text="Messages">
                         <p>Messages will go here!</p>

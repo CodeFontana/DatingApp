@@ -39,17 +39,17 @@
         </div>
         <div class="col-12 col-md-4">
             <div class="card">
-                @if (string.IsNullOrWhiteSpace(member.PhotoUrl))
+                @if (string.IsNullOrWhiteSpace(member.MainPhotoFilename))
                 {
                     <img class="card-img-top img-thumbnail mx-auto" src="./assets/user.png" alt="@member.KnownAs" />
                 }
                 else
                 {
-                    <img class="card-img-top img-thumbnail mx-auto" src="@member.PhotoUrl" alt="@member.KnownAs" />
+                    <img class="card-img-top img-thumbnail mx-auto" src="@member.MainPhotoFilename" alt="@member.KnownAs" />
                 }
                 <div class="card-body">
                     <strong>Location:</strong>
-                    <p>@member.City, @member.Country</p>
+                    <p>@member.City, @member.State</p>
                 </div>
                 <div class="card-body">
                     <strong>Age:</strong>
@@ -98,12 +98,12 @@
                             </div>
 
                             <div class="col-6">
-                                <label>Country:</label>
-                                <InputText class="form-control userinput" @bind-Value="memberUpdate.Country" />
+                                <label>State:</label>
+                                <InputText class="form-control userinput" @bind-Value="memberUpdate.State" />
                             </div>
 
                             <ValidationMessage For="(() => memberUpdate.City)" />
-                            <ValidationMessage For="(() => memberUpdate.Country)" />
+                            <ValidationMessage For="(() => memberUpdate.State)" />
 
                         </div>
 

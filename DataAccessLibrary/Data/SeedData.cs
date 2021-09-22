@@ -64,7 +64,7 @@ namespace DataAccessLibrary.Data
                     LookingFor = "Judy, Piper and Horsie.",
                     Interests = "C# + ASP.NET Core Blazor",
                     City = "Center Moriches",
-                    Country = "USA"
+                    State = "New York"
                 };
 
                 await userManager.CreateAsync(admin, "Passw0rd123!!");

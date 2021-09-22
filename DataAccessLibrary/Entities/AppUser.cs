@@ -37,7 +37,7 @@ namespace DataAccessLibrary.Entities
         public string City { get; set; }
 
         [MaxLength(100)]
-        public string Country { get; set; }
+        public string State { get; set; }
 
         public ICollection<Photo> Photos { get; set; }
     }

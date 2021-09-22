@@ -34,7 +34,7 @@ namespace API.Services
             _logger = logger;
         }
 
-        public async Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string requestUrl, string username, IEnumerable<IFormFile> files)
+        public async Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string username, IEnumerable<IFormFile> files)
         {
             ServiceResponseModel<PhotoModel> serviceResponse = new();
             long maxFileSize = 1024 * 1024 * 5;
@@ -71,20 +71,17 @@ namespace API.Services
                     await file.CopyToAsync(memoryStream);
                     Image resizedFile = ResizeImage(Image.FromStream(memoryStream), new RectangleF(0, 0, 500, 500));
 
-                    // Build wwwroot/MemberData save path and URL
+                    // Build wwwroot/MemberData save path and filename
                     string trustedName = Guid.NewGuid().ToString() + ".jpg";
                     string uploadPath = Path.Combine(_appEnv.ContentRootPath, $@"MemberData\{appUser.UserName}");
                     string fileName = Path.Combine(uploadPath, trustedName);
-
-                    // URL for API access -- https://localhost:5001/api/image/brian/xyz.jpg
-                    string apiUrl = $@"{requestUrl}api/Users/{appUser.UserName}/{trustedName}";
 
                     Directory.CreateDirectory(uploadPath);
                     resizedFile.Save(fileName);
 
                     Photo newPhoto = new()
                     {
-                        Url = apiUrl,
+                        Filename = trustedName,
                         IsMain = false,
                     };
 
@@ -172,8 +169,8 @@ namespace API.Services
                 {
                     appUser.Photos.Remove(p);
 
-                    string uploadPath = Path.Combine(_appEnv.ContentRootPath, $@"MemberData\{appUser.UserName}");
-                    string fileName = Path.Combine(uploadPath, photo.Url[(photo.Url.LastIndexOf("/") + 1)..]);
+                    string path = Path.Combine(_appEnv.ContentRootPath, $@"MemberData\{appUser.UserName}");
+                    string fileName = Path.Combine(path, photo.Filename[(photo.Filename.LastIndexOf("/") + 1)..]);
 
                     if (File.Exists(fileName))
                     {

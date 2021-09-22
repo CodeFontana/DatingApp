@@ -118,46 +118,28 @@ namespace Client.Services
                     //     tag. Instead, the image must be requested from an
                     //     HttpClient that contains the proper JWT bearer token,
                     //     which is what is happening here.
-                    member.PhotoUrl = await GetPhotoAsync(result.Data.Url);
+                    member.MainPhotoFilename = await GetPhotoAsync(username, result.Data.Filename);
                 }
             }
 
             return result;
         }
 
-        public async Task<string> GetPhotoAsync(string photoUrl)
+        public async Task<string> GetPhotoAsync(string username, string filename)
         {
-            // Sample URL per API/Services/PhotoService.cs:
-            // https://localhost:5001/api/users/brian/xyz.jpg
-
-            if (string.IsNullOrWhiteSpace(photoUrl))
+            if (string.IsNullOrWhiteSpace(filename) || filename.ToLower().EndsWith("user.png"))
             {
                 return "./assets/user.png";
             }
-            else if (photoUrl.ToLower().Contains(_config["usersEndpoint"].ToLower()) == false)
+            else if (filename.ToLower().StartsWith("http") || 
+                filename.ToLower().StartsWith("data:image"))
             {
-                return photoUrl;
+                return filename;
             }
-
-            bool validUrl = Uri.TryCreate(photoUrl, UriKind.Absolute, out Uri uriResult)
-                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-
-            if (validUrl == false)
+            else
             {
-                return "./assets/user.png";
-            }
-
-            if (photoUrl.ToLower().StartsWith(_config["apiLocation"].ToLower()))
-            {
-                // Endpoint -- https://localhost:5001/api/users
-                string apiEndpoint = _config["apiLocation"].ToLower() + _config["usersEndpoint"].ToLower();
-
-                // Parse request fields -- https://localhost:5001/api/users/brian/xyz.jpg --> /brian/xyz.jpg
-                string requestItems = photoUrl.ToLower().Replace(apiEndpoint, "");
-                string username = requestItems[1..requestItems.LastIndexOf("/")];
-                string filename = requestItems[(requestItems.LastIndexOf("/") + 1)..];
-
-                using HttpResponseMessage response = await _httpClient.GetAsync($"{apiEndpoint}{requestItems}");
+                string apiEndpoint = _config["apiLocation"] + _config["getPhotoEndpoint"] + $"/{username}/{filename}";
+                using HttpResponseMessage response = await _httpClient.GetAsync($"{apiEndpoint}");
                 ServiceResponseModel<byte[]> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<byte[]>>(_options);
 
                 if (result.Success)
@@ -170,10 +152,6 @@ namespace Client.Services
                     return "./assets/user.png";
                 }
             }
-            else
-            {
-                return photoUrl;
-            }
         }
 
         public async Task<ServiceResponseModel<string>> DeletePhotoAsync(string username, PhotoModel photo)
@@ -185,7 +163,7 @@ namespace Client.Services
 
             _ = photo ?? throw new ArgumentNullException("Invalid photo");
 
-            string apiEndpoint = _config["apiLocation"] + _config["deletePhotoEndpoint"] + $"/{username}";
+            string apiEndpoint = _config["apiLocation"] + _config["deletePhotoEndpoint"];
             using HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiEndpoint, photo);
             ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>>(_options);
 

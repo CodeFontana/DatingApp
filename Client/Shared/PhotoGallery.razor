@@ -5,10 +5,10 @@
 {
     <div class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
-            @for (int i = 0; i < Photos.Count; i++)
+            @for (int i = 0; i < Member.Photos.Count; i++)
             {
                 <div class="carousel-item @(i == position ? "active":"")">
-                    <img class="img-fluid rounded mx-auto d-block centerstage" src="@Photos[i].Url">
+                    <img class="img-fluid rounded mx-auto d-block centerstage" src="@Member.Photos[i].Filename">
                 </div>
             }
         </div>
@@ -20,11 +20,11 @@
         </a>
     </div>
     <div class="row">
-        @for (int i = 0; i < Photos.Count; i++)
+        @for (int i = 0; i < Member.Photos.Count; i++)
         {
             int buttonIndex = i;
             <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <img class="img-thumbnail rounded" src="@Photos[i].Url" @onclick="() => HandleThumbnailClick(buttonIndex)">
+                <img class="img-thumbnail rounded" src="@Member.Photos[i].Filename" @onclick="() => HandleThumbnailClick(buttonIndex)">
             </div>
         }
     </div>   
@@ -32,7 +32,7 @@
 
 @code {
     [Parameter]
-    public IList<PhotoModel> Photos { get; set; }
+    public MemberModel Member { get; set; }
 
     private int position = 0;
     
@@ -40,9 +40,9 @@
     {
         SpinnerService.HoldSpinner = true;
 
-        foreach (PhotoModel p in Photos)
+        foreach (PhotoModel p in Member.Photos)
         {
-            p.Url = await MemberService.GetPhotoAsync(p.Url);
+            p.Filename = await MemberService.GetPhotoAsync(Member.Username, p.Filename);
         }
 
         SpinnerService.HoldSpinner = false;
@@ -50,7 +50,7 @@
 
     private void HandleNext()
     {
-        if (position < Photos.Count - 1)
+        if (position < Member.Photos.Count - 1)
         {
             position += 1;
         }

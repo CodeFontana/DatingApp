@@ -3,7 +3,7 @@
 
 <div class="card mb-4">
     <div class="card-img-wrapper mb-2">
-        <img class="card-img-top" src="@photoUrl" alt="Photo of @Member.KnownAs" />
+        <img class="card-img-top" src="@photoFilename" alt="Photo of @Member.KnownAs" />
         <ul class="list-inline member-icons animate text-center">
             <li class="list-inline-item">
                 <button class="btn btn-primary" @onclick="HandleUserClick"><i class="fa fa-user" /></button>
@@ -28,12 +28,12 @@
     [Parameter]
     public MemberModel Member { get; set; }
 
-    private string photoUrl = "./assets/user.png";
+    private string photoFilename = "./assets/user.png";
 
     protected override async Task OnInitializedAsync()
     {
-        photoUrl = await MemberService.GetPhotoAsync(Member.PhotoUrl);
-        Member.PhotoUrl = photoUrl;
+        photoFilename = await MemberService.GetPhotoAsync(Member.Username, Member.MainPhotoFilename);
+        Member.MainPhotoFilename = photoFilename;    
     }
 
     private void HandleUserClick()

@@ -2,7 +2,7 @@
 @inject IToastService ToastService
 
 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-    <img class="img-thumbnail rounded p-1" src="@ResultUrl">
+    <img class="img-thumbnail rounded p-1" src="@ResultFilename">
     <div class="text-center">
         <button class="btn">Main</button>
         <button class="btn btn-danger" @onclick="HandleDelete"><i class="fa fa-trash" /></button>
@@ -19,11 +19,11 @@
     [Parameter]
     public EventCallback<string> OnImageChanged { get; set; }
 
-    private string ResultUrl { get; set; } = "./assets/user.png";
+    private string ResultFilename { get; set; } = "./assets/user.png";
 
     protected override async Task OnInitializedAsync()
     {
-        ResultUrl = await MemberService.GetPhotoAsync(Photo.Url);
+        ResultFilename = await MemberService.GetPhotoAsync(Username, Photo.Filename);
     }
 
     private async Task HandleDelete()

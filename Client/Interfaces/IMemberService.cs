@@ -12,7 +12,7 @@ namespace Client.Interfaces
         Task<ServiceResponseModel<string>> DeletePhotoAsync(string username, PhotoModel photo);
         Task<ServiceResponseModel<MemberModel>> GetMemberAsync(string username);
         Task<ServiceResponseModel<IEnumerable<MemberModel>>> GetMembersAsync();
-        Task<string> GetPhotoAsync(string imageUrl);
+        Task<string> GetPhotoAsync(string username, string filename);
         Task<ServiceResponseModel<string>> UpdateMemberAsync(MemberUpdateModel memberUpdate);
     }
 }

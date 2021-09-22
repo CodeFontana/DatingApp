@@ -55,7 +55,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{username}/{filename}")]
+        [HttpGet("photo/{username}/{filename}")]
         public async Task<IActionResult> GetUserPhotoAsync(string username, string filename)
         {
             ServiceResponseModel<byte[]> response = await _photoService.GetPhotoAsync(username, filename);
@@ -85,11 +85,10 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("add-photo")]
+        [HttpPost("photo/add")]
         public async Task<IActionResult> AddPhoto([FromForm] IEnumerable<IFormFile> files)
         {
-            var requestUrl = $"{Request.Scheme}://{Request.Host.Value}/";
-            ServiceResponseModel<PhotoModel> response = await _photoService.AddPhotoAsync(requestUrl, User.Identity.Name, files);
+            ServiceResponseModel<PhotoModel> response = await _photoService.AddPhotoAsync(User.Identity.Name, files);
 
             if (response.Success)
             {
@@ -101,10 +100,10 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("delete-photo/{username}")]
-        public async Task<IActionResult> DeletePhoto(string username, [FromBody] PhotoModel photo)
+        [HttpPut("photo/delete")]
+        public async Task<IActionResult> DeletePhoto([FromBody] PhotoModel photo)
         {
-            ServiceResponseModel<string> response = await _photoService.DeletePhotoAsync(username, photo);
+            ServiceResponseModel<string> response = await _photoService.DeletePhotoAsync(User.Identity.Name, photo);
 
             if (response.Success)
             {

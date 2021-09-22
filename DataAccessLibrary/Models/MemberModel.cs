@@ -13,7 +13,7 @@ namespace DataAccessLibrary.Models
 
         public string Username { get; set; }
 
-        public string PhotoUrl { get; set; }
+        public string MainPhotoFilename { get; set; }
 
         public int Age { get; set; }
 
@@ -40,7 +40,7 @@ namespace DataAccessLibrary.Models
         public string City { get; set; }
 
         [MaxLength(100)]
-        public string Country { get; set; }
+        public string State { get; set; }
 
         public IList<PhotoModel> Photos { get; set; }
     }
