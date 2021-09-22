@@ -100,6 +100,21 @@ namespace API.Controllers
             }
         }
 
+        [HttpPost("photo/set-main")]
+        public async Task<IActionResult> SetMainPhoto([FromBody] int photoId)
+        {
+            ServiceResponseModel<string> response = await _photoService.SetMainPhotoAsync(User.Identity.Name, photoId);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(response);
+            }
+        }
+
         [HttpPut("photo/delete")]
         public async Task<IActionResult> DeletePhoto([FromBody] PhotoModel photo)
         {

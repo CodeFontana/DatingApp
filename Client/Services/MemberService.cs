@@ -154,6 +154,29 @@ namespace Client.Services
             }
         }
 
+        public async Task<ServiceResponseModel<string>> SetMainPhotoAsync(string username, int photoId)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                throw new ArgumentNullException("Invalid username");
+            }
+
+            string apiEndpoint = _config["apiLocation"] + _config["setMainPhotoEndpoint"];
+            using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, photoId);
+            ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>>(_options);
+
+            if (result.Success)
+            {
+                MemberModel member = Members.FirstOrDefault(x => x.Username.ToLower().Equals(username.ToLower()));
+                PhotoModel mainPhoto = member.Photos.FirstOrDefault(x => x.Id == photoId);
+                member.Photos.ToList().ForEach(x => x.IsMain = false);
+                mainPhoto.IsMain = true;
+                member.MainPhotoFilename = mainPhoto.Filename;
+            }
+
+            return result;
+        }
+
         public async Task<ServiceResponseModel<string>> DeletePhotoAsync(string username, PhotoModel photo)
         {
             if (string.IsNullOrWhiteSpace(username))

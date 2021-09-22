@@ -13,6 +13,7 @@ namespace Client.Interfaces
         Task<ServiceResponseModel<MemberModel>> GetMemberAsync(string username);
         Task<ServiceResponseModel<IEnumerable<MemberModel>>> GetMembersAsync();
         Task<string> GetPhotoAsync(string username, string filename);
+        Task<ServiceResponseModel<string>> SetMainPhotoAsync(string username, int photoId);
         Task<ServiceResponseModel<string>> UpdateMemberAsync(MemberUpdateModel memberUpdate);
     }
 }

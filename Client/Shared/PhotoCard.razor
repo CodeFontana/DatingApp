@@ -4,8 +4,11 @@
 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
     <img class="img-thumbnail rounded p-1" src="@ResultFilename">
     <div class="text-center">
-        <button class="btn btn-dark">Main</button>
-        <button class="btn btn-danger" @onclick="HandleDelete"><i class="fa fa-trash" /></button>
+        @if (Photo.IsMain == false)
+        {
+            <button class="btn btn-dark mx-1" @onclick="HandleSetMainPhoto">Set Main</button>
+        }
+        <button class="btn btn-danger" @onclick="HandleDeletePhoto"><i class="fa fa-trash" /></button>
     </div>
 </div>
 
@@ -26,7 +29,27 @@
         ResultFilename = await MemberService.GetPhotoAsync(Username, Photo.Filename);
     }
 
-    private async Task HandleDelete()
+    private async Task HandleSetMainPhoto()
+    {
+        if (Photo.IsMain)
+        {
+            return;
+        }
+
+        ServiceResponseModel<string> result = await MemberService.SetMainPhotoAsync(Username, Photo.Id);
+
+        if (result.Success)
+        {
+            ToastService.ShowSuccess("Main photo updated successfully");
+            await OnImageChanged.InvokeAsync();
+        }
+        else
+        {
+            ToastService.ShowError($"{result.Message}");
+        }
+    }
+
+    private async Task HandleDeletePhoto()
     {
         ServiceResponseModel<string> result = await MemberService.DeletePhotoAsync(Username, Photo);
 

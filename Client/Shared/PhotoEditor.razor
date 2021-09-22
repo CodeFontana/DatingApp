@@ -13,7 +13,7 @@
     <div class="row">
         @foreach (PhotoModel p in Member.Photos)
         {
-            <PhotoCard Username="@Member.Username" Photo="@p" OnImageChanged="HandleImageDeleted" />
+            <PhotoCard Username="@Member.Username" Photo="@p" OnImageChanged="HandleImageChanged" />
         }
     </div>
 
@@ -89,7 +89,7 @@
         }
     }
 
-    private async Task HandleImageDeleted()
+    private async Task HandleImageChanged()
     {
         await OnImageChanged.InvokeAsync();
     }

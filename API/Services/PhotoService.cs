@@ -41,6 +41,7 @@ namespace API.Services
 
             try
             {
+                _ = username ?? throw new ArgumentException("Invalid username");
                 AppUser appUser = await _userRepository.GetUserByUsernameAsync(username);
                 IFormFile file = files.FirstOrDefault();
 
@@ -101,9 +102,7 @@ namespace API.Services
                     }
                     else
                     {
-                        serviceResponse.Success = false;
-                        serviceResponse.Message = $"Failed to add photo for user [{username}]: Error saving to database";
-                        _logger.LogError(serviceResponse.Message);
+                        throw new Exception($"Failed to add photo for user [{username}]: Error saving to database");
                     }
                 }
             }
@@ -152,17 +151,59 @@ namespace API.Services
             return serviceResponse;
         }
 
+        public async Task<ServiceResponseModel<string>> SetMainPhotoAsync(string username, int photoId)
+        {
+            ServiceResponseModel<string> serviceResponse = new();
+
+            try
+            {
+                _ = username ?? throw new ArgumentException("Invalid username");
+
+                AppUser appUser = await _userRepository.GetUserByUsernameAsync(username);
+                Photo p = appUser.Photos.FirstOrDefault(x => x.Id == photoId);
+
+                if (p is not null)
+                {
+                    appUser.Photos.ToList().ForEach(x => x.IsMain = false);
+                    appUser.Photos.FirstOrDefault(x => x.Id == photoId).IsMain = true;
+                }
+                else
+                {
+                    throw new ArgumentException($"Failed to set main photo for user [{username}]: Photo not found in database");
+                }
+
+                if (await _userRepository.SaveAllAsync())
+                {
+                    serviceResponse.Success = true;
+                    serviceResponse.Message = $"Successfully set main photo for user [{username}]";
+                    _logger.LogInformation(serviceResponse.Message);
+                }
+                else
+                {
+                    throw new Exception($"Failed to set main photo for user [{username}]: Error saving to database");
+                }
+            }
+            catch (Exception e)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = e.Message;
+                _logger.LogError(serviceResponse.Message);
+                _logger.LogError(e.Message);
+            }
+
+            return serviceResponse;
+        }
+
         public async Task<ServiceResponseModel<string>> DeletePhotoAsync(string username, PhotoModel photo)
         {
             ServiceResponseModel<string> serviceResponse = new();
 
             try
             {
-                AppUser appUser = await _userRepository.GetUserByUsernameAsync(username);
-                
                 _ = username ?? throw new ArgumentException("Invalid username");
                 _ = photo ?? throw new ArgumentException("Invalid photo for deletion");
 
+                AppUser appUser = await _userRepository.GetUserByUsernameAsync(username);
                 Photo p = appUser.Photos.FirstOrDefault(x => x.Id == photo.Id);
 
                 if (p is not null)
@@ -182,6 +223,10 @@ namespace API.Services
                         appUser.Photos.First().IsMain = true;
                     }
                 }
+                else
+                {
+                    throw new ArgumentException($"Failed to delete photo for user [{username}]: Photo not found in database");
+                }
 
                 if (await _userRepository.SaveAllAsync())
                 {
@@ -191,9 +236,7 @@ namespace API.Services
                 }
                 else
                 {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = $"Failed to delete photo for user [{username}]: Error saving to database";
-                    _logger.LogError(serviceResponse.Message);
+                    throw new Exception($"Failed to delete photo for user [{username}]: Error saving to database");
                 }
             }
             catch (Exception e)
