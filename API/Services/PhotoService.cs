@@ -176,6 +176,11 @@ namespace API.Services
                     {
                         File.Delete(fileName);
                     }
+
+                    if (p.IsMain && appUser.Photos.Count > 0)
+                    {
+                        appUser.Photos.First().IsMain = true;
+                    }
                 }
 
                 if (await _userRepository.SaveAllAsync())

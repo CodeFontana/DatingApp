@@ -172,6 +172,19 @@ namespace Client.Services
                 MemberModel member = Members.FirstOrDefault(x => x.Username.ToLower().Equals(username.ToLower()));
                 PhotoModel p = member.Photos.FirstOrDefault(x => x.Id == photo.Id);
                 member.Photos.Remove(p);
+
+                if (photo.IsMain)
+                {
+                    if (member.Photos.Count > 0)
+                    {
+                        member.Photos[0].IsMain = true;
+                        member.MainPhotoFilename = member.Photos[0].Filename;
+                    }
+                    else
+                    {
+                        member.MainPhotoFilename = null;
+                    }
+                }
             }
 
             return result;
