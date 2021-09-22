@@ -21,7 +21,7 @@
 
     private string ResultFilename { get; set; } = "./assets/user.png";
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         ResultFilename = await MemberService.GetPhotoAsync(Username, Photo.Filename);
     }

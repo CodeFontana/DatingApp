@@ -30,7 +30,7 @@
 
     private string photoFilename = "./assets/user.png";
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         photoFilename = await MemberService.GetPhotoAsync(Member.Username, Member.MainPhotoFilename);
         Member.MainPhotoFilename = photoFilename;    

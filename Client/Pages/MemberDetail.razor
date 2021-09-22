@@ -18,14 +18,7 @@
         <div class="row">
             <div class="col-12 col-md-4">
                 <div class="card">
-                    @if (string.IsNullOrWhiteSpace(member.MainPhotoFilename))
-                    {
-                        <img class="card-img-top img-thumbnail mx-auto" src="./assets/user.png" alt="@member.KnownAs" />
-                    }
-                    else
-                    {
-                        <img class="card-img-top img-thumbnail mx-auto" src="@member.MainPhotoFilename" alt="@member.KnownAs" />
-                    }
+                    <img class="card-img-top img-thumbnail mx-auto" src="@photoFilename" alt="@member.KnownAs" />
                     <div class="card-body">
                         <strong>Location:</strong>
                         <p>@member.City, @member.State</p>
@@ -79,16 +72,18 @@
     public string Username { get; set; }
 
     private MemberModel member;
+    private string photoFilename { get; set; } = "./assets/user.png";
     private bool showError = false;
     private string errorText;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(Username);
 
         if (result.Success)
         {
             member = result.Data;
+            photoFilename = await MemberService.GetPhotoAsync(member.Username, member.MainPhotoFilename);
         }
         else
         {
