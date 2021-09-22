@@ -100,7 +100,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("photo/set-main")]
+        [HttpPut("photo/set-main")]
         public async Task<IActionResult> SetMainPhoto([FromBody] int photoId)
         {
             ServiceResponseModel<string> response = await _photoService.SetMainPhotoAsync(User.Identity.Name, photoId);

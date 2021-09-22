@@ -162,7 +162,7 @@ namespace Client.Services
             }
 
             string apiEndpoint = _config["apiLocation"] + _config["setMainPhotoEndpoint"];
-            using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, photoId);
+            using HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiEndpoint, photoId);
             ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>>(_options);
 
             if (result.Success)
