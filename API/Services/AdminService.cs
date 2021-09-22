@@ -53,13 +53,13 @@ namespace API.Services
                 }
 
                 serviceResponse.Success = true;
-                serviceResponse.Message = $"Successfully listed User-Role relationships for user [{requestor}]";
+                serviceResponse.Message = $"Successfully listed User-Role relationships for [{requestor}]";
                 _logger.LogInformation(serviceResponse.Message);
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = $"Failed to get list of User-Role relationship for user [{requestor}]";
+                serviceResponse.Message = $"Failed to get list of User-Role relationship for [{requestor}]";
                 _logger.LogError(serviceResponse.Message);
                 _logger.LogError(e.Message);
             }
@@ -78,10 +78,7 @@ namespace API.Services
 
                 if (user == null)
                 {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = $"Could not find user [{username}].";
-                    _logger.LogError(serviceResponse.Message);
-                    return serviceResponse;
+                    throw new ArgumentException($"Could not find user [{username}]");
                 }
 
                 IList<string> userRoles = await _userManager.GetRolesAsync(user);
@@ -89,20 +86,14 @@ namespace API.Services
 
                 if (result.Succeeded == false)
                 {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = $"Failed to add user [{username}] to roles [{selectedRoles.Except(userRoles)}]";
-                    _logger.LogError(serviceResponse.Message);
-                    return serviceResponse;
+                    throw new Exception($"Failed to add user [{username}] to roles [{selectedRoles.Except(userRoles)}]");
                 }
 
                 result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
 
                 if (result.Succeeded == false)
                 {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = $"Failed to remove user [{username}] from roles [{userRoles.Except(selectedRoles)}]";
-                    _logger.LogError(serviceResponse.Message);
-                    return serviceResponse;
+                    throw new Exception($"Failed to remove user [{username}] from roles [{userRoles.Except(selectedRoles)}]");
                 }
 
                 serviceResponse.Success = true;
@@ -113,8 +104,7 @@ namespace API.Services
             catch (Exception e)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = $"Failed to add user [{username}] to roles [{roles}]";
-                _logger.LogError(serviceResponse.Message);
+                serviceResponse.Message = e.Message;
                 _logger.LogError(e.Message);
             }
 
@@ -135,8 +125,7 @@ namespace API.Services
             catch (Exception e)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = "Failed to get photos for moderation";
-                _logger.LogError(serviceResponse.Message);
+                serviceResponse.Message = e.Message;
                 _logger.LogError(e.Message);
             }
 

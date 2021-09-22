@@ -32,13 +32,13 @@ namespace API.Services
             {
                 serviceResponse.Success = true;
                 serviceResponse.Data = await _userRepository.GetMembersAsync();
-                serviceResponse.Message = $"Successfully listed users for user [{requestor}]";
+                serviceResponse.Message = $"Successfully listed users for [{requestor}]";
                 _logger.LogInformation(serviceResponse.Message);
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = $"Failed to list users for user [{requestor}]";
+                serviceResponse.Message = $"Failed to list users for [{requestor}]";
                 _logger.LogError(serviceResponse.Message);
                 _logger.LogError(e.Message);
             }
@@ -54,13 +54,13 @@ namespace API.Services
             {
                 serviceResponse.Success = true;
                 serviceResponse.Data = await _userRepository.GetMemberAsync(username);
-                serviceResponse.Message = $"Successfully retrieved [{username}] for user [{requestor}]";
+                serviceResponse.Message = $"Successfully retrieved [{username}] for [{requestor}]";
                 _logger.LogInformation(serviceResponse.Message);
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = $"Failed to retrieve [{username}] for user [{requestor}]";
+                serviceResponse.Message = $"Failed to retrieve [{username}] for [{requestor}]";
                 _logger.LogError(serviceResponse.Message);
                 _logger.LogError(e.Message);
             }
@@ -87,17 +87,13 @@ namespace API.Services
                 }
                 else
                 {
-                    serviceResponse.Success = false;
-                    serviceResponse.Data = $"Failed to update user [{username}]";
-                    serviceResponse.Message = $"Failed to update user [{username}]";
-                    _logger.LogError(serviceResponse.Message);
+                    throw new Exception($"Failed to update user [{username}]");
                 }
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = $"Failed to update user [{memberUpdate.Username}]";
-                _logger.LogError(serviceResponse.Message);
+                serviceResponse.Message = e.Message;
                 _logger.LogError(e.Message);
             }
 

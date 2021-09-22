@@ -37,10 +37,7 @@ namespace API.Services
             {
                 if (await UserExists(registerUser.Username))
                 {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = $"Username is taken [{registerUser.Username}]";
-                    _logger.LogError(serviceResponse.Message);
-                    return serviceResponse;
+                    throw new ArgumentException($"Username is taken [{registerUser.Username}]");
                 }
 
                 AppUser user = new()
@@ -52,10 +49,7 @@ namespace API.Services
 
                 if (result.Succeeded == false)
                 {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = $"Failed to register user [{user.UserName}]";
-                    _logger.LogError(serviceResponse.Message);
-                    return serviceResponse;
+                    throw new Exception($"Failed to register user [{user.UserName}]");
                 }
 
                 IdentityResult roleResult = await _userManager.AddToRoleAsync(user, "Member");
@@ -63,10 +57,7 @@ namespace API.Services
                 if (roleResult.Succeeded == false)
                 {
                     await _userManager.DeleteAsync(user);
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = $"Failed to register user [{user.UserName}]";
-                    _logger.LogError(serviceResponse.Message);
-                    return serviceResponse;
+                    throw new Exception($"Failed to register user [{user.UserName}]");
                 }
 
                 serviceResponse.Success = true;
@@ -81,8 +72,7 @@ namespace API.Services
             catch (Exception e)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = $"Failed to register user [{registerUser.Username}]";
-                _logger.LogError(serviceResponse.Message);
+                serviceResponse.Message = e.Message;
                 _logger.LogError(e.Message);
             }
 
@@ -100,10 +90,7 @@ namespace API.Services
 
                 if (user == null)
                 {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = $"Invalid username [{loginUser.Username}]";
-                    _logger.LogError(serviceResponse.Message);
-                    return serviceResponse;
+                    throw new ArgumentException($"Invalid username [{loginUser.Username}]");
                 }
 
                 SignInResult result = await _signInManager.CheckPasswordSignInAsync(
@@ -111,10 +98,7 @@ namespace API.Services
 
                 if (result.Succeeded == false)
                 {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = $"Invalid password for user [{loginUser.Username}]";
-                    _logger.LogError(serviceResponse.Message);
-                    return serviceResponse;
+                    throw new Exception($"Invalid password for user [{loginUser.Username}]");
                 }
 
                 serviceResponse.Success = true;
@@ -130,7 +114,6 @@ namespace API.Services
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = e.Message;
-                _logger.LogError(serviceResponse.Message);
                 _logger.LogError(e.Message);
             }
 

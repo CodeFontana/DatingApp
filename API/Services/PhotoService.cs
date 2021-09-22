@@ -51,19 +51,19 @@ namespace API.Services
                 }
                 else if (file == null || file.Length == 0)
                 {
-                    throw new ArgumentNullException($"Failed to add photo for user [{username}]: Empty file");
+                    throw new ArgumentNullException($"Photo file is empty [{username}]");
                 }
                 else if (file.Length > maxFileSize)
                 {
-                    throw new BadImageFormatException($"Failed to add photo for user [{username}]: {file.FileName} of size [{file.Length} bytes] is larger than the limit of [{maxFileSize} bytes]");
+                    throw new BadImageFormatException($"{file.FileName} of size {file.Length} bytes is larger than the limit of {maxFileSize} bytes [{username}]");
                 }
                 else if (IsValidImageFile(file) == false)
                 {
-                    throw new BadImageFormatException($"Failed to add photo for user [{username}]: {file.FileName} is not a supported image");
+                    throw new BadImageFormatException($"{file.FileName} is not a supported image [{username}]");
                 }
                 else if (appUser.Photos.Count >= 8)
                 {
-                    throw new Exception($"Failed to add photo for user [{username}]: Photo storage limit reached [8 photos]");
+                    throw new Exception($"Photo storage limit reached [{username}]");
                 }
                 else if (file.Length > 0)
                 {
@@ -102,7 +102,7 @@ namespace API.Services
                     }
                     else
                     {
-                        throw new Exception($"Failed to add photo for user [{username}]: Error saving to database");
+                        throw new Exception($"Error adding photo to database [{username}]");
                     }
                 }
             }
@@ -110,7 +110,6 @@ namespace API.Services
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = e.Message;
-                _logger.LogError(serviceResponse.Message);
                 _logger.LogError(e.Message);
             }
 
@@ -143,8 +142,7 @@ namespace API.Services
             catch (Exception e)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = $"Failed to get requested image [{filename ?? "null"}] for user [{username ?? "null"}]";
-                _logger.LogError(serviceResponse.Message);
+                serviceResponse.Message = e.Message;
                 _logger.LogError(e.Message);
             }
 
@@ -164,12 +162,17 @@ namespace API.Services
 
                 if (p is not null)
                 {
+                    if (p.IsMain)
+                    {
+                        throw new ArgumentException($"This is already your main photo [{username}]");
+                    }
+
                     appUser.Photos.ToList().ForEach(x => x.IsMain = false);
-                    appUser.Photos.FirstOrDefault(x => x.Id == photoId).IsMain = true;
+                    p.IsMain = true;
                 }
                 else
                 {
-                    throw new ArgumentException($"Failed to set main photo for user [{username}]: Photo not found in database");
+                    throw new ArgumentException($"Photo not found in database [{username}]");
                 }
 
                 if (await _userRepository.SaveAllAsync())
@@ -180,14 +183,13 @@ namespace API.Services
                 }
                 else
                 {
-                    throw new Exception($"Failed to set main photo for user [{username}]: Error saving to database");
+                    throw new Exception($"Error saving main photo to database [{username}]");
                 }
             }
             catch (Exception e)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = e.Message;
-                _logger.LogError(serviceResponse.Message);
                 _logger.LogError(e.Message);
             }
 
@@ -225,7 +227,7 @@ namespace API.Services
                 }
                 else
                 {
-                    throw new ArgumentException($"Failed to delete photo for user [{username}]: Photo not found in database");
+                    throw new ArgumentException($"Photo not found in database [{username}]");
                 }
 
                 if (await _userRepository.SaveAllAsync())
@@ -243,7 +245,6 @@ namespace API.Services
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = e.Message;
-                _logger.LogError(serviceResponse.Message);
                 _logger.LogError(e.Message);
             }
 
