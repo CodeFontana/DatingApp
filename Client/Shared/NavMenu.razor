@@ -1,5 +1,6 @@
 ﻿@inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavManager
+@inject AppStateService AppState
 @inject IAuthenticationService AuthService
 @inject IMemberService MemberService
 @inject IToastService ToastService
@@ -46,7 +47,7 @@
 
             <div class="nav-item dropdown show">
                 <NavLink class="nav-link text-light ml-2" @onclick="() => expandWelcomeMenu = !expandWelcomeMenu" id="navbarDropdown">
-                    <img src="@photoFilename" alt="@AuthContext.User.Identity.Name" />
+                    <img src="@AppState.MainPhoto" alt="@AuthContext.User.Identity.Name" />
                     <text class="text-nowrap ml-2"><span class="welcome-text">Welcome </span>@AuthContext.User.Identity.Name</text>
                 </NavLink>
 
@@ -85,15 +86,23 @@
     private LoginUserModel loginUser = new();
     private bool expandWelcomeMenu = false;
     private bool expandNavLinks = false;
-    private string photoFilename { get; set; } = "./assets/user.png";
 
     protected override async Task OnInitializedAsync()
     {
+        AppState.OnChange += StateHasChanged;
         AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
         ClaimsPrincipal user = authState.User;
 
         if (user.Identity.IsAuthenticated)
         {
+            ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(authState.User.Identity.Name);
+            
+            if (result.Success)
+            {
+                AppState.AppUser = result.Data;
+                AppState.MainPhoto = await MemberService.GetPhotoAsync(AppState.AppUser.Username, AppState.AppUser.MainPhotoFilename);
+            }
+            
             NavManager.NavigateTo("/members");
         }
     }
@@ -116,7 +125,14 @@
 
         if (authResult.Success)
         {
-            photoFilename = await MemberService.GetPhotoAsync(authResult.Data.Username, authResult.Data.PhotoFilename);
+            ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(authResult.Data.Username);
+            
+            if (result.Success)
+            {
+                AppState.AppUser = result.Data;
+                AppState.MainPhoto = await MemberService.GetPhotoAsync(AppState.AppUser.Username, AppState.AppUser.MainPhotoFilename);
+            }
+
             NavManager.NavigateTo("/members");
         }
         else
@@ -127,8 +143,14 @@
 
     private async Task HandleLogout()
     {
-        photoFilename = "./assets/user.png";
+        AppState.AppUser = null;
+        AppState.MainPhoto = null;
         NavManager.NavigateTo("/");
         await AuthService.LogoutAsync();
+    }
+
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
     }
 }
