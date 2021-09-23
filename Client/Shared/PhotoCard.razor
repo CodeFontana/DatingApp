@@ -2,7 +2,7 @@
 @inject IToastService ToastService
 
 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-    <img class="img-thumbnail rounded p-1" src="@ResultFilename">
+    <img class="img-thumbnail rounded p-1" src="@photoFilename">
     <div class="text-center">
         @if (Photo.IsMain == false)
         {
@@ -22,11 +22,11 @@
     [Parameter]
     public EventCallback<string> OnImageChanged { get; set; }
 
-    private string ResultFilename { get; set; } = "./assets/user.png";
+    private string photoFilename { get; set; } = "./assets/user.png";
 
     protected override async Task OnParametersSetAsync()
     {
-        ResultFilename = await MemberService.GetPhotoAsync(Username, Photo.Filename);
+        photoFilename = await MemberService.GetPhotoAsync(Username, Photo.Filename);
     }
 
     private async Task HandleSetMainPhoto()

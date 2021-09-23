@@ -1,6 +1,7 @@
-﻿@inject IAuthenticationService AuthService
-@inject AuthenticationStateProvider AuthStateProvider
+﻿@inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavManager
+@inject IAuthenticationService AuthService
+@inject IMemberService MemberService
 @inject IToastService ToastService
 
 <AuthorizeView Context="AuthContext">
@@ -44,7 +45,8 @@
             }
 
             <div class="nav-item dropdown show">
-                <NavLink class="nav-link text-light" @onclick="() => expandWelcomeMenu = !expandWelcomeMenu" id="navbarDropdown">
+                <NavLink class="nav-link text-light ml-2" @onclick="() => expandWelcomeMenu = !expandWelcomeMenu" id="navbarDropdown">
+                    <img src="@photoFilename" alt="@AuthContext.User.Identity.Name" />
                     Welcome @AuthContext.User.Identity.Name
                 </NavLink>
 
@@ -83,6 +85,7 @@
     private LoginUserModel loginUser = new();
     private bool expandWelcomeMenu = false;
     private bool expandNavLinks = false;
+    private string photoFilename { get; set; } = "./assets/user.png";
 
     protected override async Task OnInitializedAsync()
     {
@@ -113,6 +116,8 @@
 
         if (authResult.Success)
         {
+            photoFilename = await MemberService.GetPhotoAsync(authResult.Data.Username, authResult.Data.PhotoFilename);
+            Console.WriteLine(photoFilename);
             NavManager.NavigateTo("/members");
         }
         else

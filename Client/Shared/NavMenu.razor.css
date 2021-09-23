@@ -8,6 +8,12 @@
     min-width: 360px;
 }
 
+img {
+    max-height: 25px;
+    border: 2px solid #fff;
+    display: inline;
+}
+
 @media (max-width: 768px) {
     #navbarUnAuth {
         display: block;

@@ -16,16 +16,19 @@ namespace API.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
+        private readonly IPhotoService _photoService;
         private readonly ILogger<AccountService> _logger;
 
         public AccountService(UserManager<AppUser> userManager,
                               SignInManager<AppUser> signInManager,
                               ITokenService tokenService,
+                              IPhotoService photoService,
                               ILogger<AccountService> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _photoService = photoService;
             _logger = logger;
         }
 
@@ -85,16 +88,17 @@ namespace API.Services
 
             try
             {
-                AppUser user = await _userManager.Users.SingleOrDefaultAsync(
-                    u => u.UserName == loginUser.Username.ToLower());
+                AppUser appUser = await _userManager.Users
+                    .Include(p => p.Photos)
+                    .SingleOrDefaultAsync(u => u.UserName == loginUser.Username.ToLower());
 
-                if (user == null)
+                if (appUser == null)
                 {
                     throw new ArgumentException($"Invalid username [{loginUser.Username}]");
                 }
 
                 SignInResult result = await _signInManager.CheckPasswordSignInAsync(
-                    user, loginUser.Password, false);
+                    appUser, loginUser.Password, false);
 
                 if (result.Succeeded == false)
                 {
@@ -104,10 +108,11 @@ namespace API.Services
                 serviceResponse.Success = true;
                 serviceResponse.Data = new AuthUserModel
                 {
-                    Username = user.UserName,
-                    Token = await _tokenService.CreateTokenAsync(user)
+                    Username = appUser.UserName,
+                    Token = await _tokenService.CreateTokenAsync(appUser),
+                    PhotoFilename = appUser.Photos.FirstOrDefault(x => x.IsMain)?.Filename
                 };
-                serviceResponse.Message = $"Successfully authenticated user [{user.UserName}]";
+                serviceResponse.Message = $"Successfully authenticated user [{appUser.UserName}]";
                 _logger.LogInformation(serviceResponse.Message);
             }
             catch (Exception e)
