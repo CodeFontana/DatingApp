@@ -47,7 +47,7 @@
             <div class="nav-item dropdown show">
                 <NavLink class="nav-link text-light ml-2" @onclick="() => expandWelcomeMenu = !expandWelcomeMenu" id="navbarDropdown">
                     <img src="@photoFilename" alt="@AuthContext.User.Identity.Name" />
-                    Welcome @AuthContext.User.Identity.Name
+                    <text class="text-nowrap ml-2"><span class="welcome-text">Welcome </span>@AuthContext.User.Identity.Name</text>
                 </NavLink>
 
                 @if (expandWelcomeMenu)
@@ -117,7 +117,6 @@
         if (authResult.Success)
         {
             photoFilename = await MemberService.GetPhotoAsync(authResult.Data.Username, authResult.Data.PhotoFilename);
-            Console.WriteLine(photoFilename);
             NavManager.NavigateTo("/members");
         }
         else
@@ -128,6 +127,7 @@
 
     private async Task HandleLogout()
     {
+        photoFilename = "./assets/user.png";
         NavManager.NavigateTo("/");
         await AuthService.LogoutAsync();
     }

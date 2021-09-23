@@ -8,9 +8,15 @@
     min-width: 360px;
 }
 
+::deep #navbarDropdown {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
 img {
-    max-height: 25px;
-    border: 2px solid #fff;
+    max-height: 50px;
+    border: 1px solid white;
     display: inline;
 }
 
@@ -56,5 +62,11 @@ img {
 
     ::deep .userinput {
         margin-right: 5px;
+    }
+}
+
+@media (max-width: 420px) {
+    .welcome-text {
+        display: none;
     }
 }
