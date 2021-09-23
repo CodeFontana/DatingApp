@@ -1,7 +1,9 @@
 ﻿@page "/login"
 @inject IAuthenticationService AuthService
+@inject IMemberService MemberService
 @inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavManager
+@inject AppStateService AppState
 
 <h3 class="text-center">Member Login</h3>
 
@@ -44,6 +46,14 @@
 
         if (user.Identity.IsAuthenticated)
         {
+            ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(authState.User.Identity.Name);
+            
+            if (result.Success)
+            {
+                AppState.AppUser = result.Data;
+                AppState.MainPhoto = await MemberService.GetPhotoAsync(AppState.AppUser.Username, AppState.AppUser.MainPhotoFilename);
+            }
+
             NavManager.NavigateTo("/members");
         }
     }
