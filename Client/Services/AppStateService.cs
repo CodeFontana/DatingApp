@@ -1,19 +1,10 @@
-﻿using Client.Interfaces;
-using DataAccessLibrary.Models;
+﻿using DataAccessLibrary.Models;
 using System;
-using System.Threading.Tasks;
 
 namespace Client.Services
 {
     public class AppStateService
     {
-        private readonly IMemberService _memberService;
-
-        public AppStateService(IMemberService memberService)
-        {
-            _memberService = memberService;
-        }
-
         private MemberModel _appUser;
 
         public MemberModel AppUser
