@@ -47,7 +47,7 @@
 
             <div class="nav-item dropdown show">
                 <NavLink class="nav-link text-light ml-2" @onclick="() => expandWelcomeMenu = !expandWelcomeMenu" id="navbarDropdown">
-                    <img src="@AppState.MainPhoto" alt="@AuthContext.User.Identity.Name" />
+                    <img src="@photoFilename" alt="@AuthContext.User.Identity.Name" />
                     <text class="text-nowrap ml-2"><span class="welcome-text">Welcome </span>@AuthContext.User.Identity.Name</text>
                 </NavLink>
 
@@ -86,6 +86,7 @@
     private LoginUserModel loginUser = new();
     private bool expandWelcomeMenu = false;
     private bool expandNavLinks = false;
+    private string photoFilename = "./assets/user.png";
 
     protected override async Task OnInitializedAsync()
     {
@@ -101,6 +102,7 @@
             {
                 AppState.AppUser = result.Data;
                 AppState.MainPhoto = await MemberService.GetPhotoAsync(AppState.AppUser.Username, result.Data.MainPhotoFilename);
+                photoFilename = AppState.MainPhoto;
             }
             
             NavManager.NavigateTo("/members");
