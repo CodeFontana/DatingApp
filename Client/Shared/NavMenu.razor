@@ -100,7 +100,7 @@
             if (result.Success)
             {
                 AppState.AppUser = result.Data;
-                AppState.MainPhoto = await MemberService.GetPhotoAsync(AppState.AppUser.Username, AppState.AppUser.MainPhotoFilename);
+                AppState.MainPhoto = await MemberService.GetPhotoAsync(AppState.AppUser.Username, result.Data.MainPhotoFilename);
             }
             
             NavManager.NavigateTo("/members");

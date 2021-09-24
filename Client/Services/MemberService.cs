@@ -18,15 +18,18 @@ namespace Client.Services
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _options;
         private readonly IMapper _mapper;
+        private readonly AppStateService _appState;
 
         public MemberService(IConfiguration config,
                              HttpClient httpClient,
-                             IMapper mapper)
+                             IMapper mapper,
+                             AppStateService appState)
         {
             _config = config;
             _httpClient = httpClient;
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             _mapper = mapper;
+            _appState = appState;
         }
 
         private List<MemberModel> Members { get; set; } = new();
@@ -119,6 +122,8 @@ namespace Client.Services
                     //     HttpClient that contains the proper JWT bearer token,
                     //     which is what is happening here.
                     member.MainPhotoFilename = await GetPhotoAsync(username, result.Data.Filename);
+                    _appState.AppUser.MainPhotoFilename = result.Data.Filename;
+                    _appState.MainPhoto = member.MainPhotoFilename;
                 }
             }
 
@@ -172,6 +177,8 @@ namespace Client.Services
                 member.Photos.ToList().ForEach(x => x.IsMain = false);
                 mainPhoto.IsMain = true;
                 member.MainPhotoFilename = mainPhoto.Filename;
+                _appState.AppUser.MainPhotoFilename = mainPhoto.Filename;
+                _appState.MainPhoto = await GetPhotoAsync(_appState.AppUser.Username, mainPhoto.Filename);
             }
 
             return result;
@@ -202,10 +209,14 @@ namespace Client.Services
                     {
                         member.Photos[0].IsMain = true;
                         member.MainPhotoFilename = member.Photos[0].Filename;
+                        _appState.AppUser.MainPhotoFilename = member.Photos[0].Filename;
+                        _appState.MainPhoto = await GetPhotoAsync(_appState.AppUser.Username, member.Photos[0].Filename);
                     }
                     else
                     {
                         member.MainPhotoFilename = null;
+                        _appState.AppUser.MainPhotoFilename = null;
+                        _appState.MainPhoto = null;
                     }
                 }
             }
