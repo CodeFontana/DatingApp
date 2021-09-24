@@ -1,6 +1,6 @@
 ﻿@page "/member/edit"
 @attribute [Authorize]
-@inject AppStateService AppState
+@inject AuthenticationStateProvider AuthStateProvider
 @inject IAuthenticationService AuthService
 @inject IMemberService MemberService
 @inject IToastService ToastService
@@ -13,95 +13,100 @@
     </div>
 }
 
-<div class="row">
-    <div class="col-12 col-md-4 text-center">
-        <h1>Your profile</h1>
-    </div>
-    <div class="col-12 col-md-8 text-center">
-        @if (changesMade)
-        {
-            <div class="alert alert-info" role="alert">
-                <strong>Changes made: </strong>Remember to save your changes!
-            </div>
-        }
-    </div>
-    <div class="col-12 col-md-4">
-        <div class="card">
-            <img class="card-img-top img-thumbnail mx-auto" src="@AppState.MainPhoto" alt="@AppState.AppUser.KnownAs" />
-            <div class="card-body">
-                <strong>Location:</strong>
-                <p>@AppState.AppUser.City, @AppState.AppUser.State</p>
-            </div>
-            <div class="card-body">
-                <strong>Age:</strong>
-                <p>@AppState.AppUser.Age</p>
-            </div>
-            <div class="card-body">
-                <strong>Last active:</strong>
-                <p>@AppState.AppUser.LastActive</p>
-            </div>
-            <div class="card-body">
-                <strong>Member since:</strong>
-                <p>@AppState.AppUser.Created</p>
-            </div>
+@if (member != null)
+{
+    <div class="row">
+        <div class="col-12 col-md-4 text-center">
+            <h1>Your profile</h1>
+        </div>
+        <div class="col-12 col-md-8 text-center">
             @if (changesMade)
             {
-                <div class="card-footer">
-                    <button class="btn btn-success btn-block" type="submit" form="editForm">Save Changes</button>
+                <div class="alert alert-info" role="alert">
+                    <strong>Changes made: </strong>Remember to save your changes!
                 </div>
             }
         </div>
-    </div>
-    <div class="col-12 col-md-8">
-        <TabControl>
-            <TabPage Text=@($"About {@AppState.AppUser.KnownAs}")>
-                <EditForm id="editForm" Model="@memberUpdate" edit @oninput="(e) => OnProfileUpdated(e)" OnValidSubmit="HandleValidSubmit">
-                    <DataAnnotationsValidator />
-
-                    <h4>Description</h4>
-                    <InputTextArea class="form-control" rows="6" @bind-Value="memberUpdate.Introduction" />
-                    <ValidationMessage For="(() => AppState.AppUser.Introduction)" />
-
-                    <h4 class="mt-2">Looking for</h4>
-                    <InputTextArea class="form-control" rows="6" @bind-Value="memberUpdate.LookingFor" />
-                    <ValidationMessage For="(() => AppState.AppUser.LookingFor)" />
-
-                    <h4 class="mt-2">Interests</h4>
-                    <InputTextArea class="form-control" rows="6" @bind-Value="memberUpdate.Interests" />
-                    <ValidationMessage For="(() => AppState.AppUser.Interests)" />
-
-                    <h4 class="mt-2">Location Details:</h4>
-                    <div class="form-inline">
-
-                        <div class="col-6">
-                            <label>City:</label>
-                            <InputText class="form-control userinput" @bind-Value="memberUpdate.City" />
-                        </div>
-
-                        <div class="col-6">
-                            <label>State:</label>
-                            <InputText class="form-control userinput" @bind-Value="memberUpdate.State" />
-                        </div>
-
-                        <ValidationMessage For="(() => memberUpdate.City)" />
-                        <ValidationMessage For="(() => memberUpdate.State)" />
-
+        <div class="col-12 col-md-4">
+            <div class="card">
+                <img class="card-img-top img-thumbnail mx-auto" src="@photoFilename" alt="@member.KnownAs" />
+                <div class="card-body">
+                    <strong>Location:</strong>
+                    <p>@member.City, @member.State</p>
+                </div>
+                <div class="card-body">
+                    <strong>Age:</strong>
+                    <p>@member.Age</p>
+                </div>
+                <div class="card-body">
+                    <strong>Last active:</strong>
+                    <p>@member.LastActive</p>
+                </div>
+                <div class="card-body">
+                    <strong>Member since:</strong>
+                    <p>@member.Created</p>
+                </div>
+                @if (changesMade)
+                {
+                    <div class="card-footer">
+                        <button class="btn btn-success btn-block" type="submit" form="editForm">Save Changes</button>
                     </div>
+                }
+            </div>
+        </div>
+        <div class="col-12 col-md-8">
+            <TabControl>
+                <TabPage Text=@($"About {@member.KnownAs}")>
+                    <EditForm id="editForm" Model="@memberUpdate" edit @oninput="(e) => OnProfileUpdated(e)" OnValidSubmit="HandleValidSubmit">
+                        <DataAnnotationsValidator />
 
-                </EditForm>
-            </TabPage>
-            <TabPage Text="Edit Photos">
-                <PhotoEditor OnImageChanged="ImageChangedCallback" />
-            </TabPage>
-        </TabControl>
-    </div>
-</div>
+                        <h4>Description</h4>
+                        <InputTextArea class="form-control" rows="6" @bind-Value="memberUpdate.Introduction" />
+                        <ValidationMessage For="(() => member.Introduction)" />
+
+                        <h4 class="mt-2">Looking for</h4>
+                        <InputTextArea class="form-control" rows="6" @bind-Value="memberUpdate.LookingFor" />
+                        <ValidationMessage For="(() => member.LookingFor)" />
+
+                        <h4 class="mt-2">Interests</h4>
+                        <InputTextArea class="form-control" rows="6" @bind-Value="memberUpdate.Interests" />
+                        <ValidationMessage For="(() => member.Interests)" />
+
+                        <h4 class="mt-2">Location Details:</h4>
+                        <div class="form-inline">
+
+                            <div class="col-6">
+                                <label>City:</label>
+                                <InputText class="form-control userinput" @bind-Value="memberUpdate.City" />
+                            </div>
+
+                            <div class="col-6">
+                                <label>State:</label>
+                                <InputText class="form-control userinput" @bind-Value="memberUpdate.State" />
+                            </div>
+
+                            <ValidationMessage For="(() => memberUpdate.City)" />
+                            <ValidationMessage For="(() => memberUpdate.State)" />
+
+                        </div>
+
+                    </EditForm>
+                </TabPage>
+                <TabPage Text="Edit Photos">
+                    <PhotoEditor Member=@member OnImageChanged="ImageChangedCallback" />
+                </TabPage>
+            </TabControl>
+        </div>
+    </div>   
+}
 
 @code {
     private bool showError = false;
     private string errorText;
-    private MemberUpdateModel memberUpdate = new();
     private bool changesMade = false;
+    private MemberModel member;
+    private MemberUpdateModel memberUpdate = new();
+    private string photoFilename = "./assets/user.png";
 
     protected override async Task OnInitializedAsync()
     {
@@ -110,13 +115,16 @@
 
     private async Task LoadMember()
     {
-        ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(AppState.AppUser.Username);
+        AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        ClaimsPrincipal user = authState.User;
+        
+        ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(user.Identity.Name);
 
         if (result.Success)
         {
-            AppState.AppUser = result.Data;
-            AppState.MainPhoto = await MemberService.GetPhotoAsync(AppState.AppUser.Username, result.Data.MainPhotoFilename);
-            Mapper.Map(AppState.AppUser, memberUpdate);
+            member = result.Data;
+            Mapper.Map(member, memberUpdate);
+            photoFilename = await MemberService.GetPhotoAsync(member.Username, member.MainPhotoFilename);
         }
         else
         {

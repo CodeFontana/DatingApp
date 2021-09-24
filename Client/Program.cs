@@ -31,7 +31,6 @@ namespace Client
             builder.Services.AddScoped<IRegistrationService, RegistrationService>();
             builder.Services.AddScoped<IMemberService, MemberService>();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
-            builder.Services.AddScoped<AppStateService>();
             builder.Services.AddScoped<ISpinnerService, SpinnerService>();
             builder.Services.AddScoped<SpinnerHandler>();
             builder.Services.AddScoped(s =>

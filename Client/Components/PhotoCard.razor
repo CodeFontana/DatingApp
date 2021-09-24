@@ -1,6 +1,5 @@
 ﻿@inject IMemberService MemberService
 @inject IToastService ToastService
-@inject AppStateService AppState
 
 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
     <img class="img-thumbnail rounded p-1" src="@photoFilename">
@@ -9,11 +8,18 @@
         {
             <button class="btn btn-dark mx-1" @onclick="HandleSetMainPhoto">Set Main</button>
         }
+        else
+        {
+            <button class="btn btn-dark mx-1" disabled>Set Main</button>
+        }
         <button class="btn btn-danger" @onclick="HandleDeletePhoto"><i class="fa fa-trash" /></button>
     </div>
 </div>
 
 @code {
+    [Parameter]
+    public string Username { get; set; }
+    
     [Parameter]
     public PhotoModel Photo { get; set; }
 
@@ -24,7 +30,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        photoFilename = await MemberService.GetPhotoAsync(AppState.AppUser.Username, Photo.Filename);
+        photoFilename = await MemberService.GetPhotoAsync(Username, Photo.Filename);
     }
 
     private async Task HandleSetMainPhoto()
@@ -34,7 +40,7 @@
             return;
         }
 
-        ServiceResponseModel<string> result = await MemberService.SetMainPhotoAsync(AppState.AppUser.Username, Photo.Id);
+        ServiceResponseModel<string> result = await MemberService.SetMainPhotoAsync(Username, Photo.Id);
 
         if (result.Success)
         {
@@ -49,7 +55,7 @@
 
     private async Task HandleDeletePhoto()
     {
-        ServiceResponseModel<string> result = await MemberService.DeletePhotoAsync(AppState.AppUser.Username, Photo);
+        ServiceResponseModel<string> result = await MemberService.DeletePhotoAsync(Username, Photo);
 
         if (result.Success)
         {

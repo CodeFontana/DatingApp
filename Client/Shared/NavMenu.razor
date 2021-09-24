@@ -1,6 +1,5 @@
 ﻿@inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavManager
-@inject AppStateService AppState
 @inject IAuthenticationService AuthService
 @inject IMemberService MemberService
 @inject IToastService ToastService
@@ -90,21 +89,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        AppState.OnChange += StateHasChanged;
         AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
         ClaimsPrincipal user = authState.User;
 
         if (user.Identity.IsAuthenticated)
         {
-            ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(authState.User.Identity.Name);
-            
-            if (result.Success)
-            {
-                AppState.AppUser = result.Data;
-                AppState.MainPhoto = await MemberService.GetPhotoAsync(AppState.AppUser.Username, result.Data.MainPhotoFilename);
-                photoFilename = AppState.MainPhoto;
-            }
-            
             NavManager.NavigateTo("/members");
         }
     }
@@ -127,14 +116,6 @@
 
         if (authResult.Success)
         {
-            ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(authResult.Data.Username);
-            
-            if (result.Success)
-            {
-                AppState.AppUser = result.Data;
-                AppState.MainPhoto = await MemberService.GetPhotoAsync(AppState.AppUser.Username, AppState.AppUser.MainPhotoFilename);
-            }
-
             NavManager.NavigateTo("/members");
         }
         else
@@ -145,14 +126,7 @@
 
     private async Task HandleLogout()
     {
-        AppState.AppUser = null;
-        AppState.MainPhoto = null;
         NavManager.NavigateTo("/");
         await AuthService.LogoutAsync();
-    }
-
-    public void Dispose()
-    {
-        AppState.OnChange -= StateHasChanged;
     }
 }

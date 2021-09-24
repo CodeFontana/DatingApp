@@ -1,7 +1,6 @@
 ﻿@inject IToastService ToastService
 @inject IMemberService MemberService
 @inject ISpinnerService SpinnerService
-@inject AppStateService AppState
 
 @if (showError)
 {
@@ -12,9 +11,9 @@
 
 <div>
     <div class="row">
-        @foreach (PhotoModel p in AppState.AppUser.Photos)
+        @foreach (PhotoModel p in Member.Photos)
         {
-            <PhotoCard Photo="@p" OnImageChanged="HandleImageChanged" />
+            <PhotoCard Username="@Member.Username" Photo="@p" OnImageChanged="HandleImageChanged" />
         }
     </div>
 
@@ -28,6 +27,9 @@
 </div>
 
 @code {
+    [Parameter]
+    public MemberModel Member { get; set; }
+
     [Parameter]
     public EventCallback<string> OnImageChanged { get; set; }
 
@@ -60,7 +62,7 @@
                 name: "\"files\"",
                 fileName: imageFile.Name);
 
-            ServiceResponseModel<PhotoModel> result = await MemberService.AddPhotoAsync(AppState.AppUser.Username, content);
+            ServiceResponseModel<PhotoModel> result = await MemberService.AddPhotoAsync(Member.Username, content);
 
             if (result.Success)
             {

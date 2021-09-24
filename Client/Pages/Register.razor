@@ -1,6 +1,5 @@
 ﻿@page "/register"
 @inject NavigationManager NavManager
-@inject AppStateService AppState
 @inject IMemberService MemberService
 @inject IRegistrationService RegService
 @inject IAuthenticationService AuthService
@@ -61,14 +60,6 @@
 
             if (authResult.Success)
             {
-                ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(authResult.Data.Username);
-            
-                if (result.Success)
-                {
-                    AppState.AppUser = result.Data;
-                    AppState.MainPhoto = await MemberService.GetPhotoAsync(authResult.Data.Username, result.Data.MainPhotoFilename);
-                }
-
                 NavManager.NavigateTo("/members");
             }
             else
