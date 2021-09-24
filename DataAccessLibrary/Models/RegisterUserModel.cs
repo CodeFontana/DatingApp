@@ -5,10 +5,11 @@ namespace DataAccessLibrary.Models
 {
     public class RegisterUserModel
     {
-        [Required(ErrorMessage = "Username required.")]
+        [Required(ErrorMessage = "Please enter a username")]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = "Password is required.")]
+        [Required(ErrorMessage = "Please enter a password")]
+        [MinLength(4, ErrorMessage="Password must be at least (4) characters")]
         public string Password { get; set; }
 
         [Required]
