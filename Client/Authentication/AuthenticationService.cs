@@ -20,15 +20,18 @@ namespace Client.Authentication
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _options;
         private readonly AuthenticationStateProvider _authStateProvider;
+        private readonly IAppUserService _appUserService;
 
         public AuthenticationService(IConfiguration config,
                                      HttpClient httpClient,
-                                     AuthenticationStateProvider authStateProvider)
+                                     AuthenticationStateProvider authStateProvider,
+                                     IAppUserService appUserService)
         {
             _config = config;
             _httpClient = httpClient;
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             _authStateProvider = authStateProvider;
+            _appUserService = appUserService;
         }
 
         public async Task<ServiceResponseModel<AuthUserModel>> LoginAsync(LoginUserModel loginUser)
@@ -40,6 +43,7 @@ namespace Client.Authentication
             if (result.Success)
             {
                 await ((AuthStateProvider)_authStateProvider).NotifyUserAuthenticationAsync(result.Data.Token);
+                await _appUserService.SetAppUser(result.Data.Username);
             }
 
             return result;
@@ -48,6 +52,7 @@ namespace Client.Authentication
         public async Task LogoutAsync()
         {
             await ((AuthStateProvider)_authStateProvider).NotifyUserLogoutAsync();
+            await _appUserService.SetAppUser(null);
         }
     }
 }

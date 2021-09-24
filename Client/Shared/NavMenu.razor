@@ -2,6 +2,7 @@
 @inject NavigationManager NavManager
 @inject IAuthenticationService AuthService
 @inject IMemberService MemberService
+@inject IAppUserService AppUserService
 @inject IToastService ToastService
 
 <AuthorizeView Context="AuthContext">
@@ -46,7 +47,7 @@
 
             <div class="nav-item dropdown show">
                 <NavLink class="nav-link text-light ml-2" @onclick="() => expandWelcomeMenu = !expandWelcomeMenu" id="navbarDropdown">
-                    <img src="@photoFilename" alt="@AuthContext.User.Identity.Name" />
+                    <img src="@AppUserService.MainPhoto" alt="@AuthContext.User.Identity.Name" />
                     <text class="text-nowrap ml-2"><span class="welcome-text">Welcome </span>@AuthContext.User.Identity.Name</text>
                 </NavLink>
 
@@ -85,15 +86,16 @@
     private LoginUserModel loginUser = new();
     private bool expandWelcomeMenu = false;
     private bool expandNavLinks = false;
-    private string photoFilename = "./assets/user.png";
 
     protected override async Task OnInitializedAsync()
     {
+        AppUserService.OnChange += StateHasChanged;
         AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
         ClaimsPrincipal user = authState.User;
 
         if (user.Identity.IsAuthenticated)
         {
+            await AppUserService.SetAppUser(user.Identity.Name);
             NavManager.NavigateTo("/members");
         }
     }
@@ -128,5 +130,10 @@
     {
         NavManager.NavigateTo("/");
         await AuthService.LogoutAsync();
+    }
+
+    public void Dispose()
+    {
+        AppUserService.OnChange -= StateHasChanged;
     }
 }

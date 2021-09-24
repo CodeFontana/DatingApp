@@ -2,7 +2,6 @@ using System;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -12,7 +11,6 @@ using Client.Interfaces;
 using Client.Authentication;
 using Client.Services;
 using Client.Helpers;
-using Microsoft.AspNetCore.Components;
 
 namespace Client
 {
@@ -30,6 +28,7 @@ namespace Client
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IRegistrationService, RegistrationService>();
             builder.Services.AddScoped<IMemberService, MemberService>();
+            builder.Services.AddScoped<IAppUserService, AppUserService>();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
             builder.Services.AddScoped<ISpinnerService, SpinnerService>();
             builder.Services.AddScoped<SpinnerHandler>();

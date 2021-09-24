@@ -109,8 +109,7 @@ namespace API.Services
                 serviceResponse.Data = new AuthUserModel
                 {
                     Username = appUser.UserName,
-                    Token = await _tokenService.CreateTokenAsync(appUser),
-                    PhotoFilename = appUser.Photos.FirstOrDefault(x => x.IsMain)?.Filename
+                    Token = await _tokenService.CreateTokenAsync(appUser)
                 };
                 serviceResponse.Message = $"Successfully authenticated user [{appUser.UserName}]";
                 _logger.LogInformation(serviceResponse.Message);

@@ -1,4 +1,5 @@
 ﻿@inject IMemberService MemberService
+@inject IAppUserService AppUserService
 @inject IToastService ToastService
 
 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -18,9 +19,6 @@
 
 @code {
     [Parameter]
-    public string Username { get; set; }
-    
-    [Parameter]
     public PhotoModel Photo { get; set; }
 
     [Parameter]
@@ -30,7 +28,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        photoFilename = await MemberService.GetPhotoAsync(Username, Photo.Filename);
+        photoFilename = await MemberService.GetPhotoAsync(AppUserService.AppUser.Username, Photo.Filename);
     }
 
     private async Task HandleSetMainPhoto()
@@ -40,7 +38,7 @@
             return;
         }
 
-        ServiceResponseModel<string> result = await MemberService.SetMainPhotoAsync(Username, Photo.Id);
+        ServiceResponseModel<string> result = await MemberService.SetMainPhotoAsync(AppUserService.AppUser.Username, Photo.Id);
 
         if (result.Success)
         {
@@ -55,7 +53,7 @@
 
     private async Task HandleDeletePhoto()
     {
-        ServiceResponseModel<string> result = await MemberService.DeletePhotoAsync(Username, Photo);
+        ServiceResponseModel<string> result = await MemberService.DeletePhotoAsync(AppUserService.AppUser.Username, Photo);
 
         if (result.Success)
         {
