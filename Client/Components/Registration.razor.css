@@ -7,4 +7,5 @@
 
 ::deep #SignUpForm {
     min-width: 350px;
+    border: none;
 }

@@ -24,7 +24,7 @@ namespace DataAccessLibrary.Models
         [MaxLength(100, ErrorMessage = "Your town name must be less than (100) characters")]
         public string City { get; set; }
 
-        [Required(ErrorMessage = "Please enter your state")]
+        [Required(ErrorMessage = "Please enter your state or province")]
         [MaxLength(100, ErrorMessage = "Your state name must be less than (100) characters")]
         public string State { get; set; }
 
