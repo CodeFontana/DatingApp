@@ -265,9 +265,51 @@ namespace API.Services
             return true;
         }
 
+        // Ref: https://stackoverflow.com/questions/39068941/images-are-rotated-in-picturebox
+        private static Image CorrectExifOrientation(Image image)
+        {
+            if (image == null)
+            {
+                throw new ArgumentException("Invalid image");
+            }
+
+            // Exif tag -- https://exiftool.org/TagNames/EXIF.html
+            int orientationId = 0x0112;
+
+            if (image.PropertyIdList.Contains(orientationId))
+            {
+                int orientation = (int)image.GetPropertyItem(orientationId).Value[0];
+                RotateFlipType rotateFlip = RotateFlipType.RotateNoneFlipNone;
+
+                rotateFlip = orientation switch
+                {
+                    1 => RotateFlipType.RotateNoneFlipNone,
+                    2 => RotateFlipType.RotateNoneFlipX,
+                    3 => RotateFlipType.Rotate180FlipNone,
+                    4 => RotateFlipType.Rotate180FlipX,
+                    5 => RotateFlipType.Rotate90FlipX,
+                    6 => RotateFlipType.Rotate90FlipNone,
+                    7 => RotateFlipType.Rotate270FlipX,
+                    8 => RotateFlipType.Rotate270FlipNone,
+                    _ => RotateFlipType.RotateNoneFlipNone,
+                };
+
+                if (rotateFlip != RotateFlipType.RotateNoneFlipNone)
+                {
+                    image.RotateFlip(rotateFlip);
+                    image.RemovePropertyItem(orientationId);
+                }
+            }
+
+            return image;
+        }
+
         // Ref: https://stackoverflow.com/questions/1922040/how-to-resize-an-image-c-sharp
         public static Image ResizeImage(Image sourceImage, RectangleF destBounds)
         {
+            // Use Exif tag to correct photo orientation
+            sourceImage = CorrectExifOrientation(sourceImage);
+            
             RectangleF sourceBounds = new(0.0f, 0.0f, (float)sourceImage.Width, (float)sourceImage.Height);
             Image destinationImage = new Bitmap((int)destBounds.Width, (int)destBounds.Height);
             using Graphics g = Graphics.FromImage(destinationImage);
