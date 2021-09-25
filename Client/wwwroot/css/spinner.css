@@ -1,7 +1,14 @@
 ﻿/*Credit: https://tobiasahlin.com/spinkit/ */
 
+.spinner-container {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+}
+
 .spin-wave {
-    margin: 30vh auto 0 auto;
     width: 200px;
     height: 160px;
     text-align: center;
