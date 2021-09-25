@@ -31,6 +31,7 @@
                     Birthdate
                     <InputDate @bind-Value="registerUser.DateOfBirth" class="form-control" />
                 </label>
+                <ValidationMessage For="(() => registerUser.DateOfBirth)" />
             </div>
             <div class="form-group">
                 <InputText @bind-Value="registerUser.City" class="form-control" type="text" placeholder="Town or City" />

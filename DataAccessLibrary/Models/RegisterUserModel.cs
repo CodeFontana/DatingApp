@@ -18,6 +18,7 @@ namespace DataAccessLibrary.Models
         public string Gender { get; set; }
 
         [Required(ErrorMessage = "Please enter your date of birth")]
+        [ValidBirthday(ErrorMessage = "You must be at least 18 years old")]
         public DateTime DateOfBirth { get; set; } = DateTime.Now.AddYears(-20);
 
         [Required(ErrorMessage = "Please enter your town or city")]
@@ -36,6 +37,14 @@ namespace DataAccessLibrary.Models
         [DisplayName("Confirm Password")]
         [Compare(nameof(Password), ErrorMessage = "Password does not match.")]
         public string ConfirmPassword { get; set; }
+    }
 
+    public class ValidBirthdayAttribute : RangeAttribute
+    {
+        public ValidBirthdayAttribute()
+          : base(typeof(DateTime),
+                  DateTime.Now.AddYears(-120).ToShortDateString(),
+                  DateTime.Now.AddYears(-18).ToShortDateString())
+        { }
     }
 }
