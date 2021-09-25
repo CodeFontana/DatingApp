@@ -17,6 +17,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.MainPhotoFilename, opt => opt.MapFrom(src =>
                     src.Photos.FirstOrDefault(x => x.IsMain).Filename))
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
+            CreateMap<RegisterUserModel, AppUser>();
             CreateMap<Photo, PhotoModel>();
             CreateMap<MemberUpdateModel, AppUser>();
         }

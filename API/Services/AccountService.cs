@@ -1,4 +1,5 @@
 ﻿using API.Interfaces;
+using AutoMapper;
 using DataAccessLibrary.Entities;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Identity;
@@ -16,19 +17,19 @@ namespace API.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
-        private readonly IPhotoService _photoService;
+        private readonly IMapper _mapper;
         private readonly ILogger<AccountService> _logger;
 
         public AccountService(UserManager<AppUser> userManager,
                               SignInManager<AppUser> signInManager,
                               ITokenService tokenService,
-                              IPhotoService photoService,
+                              IMapper mapper,
                               ILogger<AccountService> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
-            _photoService = photoService;
+            _mapper = mapper;
             _logger = logger;
         }
 
@@ -43,10 +44,7 @@ namespace API.Services
                     throw new ArgumentException($"Username is taken [{registerUser.Username}]");
                 }
 
-                AppUser user = new()
-                {
-                    UserName = registerUser.Username
-                };
+                AppUser user = _mapper.Map<AppUser>(registerUser);
 
                 IdentityResult result = await _userManager.CreateAsync(user, registerUser.Password);
 
