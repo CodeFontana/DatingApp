@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -24,8 +25,8 @@ namespace DataAccessLibrary.Data
 
             try
             {
-                
-                string userData = await File.ReadAllTextAsync(@"Data\UserSeedData.json");
+                string execPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string userData = await File.ReadAllTextAsync(@$"{execPath}\Data\UserSeedData.json");
                 List<AppUser> users = JsonSerializer.Deserialize<List<AppUser>>(userData);
 
                 if (users == null)

@@ -2,12 +2,9 @@
 using DataAccessLibrary.Entities;
 using DataAccessLibrary.Extensions;
 using DataAccessLibrary.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace API.Helpers
+namespace DataAccessLibrary.Helpers
 {
     public class AutoMapperProfiles : Profile
     {

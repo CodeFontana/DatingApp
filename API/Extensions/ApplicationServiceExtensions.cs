@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DataAccessLibrary.Interfaces;
-using API.Helpers;
+using DataAccessLibrary.Helpers;
 
 namespace API.Extensions
 {
