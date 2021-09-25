@@ -3,6 +3,7 @@ using AutoMapper;
 using DataAccessLibrary.Entities;
 using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
+using DataAccessLibrary.Paging;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -24,14 +25,14 @@ namespace API.Services
             _logger = logger;
         }
 
-        public async Task<ServiceResponseModel<IEnumerable<MemberModel>>> GetUsers(string requestor)
+        public async Task<ServiceResponseModel<PagedList<MemberModel>>> GetUsers(string requestor, UserParameters userParameters)
         {
-            ServiceResponseModel<IEnumerable<MemberModel>> serviceResponse = new();
+            ServiceResponseModel<PagedList<MemberModel>> serviceResponse = new();
 
             try
             {
                 serviceResponse.Success = true;
-                serviceResponse.Data = await _userRepository.GetMembersAsync();
+                serviceResponse.Data = await _userRepository.GetMembersAsync(userParameters);
                 serviceResponse.Message = $"Successfully listed users for [{requestor}]";
                 _logger.LogInformation(serviceResponse.Message);
             }

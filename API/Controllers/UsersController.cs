@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Extensions;
 using API.Interfaces;
 using API.Services;
 using DataAccessLibrary.Models;
+using DataAccessLibrary.Paging;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,12 +28,18 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsersAsync()
+        public async Task<IActionResult> GetUsersAsync([FromQuery] UserParameters userParameters)
         {
-            ServiceResponseModel<IEnumerable<MemberModel>> response = await _usersService.GetUsers(User.Identity.Name);
+            ServiceResponseModel<PagedList<MemberModel>> response = await _usersService.GetUsers(User.Identity.Name, userParameters);
 
             if (response.Success)
             {
+                Response.AddPaginationHeader(
+                    response.Data.CurrentPage, 
+                    response.Data.PageSize, 
+                    response.Data.TotalCount, 
+                    response.Data.TotalPages);
+
                 return Ok(response);
             }
             else
