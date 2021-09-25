@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using DataAccessLibrary.Paging;
 
 namespace DataAccessLibrary.Data
 {
@@ -29,11 +30,12 @@ namespace DataAccessLibrary.Data
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<MemberModel>> GetMembersAsync()
+        public async Task<PagedList<MemberModel>> GetMembersAsync(UserParameters userParameters)
         {
-            return await _context.Users
+            IQueryable<MemberModel> query = _context.Users
                 .ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+                .AsNoTracking();
+            return await PagedList<MemberModel>.CreateAsync(query, userParameters.PageNumber, userParameters.PageSize);
         }
 
         public async Task<AppUser> GetUserByIdAsync(int id)
