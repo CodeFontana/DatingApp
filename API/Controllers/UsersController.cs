@@ -27,19 +27,13 @@ namespace API.Controllers
             _photoService = photoService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetUsersAsync([FromQuery] UserParameters userParameters)
+        [HttpGet("{username}")]
+        public async Task<IActionResult> GetUserAsync(string username)
         {
-            ServiceResponseModel<PagedList<MemberModel>> response = await _usersService.GetUsers(User.Identity.Name, userParameters);
+            ServiceResponseModel<MemberModel> response = await _usersService.GetUser(username, User.Identity.Name);
 
             if (response.Success)
             {
-                Response.AddPaginationHeader(
-                    response.Data.CurrentPage, 
-                    response.Data.PageSize, 
-                    response.Data.TotalCount, 
-                    response.Data.TotalPages);
-
                 return Ok(response);
             }
             else
@@ -48,13 +42,19 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("{username}")]
-        public async Task<IActionResult> GetUserAsync(string username)
+        [HttpGet]
+        public async Task<IActionResult> GetUsersAsync([FromQuery] UserParameters userParameters)
         {
-            ServiceResponseModel<MemberModel> response = await _usersService.GetUser(username, User.Identity.Name);
+            ServiceResponseModel<PagedList<MemberModel>> response = await _usersService.GetUsers(User.Identity.Name, userParameters);
 
             if (response.Success)
             {
+                Response.AddPaginationHeader(
+                    response.Data.CurrentPage,
+                    response.Data.PageSize,
+                    response.Data.TotalCount,
+                    response.Data.TotalPages);
+
                 return Ok(response);
             }
             else
