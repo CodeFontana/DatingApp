@@ -50,10 +50,10 @@ namespace API.Controllers
             if (response.Success)
             {
                 Response.AddPaginationHeader(
-                    response.Data.CurrentPage,
-                    response.Data.PageSize,
-                    response.Data.TotalCount,
-                    response.Data.TotalPages);
+                    response.Data.MetaData.CurrentPage,
+                    response.Data.MetaData.PageSize,
+                    response.Data.MetaData.TotalCount,
+                    response.Data.MetaData.TotalPages);
 
                 return Ok(response);
             }
