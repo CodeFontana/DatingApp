@@ -1,0 +1,55 @@
+﻿<nav>
+    <ul class="pagination justify-content-center">
+        @foreach (var link in links)
+        {
+            <li @onclick="() => OnSelectedPage(link)" style="cursor: pointer;" class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
+                <span class="page-link" href="#">@link.Text</span>
+            </li>
+        }
+    </ul>
+</nav>
+
+@code {
+    [Parameter]
+    public PageModel MetaData { get; set; }
+
+    [Parameter]
+    public int Spread { get; set; }
+
+    [Parameter]
+    public EventCallback<int> PageChanged { get; set; }
+        
+    private List<PageLinkModel> links;
+    
+    protected override void OnParametersSet()
+    {
+        CreatePaginationLinks();
+    }
+
+    private void CreatePaginationLinks()
+    {
+        links = new List<PageLinkModel>();
+        links.Add(new PageLinkModel(MetaData.CurrentPage - 1, MetaData.HasPrevious, "Previous"));
+
+        for (int i = 1; i <= MetaData.TotalPages; i++)
+        {
+            if (i >= MetaData.CurrentPage - Spread && i <= MetaData.CurrentPage + Spread)
+            {
+                links.Add(new PageLinkModel(i, true, i.ToString()) { Active = MetaData.CurrentPage == i });
+            }
+        }
+
+        links.Add(new PageLinkModel(MetaData.CurrentPage + 1, MetaData.HasNext, "Next"));
+    }
+
+    private async Task OnSelectedPage(PageLinkModel link)
+    {
+        if (link.Page == MetaData.CurrentPage || link.Enabled == false)
+        {
+            return;    
+        }
+        
+        MetaData.CurrentPage = link.Page;
+        await PageChanged.InvokeAsync(link.Page);
+    }
+}

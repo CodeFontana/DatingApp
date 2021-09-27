@@ -23,28 +23,39 @@
                 </div>
             }
         </div>
+        
+        @if (metaData != null)
+        {
+            <div class="d-flex justify-content-center">
+                <Pagination MetaData=@metaData Spread="10" PageChanged="HandlePageChanged" />
+            </div>
+        }
     }
 
 </div>
 
 @code {
     private List<MemberModel> members = new();
+    private UserParameters userParameters = new();
+    private PageModel metaData;
     private bool showError = false;
     private string errorText;
 
     protected override async Task OnInitializedAsync()
     {
+        userParameters.PageNumber = 1;
+        userParameters.PageSize = 5;
         await LoadMembers();
     }
 
     private async Task LoadMembers()
     {
-        UserParameters userParam = new();
-        ServiceResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync(userParam);
+        PagingResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync(userParameters);
 
         if (result.Success)
         {
             members = result.Data.ToList();
+            metaData = result.MetaData;
         }
         else
         {
@@ -52,5 +63,11 @@
             errorText = $"Request failed: {result.Message}";
             ToastService.ShowError($"Request failed: {result.Message}");
         }
+    }
+
+    private async Task HandlePageChanged(int page)
+    {
+        userParameters.PageNumber = page;
+        await LoadMembers();
     }
 }

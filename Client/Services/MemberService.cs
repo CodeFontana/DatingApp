@@ -76,7 +76,7 @@ namespace Client.Services
 
             if (response.Headers != null && response.Headers.Contains("Pagination"))
             {
-                result.MetaData = JsonSerializer.Deserialize<PageData>(response.Headers.GetValues("Pagination").First(), _options);
+                result.MetaData = JsonSerializer.Deserialize<PageModel>(response.Headers.GetValues("Pagination").First(), _options);
             }
             
             //if (result.Success)
