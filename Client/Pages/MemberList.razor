@@ -46,6 +46,18 @@
     {
         userParameters.PageNumber = 1;
         userParameters.PageSize = 5;
+        userParameters.MinAge = 18;
+        userParameters.MaxAge = 99;
+        
+        if (AppUserService.AppUser.Gender.ToLower().Equals("female"))
+        {
+            userParameters.Gender = "male";
+        }
+        else
+        {
+            userParameters.Gender = "female";
+        }
+
         await LoadMembers();
     }
 
@@ -69,6 +81,7 @@
     private async Task HandlePageChanged(int page)
     {
         userParameters.PageNumber = page;
+        members = null;
         await LoadMembers();
     }
 }

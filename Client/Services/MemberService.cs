@@ -67,8 +67,11 @@ namespace Client.Services
 
             var queryStringParam = new Dictionary<string, string>
             {
+                [nameof(userParameters.PageNumber)] = userParameters.PageNumber.ToString(),
                 [nameof(userParameters.PageSize)] = userParameters.PageSize.ToString(),
-                [nameof(userParameters.PageNumber)] = userParameters.PageNumber.ToString()
+                [nameof(userParameters.MinAge)] = userParameters.MinAge.ToString(),
+                [nameof(userParameters.MaxAge)] = userParameters.MaxAge.ToString(),
+                [nameof(userParameters.Gender)] = userParameters.Gender,
             };
 
             using HttpResponseMessage response = await _httpClient.GetAsync(QueryHelpers.AddQueryString(apiEndpoint, queryStringParam));
