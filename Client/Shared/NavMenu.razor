@@ -92,14 +92,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        AppUserService.OnChange += StateHasChanged;
         AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
         ClaimsPrincipal user = authState.User;
 
         if (user.Identity.IsAuthenticated)
         {
-            await AppUserService.SetAppUser(user.Identity.Name);
-            NavManager.NavigateTo("/members");
+            if (NavManager.Uri == NavManager.BaseUri)
+            {
+                NavManager.NavigateTo("/members");
+            }
         }
     }
 
@@ -133,10 +134,5 @@
     {
         NavManager.NavigateTo("/");
         await AuthService.LogoutAsync();
-    }
-
-    public void Dispose()
-    {
-        AppUserService.OnChange -= StateHasChanged;
     }
 }
