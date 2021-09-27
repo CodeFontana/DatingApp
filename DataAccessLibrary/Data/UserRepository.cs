@@ -32,10 +32,17 @@ namespace DataAccessLibrary.Data
 
         public async Task<PagedList<MemberModel>> GetMembersAsync(UserParameters userParameters)
         {
-            IQueryable<MemberModel> query = _context.Users
-                .ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
-                .AsNoTracking();
-            return await PagedList<MemberModel>.CreateAsync(query, userParameters.PageNumber, userParameters.PageSize);
+            IQueryable<AppUser> query = _context.Users.AsQueryable();
+            
+            query = query.Where(u => u.UserName != userParameters.CurrentUsername);
+            query = query.Where(u => u.Gender.ToLower() == userParameters.Gender.ToLower());
+            
+            return await PagedList<MemberModel>
+                .CreateAsync(query
+                    .ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
+                    .AsNoTracking(),
+                userParameters.PageNumber,
+                userParameters.PageSize);
         }
 
         public async Task<AppUser> GetUserByIdAsync(int id)

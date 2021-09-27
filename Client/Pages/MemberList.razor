@@ -1,5 +1,6 @@
 ﻿@page "/members"
 @attribute [Authorize]
+@inject IAppUserService AppUserService
 @inject IMemberService MemberService
 @inject IToastService ToastService
 

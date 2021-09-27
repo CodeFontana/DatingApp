@@ -17,5 +17,8 @@ namespace DataAccessLibrary.Paging
             get => _pageSize;
             set => _pageSize = (value > MAX_PAGE_SIZE) ? MAX_PAGE_SIZE : value;
         }
+
+        public string CurrentUsername { get; set; }
+        public string Gender { get; set; }
     }
 }

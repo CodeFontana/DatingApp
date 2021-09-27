@@ -51,6 +51,14 @@ namespace API.Services
 
             try
             {
+                AppUser appUser = await _userRepository.GetUserByUsernameAsync(requestor);
+                userParameters.CurrentUsername = appUser.UserName;
+
+                if (string.IsNullOrWhiteSpace(userParameters.Gender))
+                {
+                    userParameters.Gender = appUser.Gender.ToLower() == "male" ? "female" : "male";
+                }
+
                 PagedList<MemberModel> data = await _userRepository.GetMembersAsync(userParameters);
 
                 pagingResponse.Success = true;
