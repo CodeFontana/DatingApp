@@ -10,7 +10,7 @@ namespace DataAccessLibrary.Paging
     {
         public PagedList(IEnumerable<T> items, int count, int pageNumber, int pageSize)
         {
-            MetaData = new MetaData()
+            MetaData = new PageData()
             {
                 CurrentPage = pageNumber,
                 TotalPages = (int)Math.Ceiling(count / (double)pageSize),
@@ -21,7 +21,7 @@ namespace DataAccessLibrary.Paging
             AddRange(items);
         }
 
-        public MetaData MetaData { get; set; }
+        public PageData MetaData { get; set; }
 
         public static async Task<PagedList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Paging
 {
-    public class MetaData
+    public class PageData
     {
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
