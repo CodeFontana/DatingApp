@@ -13,7 +13,7 @@
             @errorText
         </div>
     }
-    else if (members.Count > 0)
+    else if (members?.Count > 0)
     {
         <div class="row">
             @foreach (MemberModel m in members)
@@ -39,7 +39,8 @@
 
     private async Task LoadMembers()
     {
-        ServiceResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync();
+        UserParameters userParam = new();
+        ServiceResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync(userParam);
 
         if (result.Success)
         {
