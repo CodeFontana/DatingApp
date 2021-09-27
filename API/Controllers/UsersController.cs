@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using API.Extensions;
 using API.Interfaces;
-using API.Services;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Paging;
 using Microsoft.AspNetCore.Authorization;
@@ -45,7 +42,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsersAsync([FromQuery] UserParameters userParameters)
         {
-            ServiceResponseModel<PagedList<MemberModel>> response = await _usersService.GetUsers(User.Identity.Name, userParameters);
+            PagingResponseModel<PagedList<MemberModel>> response = await _usersService.GetUsers(User.Identity.Name, userParameters);
 
             if (response.Success)
             {

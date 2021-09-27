@@ -23,28 +23,6 @@ namespace API.Services
             _logger = logger;
         }
 
-        public async Task<ServiceResponseModel<PagedList<MemberModel>>> GetUsers(string requestor, UserParameters userParameters)
-        {
-            ServiceResponseModel<PagedList<MemberModel>> serviceResponse = new();
-
-            try
-            {
-                serviceResponse.Success = true;
-                serviceResponse.Data = await _userRepository.GetMembersAsync(userParameters);
-                serviceResponse.Message = $"Successfully listed users for [{requestor}]";
-                _logger.LogInformation(serviceResponse.Message);
-            }
-            catch (Exception e)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = $"Failed to list users for [{requestor}]";
-                _logger.LogError(serviceResponse.Message);
-                _logger.LogError(e.Message);
-            }
-
-            return serviceResponse;
-        }
-
         public async Task<ServiceResponseModel<MemberModel>> GetUser(string username, string requestor)
         {
             ServiceResponseModel<MemberModel> serviceResponse = new();
@@ -65,6 +43,31 @@ namespace API.Services
             }
 
             return serviceResponse;
+        }
+
+        public async Task<PagingResponseModel<PagedList<MemberModel>>> GetUsers(string requestor, UserParameters userParameters)
+        {
+            PagingResponseModel<PagedList<MemberModel>> pagingResponse = new();
+
+            try
+            {
+                PagedList<MemberModel> data = await _userRepository.GetMembersAsync(userParameters);
+
+                pagingResponse.Success = true;
+                pagingResponse.Data = data;
+                // pagingResponse.MetaData = data.MetaData; (To follow convention, we will add MetaData to the response headers)
+                pagingResponse.Message = $"Successfully listed users for [{requestor}]";
+                _logger.LogInformation(pagingResponse.Message);
+            }
+            catch (Exception e)
+            {
+                pagingResponse.Success = false;
+                pagingResponse.Message = $"Failed to list users for [{requestor}]";
+                _logger.LogError(pagingResponse.Message);
+                _logger.LogError(e.Message);
+            }
+
+            return pagingResponse;
         }
 
         public async Task<ServiceResponseModel<string>> UpdateUser(string username, MemberUpdateModel memberUpdate)
