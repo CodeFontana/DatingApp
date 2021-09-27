@@ -55,7 +55,7 @@ namespace API.Services
 
                 pagingResponse.Success = true;
                 pagingResponse.Data = data;
-                // pagingResponse.MetaData = data.MetaData; (To follow convention, we will add MetaData to the response headers)
+                // pagingResponse.MetaData = data.MetaData; (to follow convention, we will add paging metadata to the response headers, instead of the body content)
                 pagingResponse.Message = $"Successfully listed users for [{requestor}]";
                 _logger.LogInformation(pagingResponse.Message);
             }
