@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Models
 {
-    public class ServiceResponseModel<T>
+    public class PagingResponseModel<T> : ServiceResponseModel<T>
     {
-        public bool Success { get; set; } = true;
-        public T Data { get; set; }
-        public string Message { get; set; } = "";
+        public PageData MetaData { get; set; }
     }
 }
