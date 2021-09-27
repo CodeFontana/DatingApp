@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DataAccessLibrary.Paging;
+using System;
 
 namespace DataAccessLibrary.Data
 {
@@ -36,7 +37,12 @@ namespace DataAccessLibrary.Data
             
             query = query.Where(u => u.UserName != userParameters.CurrentUsername);
             query = query.Where(u => u.Gender.ToLower() == userParameters.Gender.ToLower());
-            
+
+            DateTime minDob = DateTime.Today.AddYears(-userParameters.MaxAge - 1);
+            DateTime maxDob = DateTime.Today.AddYears(-userParameters.MinAge);
+
+            query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
+
             return await PagedList<MemberModel>
                 .CreateAsync(query
                     .ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
