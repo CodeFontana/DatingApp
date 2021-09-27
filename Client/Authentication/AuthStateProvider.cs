@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using Client.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -17,15 +18,18 @@ namespace Client.Authentication
     {
         private readonly IConfiguration _config;
         private readonly HttpClient _httpClient;
+        private readonly IAppUserService _appUserService;
         private readonly ILocalStorageService _localStorage;
         private readonly AuthenticationState _anonymous;
 
         public AuthStateProvider(IConfiguration config,
                                  HttpClient httpClient,
+                                 IAppUserService appUserService,
                                  ILocalStorageService localStorage)
         {
             _config = config;
             _httpClient = httpClient;
+            _appUserService = appUserService;
             _localStorage = localStorage;
             _anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
@@ -99,6 +103,8 @@ namespace Client.Authentication
                 await _localStorage.SetItemAsync(authTokenStorageKey, token);
 
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+
+                await _appUserService.SetAppUser(authenticatedUser.Identity.Name);
 
                 NotifyAuthenticationStateChanged(authState);
                 isAuthenticated = true;
