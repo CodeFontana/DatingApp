@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using API.Extensions;
 using API.Interfaces;
 using DataAccessLibrary.Models;
-using DataAccessLibrary.Paging;
+using DataAccessLibrary.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +42,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsersAsync([FromQuery] UserParameters userParameters)
         {
-            PagingResponseModel<PagedList<MemberModel>> response = await _usersService.GetUsers(User.Identity.Name, userParameters);
+            PaginationResponseModel<PaginationList<MemberModel>> response = await _usersService.GetUsers(User.Identity.Name, userParameters);
 
             if (response.Success)
             {

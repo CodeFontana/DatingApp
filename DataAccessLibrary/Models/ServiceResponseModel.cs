@@ -1,4 +1,4 @@
-﻿using DataAccessLibrary.Paging;
+﻿using DataAccessLibrary.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;

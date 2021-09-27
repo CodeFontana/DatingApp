@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DataAccessLibrary.Paging
+namespace DataAccessLibrary.Pagination
 {
-    public class PagedList<T> : List<T>
+    public class PaginationList<T> : List<T>
     {
-        public PagedList(IEnumerable<T> items, int count, int pageNumber, int pageSize)
+        public PaginationList(IEnumerable<T> items, int count, int pageNumber, int pageSize)
         {
-            MetaData = new PageModel()
+            MetaData = new PaginationModel()
             {
                 CurrentPage = pageNumber,
                 TotalPages = (int)Math.Ceiling(count / (double)pageSize),
@@ -21,9 +21,9 @@ namespace DataAccessLibrary.Paging
             AddRange(items);
         }
 
-        public PageModel MetaData { get; set; }
+        public PaginationModel MetaData { get; set; }
 
-        public static async Task<PagedList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
+        public static async Task<PaginationList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
         {
             int count = await source.CountAsync();
             
@@ -31,7 +31,7 @@ namespace DataAccessLibrary.Paging
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize).ToListAsync();
 
-            return new PagedList<T>(items, count, pageNumber, pageSize);
+            return new PaginationList<T>(items, count, pageNumber, pageSize);
         }
     }
 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLibrary.Paging
+namespace DataAccessLibrary.Pagination
 {
-    public class PageModel
+    public class PaginationModel
     {
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }

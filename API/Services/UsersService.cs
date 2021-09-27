@@ -3,7 +3,7 @@ using AutoMapper;
 using DataAccessLibrary.Entities;
 using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
-using DataAccessLibrary.Paging;
+using DataAccessLibrary.Pagination;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -45,13 +45,13 @@ namespace API.Services
             return serviceResponse;
         }
 
-        public async Task<PagingResponseModel<PagedList<MemberModel>>> GetUsers(string requestor, UserParameters userParameters)
+        public async Task<PaginationResponseModel<PaginationList<MemberModel>>> GetUsers(string requestor, UserParameters userParameters)
         {
-            PagingResponseModel<PagedList<MemberModel>> pagingResponse = new();
+            PaginationResponseModel<PaginationList<MemberModel>> pagingResponse = new();
 
             try
             {
-                PagedList<MemberModel> data = await _userRepository.GetMembersAsync(userParameters);
+                PaginationList<MemberModel> data = await _userRepository.GetMembersAsync(userParameters);
 
                 pagingResponse.Success = true;
                 pagingResponse.Data = data;

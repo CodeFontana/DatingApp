@@ -1,4 +1,4 @@
-﻿using DataAccessLibrary.Paging;
+﻿using DataAccessLibrary.Pagination;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 

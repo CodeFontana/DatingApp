@@ -11,7 +11,7 @@
 
 @code {
     [Parameter]
-    public PageModel MetaData { get; set; }
+    public PaginationModel MetaData { get; set; }
 
     [Parameter]
     public int Spread { get; set; }
@@ -19,7 +19,7 @@
     [Parameter]
     public EventCallback<int> PageChanged { get; set; }
         
-    private List<PageLinkModel> links;
+    private List<PaginationLinkModel> links;
     
     protected override void OnParametersSet()
     {
@@ -28,21 +28,21 @@
 
     private void CreatePaginationLinks()
     {
-        links = new List<PageLinkModel>();
-        links.Add(new PageLinkModel(MetaData.CurrentPage - 1, MetaData.HasPrevious, "Previous"));
+        links = new List<PaginationLinkModel>();
+        links.Add(new PaginationLinkModel(MetaData.CurrentPage - 1, MetaData.HasPrevious, "Previous"));
 
         for (int i = 1; i <= MetaData.TotalPages; i++)
         {
             if (i >= MetaData.CurrentPage - Spread && i <= MetaData.CurrentPage + Spread)
             {
-                links.Add(new PageLinkModel(i, true, i.ToString()) { Active = MetaData.CurrentPage == i });
+                links.Add(new PaginationLinkModel(i, true, i.ToString()) { Active = MetaData.CurrentPage == i });
             }
         }
 
-        links.Add(new PageLinkModel(MetaData.CurrentPage + 1, MetaData.HasNext, "Next"));
+        links.Add(new PaginationLinkModel(MetaData.CurrentPage + 1, MetaData.HasNext, "Next"));
     }
 
-    private async Task OnSelectedPage(PageLinkModel link)
+    private async Task OnSelectedPage(PaginationLinkModel link)
     {
         if (link.Page == MetaData.CurrentPage || link.Enabled == false)
         {

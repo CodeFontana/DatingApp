@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using DataAccessLibrary.Paging;
+using DataAccessLibrary.Pagination;
 using System;
 
 namespace DataAccessLibrary.Data
@@ -31,7 +31,7 @@ namespace DataAccessLibrary.Data
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<PagedList<MemberModel>> GetMembersAsync(UserParameters userParameters)
+        public async Task<PaginationList<MemberModel>> GetMembersAsync(UserParameters userParameters)
         {
             IQueryable<AppUser> query = _context.Users.AsQueryable();
             
@@ -43,7 +43,7 @@ namespace DataAccessLibrary.Data
 
             query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
 
-            return await PagedList<MemberModel>
+            return await PaginationList<MemberModel>
                 .CreateAsync(query
                     .ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
                     .AsNoTracking(),

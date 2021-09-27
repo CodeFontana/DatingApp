@@ -16,6 +16,8 @@
     }
     else if (members?.Count > 0)
     {
+        <h2>Your matches - @metaData.TotalCount</h2>
+        
         <div class="row">
             @foreach (MemberModel m in members)
             {
@@ -38,7 +40,7 @@
 @code {
     private List<MemberModel> members = new();
     private UserParameters userParameters = new();
-    private PageModel metaData;
+    private PaginationModel metaData;
     private bool showError = false;
     private string errorText;
 
@@ -63,7 +65,7 @@
 
     private async Task LoadMembers()
     {
-        PagingResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync(userParameters);
+        PaginationResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync(userParameters);
 
         if (result.Success)
         {

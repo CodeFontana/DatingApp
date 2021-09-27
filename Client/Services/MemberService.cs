@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Client.Interfaces;
 using DataAccessLibrary.Models;
-using DataAccessLibrary.Paging;
+using DataAccessLibrary.Pagination;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -61,7 +61,7 @@ namespace Client.Services
             return await response.Content.ReadFromJsonAsync<ServiceResponseModel<MemberModel>>(_options);
         }
 
-        public async Task<PagingResponseModel<IEnumerable<MemberModel>>> GetMembersAsync(UserParameters userParameters)
+        public async Task<PaginationResponseModel<IEnumerable<MemberModel>>> GetMembersAsync(UserParameters userParameters)
         {
             string apiEndpoint = _config["apiLocation"] + _config["usersEndpoint"];
 
@@ -75,11 +75,11 @@ namespace Client.Services
             };
 
             using HttpResponseMessage response = await _httpClient.GetAsync(QueryHelpers.AddQueryString(apiEndpoint, queryStringParam));
-            PagingResponseModel<IEnumerable<MemberModel>> result = await response.Content.ReadFromJsonAsync<PagingResponseModel<IEnumerable<MemberModel>>>(_options);
+            PaginationResponseModel<IEnumerable<MemberModel>> result = await response.Content.ReadFromJsonAsync<PaginationResponseModel<IEnumerable<MemberModel>>>(_options);
 
             if (response.Headers != null && response.Headers.Contains("Pagination"))
             {
-                result.MetaData = JsonSerializer.Deserialize<PageModel>(response.Headers.GetValues("Pagination").First(), _options);
+                result.MetaData = JsonSerializer.Deserialize<PaginationModel>(response.Headers.GetValues("Pagination").First(), _options);
             }
             
             //if (result.Success)

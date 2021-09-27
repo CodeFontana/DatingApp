@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLibrary.Paging
+namespace DataAccessLibrary.Pagination
 {
-    public class PageLinkModel
+    public class PaginationLinkModel
     {
-        public PageLinkModel(int page, bool enabled, string text)
+        public PaginationLinkModel(int page, bool enabled, string text)
         {
             Page = page;
             Enabled = enabled;
