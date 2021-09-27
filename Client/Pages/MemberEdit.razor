@@ -54,7 +54,7 @@
     <div class="col-12 col-md-8">
         <TabControl>
             <TabPage Text=@($"About {@AppUserService.AppUser.KnownAs}")>
-                <EditForm id="editForm" Model="@memberUpdate" edit @oninput="(e) => OnProfileUpdated(e)" OnValidSubmit="HandleValidSubmit">
+                <EditForm id="editForm" Model="@memberUpdate" @oninput="(e) => OnProfileUpdated(e)" OnValidSubmit="HandleValidSubmit">
                     <DataAnnotationsValidator />
 
                     <h4>Description</h4>
