@@ -46,12 +46,7 @@ namespace API.Controllers
 
             if (response.Success)
             {
-                Response.AddPaginationHeader(
-                    response.Data.MetaData.CurrentPage,
-                    response.Data.MetaData.PageSize,
-                    response.Data.MetaData.TotalCount,
-                    response.Data.MetaData.TotalPages);
-
+                Response.AddPaginationHeader(response.MetaData);
                 return Ok(response);
             }
             else

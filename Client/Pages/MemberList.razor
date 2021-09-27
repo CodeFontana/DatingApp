@@ -14,7 +14,7 @@
             @errorText
         </div>
     }
-    else if (members?.Count > 0)
+    else if (members?.Count > 0 && metaData is not null)
     {
         <h2>Your matches - @metaData.TotalCount</h2>
         
@@ -27,12 +27,9 @@
             }
         </div>
         
-        @if (metaData != null)
-        {
-            <div class="d-flex justify-content-center">
+        <div class="d-flex justify-content-center">
                 <Pagination MetaData=@metaData Spread="10" PageChanged="HandlePageChanged" />
-            </div>
-        }
+        </div>
     }
 
 </div>

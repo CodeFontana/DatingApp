@@ -47,27 +47,27 @@ namespace API.Services
 
         public async Task<PaginationResponseModel<PaginationList<MemberModel>>> GetUsers(string requestor, UserParameters userParameters)
         {
-            PaginationResponseModel<PaginationList<MemberModel>> pagingResponse = new();
+            PaginationResponseModel<PaginationList<MemberModel>> pagedResponse = new();
 
             try
             {
                 PaginationList<MemberModel> data = await _userRepository.GetMembersAsync(userParameters);
 
-                pagingResponse.Success = true;
-                pagingResponse.Data = data;
-                // pagingResponse.MetaData = data.MetaData; (to follow convention, we will add paging metadata to the response headers, instead of the body content)
-                pagingResponse.Message = $"Successfully listed users for [{requestor}]";
-                _logger.LogInformation(pagingResponse.Message);
+                pagedResponse.Success = true;
+                pagedResponse.Data = data;
+                pagedResponse.MetaData = data.MetaData;
+                pagedResponse.Message = $"Successfully listed users for [{requestor}]";
+                _logger.LogInformation(pagedResponse.Message);
             }
             catch (Exception e)
             {
-                pagingResponse.Success = false;
-                pagingResponse.Message = $"Failed to list users for [{requestor}]";
-                _logger.LogError(pagingResponse.Message);
+                pagedResponse.Success = false;
+                pagedResponse.Message = $"Failed to list users for [{requestor}]";
+                _logger.LogError(pagedResponse.Message);
                 _logger.LogError(e.Message);
             }
 
-            return pagingResponse;
+            return pagedResponse;
         }
 
         public async Task<ServiceResponseModel<string>> UpdateUser(string username, MemberUpdateModel memberUpdate)
