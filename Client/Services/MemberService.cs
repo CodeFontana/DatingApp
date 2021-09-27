@@ -73,7 +73,11 @@ namespace Client.Services
 
             using HttpResponseMessage response = await _httpClient.GetAsync(QueryHelpers.AddQueryString(apiEndpoint, queryStringParam));
             PagingResponseModel<IEnumerable<MemberModel>> result = await response.Content.ReadFromJsonAsync<PagingResponseModel<IEnumerable<MemberModel>>>(_options);
-            result.MetaData = JsonSerializer.Deserialize<PageData>(response.Headers.GetValues("Pagination").First(), _options);
+
+            if (response.Headers != null && response.Headers.Contains("Pagination"))
+            {
+                result.MetaData = JsonSerializer.Deserialize<PageData>(response.Headers.GetValues("Pagination").First(), _options);
+            }
             
             //if (result.Success)
             //{
