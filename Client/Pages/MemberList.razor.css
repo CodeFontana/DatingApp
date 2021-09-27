@@ -1,0 +1,39 @@
+﻿::deep #ageInput {
+    width: 70px;
+}
+
+@media (max-width: 768px) {
+    #formContainer {
+        display: block;
+        min-width: 350px;
+    }
+
+    #filterForm {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    #buttonGroup {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        margin-top: 5px;
+    }
+}
+
+@media (min-width: 769px) {
+    #formContainer {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    #filterForm {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        width: 100%;
+    }
+}
