@@ -71,13 +71,11 @@
     private UserParameters userParameters = new();
     private PaginationModel metaData;
     private bool showError = false;
-    private bool showFilterValidationError = false;
     private string errorText;
 
     protected override async Task OnInitializedAsync()
     {
-        HandleFilterReset();
-        await LoadMembers();
+        await HandleFilterReset();
     }
 
     private async Task LoadMembers()
