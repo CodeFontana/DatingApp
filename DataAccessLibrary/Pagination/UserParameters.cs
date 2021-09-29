@@ -30,5 +30,7 @@ namespace DataAccessLibrary.Pagination
 
         [Range(18, 99, ErrorMessage = "Specify at least 18 years or older")]
         public int MaxAge { get; set; } = 120;
+
+        public string OrderBy { get; set; } = "LastActive";
     }
 }

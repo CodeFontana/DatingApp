@@ -43,6 +43,12 @@ namespace DataAccessLibrary.Data
 
             query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
 
+            query = userParameters.OrderBy switch
+            {
+                "created" => query.OrderByDescending(u => u.Created),
+                _ => query.OrderByDescending(u => u.LastActive)
+            };
+
             return await PaginationList<MemberModel>
                 .CreateAsync(query
                     .ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
