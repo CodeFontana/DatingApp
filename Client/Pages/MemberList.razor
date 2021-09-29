@@ -27,15 +27,23 @@
 
             <div class="form-group px-2">
                 <label>Show: </label>
-                <InputSelect class="form-control ml-1" @bind-Value="@userParameters.Gender">
+                <InputSelect id="genderInput" class="form-control ml-1" @bind-Value="@userParameters.Gender">
                     <option value="female">Female</option>
                     <option value="male">Male</option>
                 </InputSelect>
             </div>
 
-            <div id="buttonGroup" class="form-group px-2">
-                <button class="btn btn-primary ml-1" type="submit">Apply Filters</button>
-                <button class="btn btn-info ml-1" type="button" @onclick="HandleFilterReset">Reset Filters</button>
+            <div id="buttonOuterGroup">
+                <div id="filterGroup" class="form-group px-2">
+                    <button class="btn btn-primary ml-1" type="submit">Apply Filters</button>
+                    <button class="btn btn-info ml-1" type="button" @onclick="HandleFilterReset">Reset Filters</button>
+                </div>
+                <div class="col">
+                    <div id="sortGroup" class="btn-group form-group">
+                        <button class="btn btn-primary" type="button" @onclick="@(x => HandleSortSubmit("LastActive"))">Last Active</button>
+                        <button class="btn btn-primary" type="button" @onclick="@(x => HandleSortSubmit("Created"))">Newest Members</button>
+                    </div>
+                </div>
             </div>
                     
         </div>
@@ -116,6 +124,7 @@
         userParameters.PageSize = 5;
         userParameters.MinAge = 18;
         userParameters.MaxAge = 99;
+        userParameters.OrderBy = "LastActive";
 
         if (AppUserService.AppUser.Gender.ToLower().Equals("female"))
         {
@@ -127,6 +136,12 @@
         }
 
         await LoadMembers();
+    }
+
+    private async Task HandleSortSubmit(string sortValue)
+    {
+        userParameters.OrderBy = sortValue.ToLower();
+        await HandleFilterSubmit();
     }
 
     private async Task HandlePageChanged(int page)

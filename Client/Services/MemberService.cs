@@ -72,6 +72,7 @@ namespace Client.Services
                 [nameof(userParameters.MinAge)] = userParameters.MinAge.ToString(),
                 [nameof(userParameters.MaxAge)] = userParameters.MaxAge.ToString(),
                 [nameof(userParameters.Gender)] = userParameters.Gender,
+                [nameof(userParameters.OrderBy)] = userParameters.OrderBy
             };
 
             using HttpResponseMessage response = await _httpClient.GetAsync(QueryHelpers.AddQueryString(apiEndpoint, queryStringParam));

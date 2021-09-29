@@ -1,8 +1,43 @@
 ﻿::deep #ageInput {
-    max-width: 70px;
+    width: 70px;
 }
 
-@media (max-width: 768px) {
+::deep #genderInput {
+    width: 105px;
+}
+
+::deep #filterGroup, #sortGroup {
+    display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+::deep #sortGroup {
+    float: right;
+}
+
+@media (max-width: 550px) {
+    ::deep #buttonOuterGroup {
+        display: flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+        justify-content: center;
+    }
+
+    ::deep #sortGroup {
+        float: none;
+    }
+}
+
+@media (min-width: 551px) {
+    ::deep #buttonOuterGroup {
+        display: flex;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 850px) {
     ::deep #filterForm {
         display: flex;
         align-items: flex-start;
@@ -13,7 +48,7 @@
     }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 851px) {
     ::deep #filterForm {
         display: flex;
         align-items: flex-end;

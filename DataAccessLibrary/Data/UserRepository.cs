@@ -43,7 +43,7 @@ namespace DataAccessLibrary.Data
 
             query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
 
-            query = userParameters.OrderBy switch
+            query = userParameters.OrderBy.ToLower() switch
             {
                 "created" => query.OrderByDescending(u => u.Created),
                 _ => query.OrderByDescending(u => u.LastActive)
