@@ -18,7 +18,6 @@
     },
     "API": {
       "commandName": "Project",
-      "hotReloadProfile": "aspnetcore",
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
