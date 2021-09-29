@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Pagination;
@@ -13,6 +14,7 @@ namespace API.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+    [ServiceFilter(typeof(LogUserActivity))]
     public class UsersController : ControllerBase
     {
         private readonly IUsersService _usersService;
