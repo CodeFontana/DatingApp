@@ -37,11 +37,11 @@
             </div>
             <div class="card-body">
                 <strong>Last active:</strong>
-                <p>@AppUserService.AppUser.LastActive</p>
+                <p>@DateTime.Now.Subtract(@AppUserService.AppUser.LastActive).Humanize()</p>
             </div>
             <div class="card-body">
                 <strong>Member since:</strong>
-                <p>@AppUserService.AppUser.Created</p>
+                <p>@AppUserService.AppUser.Created.ToLongDateString()</p>
             </div>
             @if (changesMade)
             {

@@ -29,11 +29,11 @@
                     </div>
                     <div class="card-body">
                         <strong>Last active:</strong>
-                        <p>@member.LastActive</p>
+                        <p>@DateTime.Now.Subtract(member.LastActive).Humanize()</p>
                     </div>
                     <div class="card-body">
                         <strong>Member since:</strong>
-                        <p>@member.Created</p>
+                        <p>@member.Created.ToLongDateString()</p>
                     </div>
                     <div class="card-footer">
                         <div class="btn-group d-flex">
