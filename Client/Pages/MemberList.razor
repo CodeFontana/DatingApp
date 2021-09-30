@@ -26,7 +26,7 @@
             </div>
 
             <div class="form-group px-2">
-                <label>Show: </label>
+                <label>Biology: </label>
                 <InputSelect id="genderInput" class="form-control ml-1" @bind-Value="@userParameters.Gender">
                     <option value="female">Female</option>
                     <option value="male">Male</option>
@@ -34,14 +34,26 @@
             </div>
 
             <div id="buttonOuterGroup">
-                <div id="filterGroup" class="form-group px-2">
-                    <button class="btn btn-primary ml-1" type="submit">Apply Filters</button>
-                    <button class="btn btn-info ml-1" type="button" @onclick="HandleFilterReset">Reset Filters</button>
+                <div class="col form-group mx-2">
+                    <div class="row">
+                        <label>Filters: </label>
+                    </div>
+                    <div class="row">
+                        <div id="filterGroup">
+                            <button class="btn btn-primary ml-1" type="submit">Apply Filters</button>
+                            <button class="btn btn-info ml-1" type="button" @onclick="HandleFilterReset">Reset Filters</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="col">
-                    <div id="sortGroup" class="btn-group form-group">
-                        <button class="btn btn-dark" type="button" @onclick="@(x => HandleSortSubmit("LastActive"))">Last Active</button>
-                        <button class="btn btn-dark" type="button" @onclick="@(x => HandleSortSubmit("Created"))">Newest Members</button>
+                <div class="col form-group mx-2">
+                    <div class="row">
+                        <label>Sorting: </label>
+                    </div>
+                    <div class="row">
+                        <div id="sortGroup" class="btn-group">
+                            <button class="btn btn-dark" type="button" @onclick="@(x => HandleSortSubmit("LastActive"))">Last Active</button>
+                            <button class="btn btn-dark" type="button" @onclick="@(x => HandleSortSubmit("Created"))">Newest Members</button>
+                        </div>
                     </div>
                 </div>
             </div>

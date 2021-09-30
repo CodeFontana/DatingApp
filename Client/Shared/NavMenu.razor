@@ -48,7 +48,7 @@
             @if (AppUserService.AppUser is not null)
             {
                 <div class="nav-item dropdown show">
-                    <NavLink class="nav-link text-light ml-2" @onclick="() => expandWelcomeMenu = !expandWelcomeMenu" id="navbarDropdown">
+                    <NavLink id="navbarDropdown" class="nav-link text-light ml-2" @onclick="() => expandWelcomeMenu = !expandWelcomeMenu">
                         <img src="@AppUserService.MainPhoto" alt="@AppUserService.AppUser.KnownAs" />
                         <text class="text-nowrap ml-2"><span class="welcome-text">Welcome </span>@AppUserService.AppUser.KnownAs</text>
                     </NavLink>

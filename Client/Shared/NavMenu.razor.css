@@ -1,4 +1,4 @@
-﻿.nav-link {
+﻿::deep .nav-link {
     padding: 0.15rem 1rem;
 }
 
@@ -18,6 +18,15 @@ img {
     max-height: 50px;
     border: 1px solid white;
     display: inline;
+}
+
+::deep ul .nav-link:hover {
+    border-bottom: 3px solid white;
+}
+
+::deep ul .nav-link.active,
+::deep ul .nav-link:active {
+    border-bottom: 2px solid #9A98B5;
 }
 
 @media (max-width: 768px) {

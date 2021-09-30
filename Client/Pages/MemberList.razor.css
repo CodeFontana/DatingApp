@@ -12,20 +12,9 @@
     white-space: nowrap;
 }
 
-::deep #sortGroup {
-    float: right;
-}
-
 @media (max-width: 550px) {
     ::deep #buttonOuterGroup {
-        display: flex;
         flex-wrap: wrap;
-        white-space: nowrap;
-        justify-content: center;
-    }
-
-    ::deep #sortGroup {
-        float: none;
     }
 }
 
