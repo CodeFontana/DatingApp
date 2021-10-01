@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Pagination
 {
@@ -32,5 +28,14 @@ namespace DataAccessLibrary.Pagination
         public int MaxAge { get; set; } = 120;
 
         public string OrderBy { get; set; } = "LastActive";
+
+        public string Values
+        {
+            get 
+            { 
+                return $"{MinAge}-{MaxAge}-{Gender.ToLower()}-{OrderBy.ToLower()}";
+            }
+        }
+
     }
 }

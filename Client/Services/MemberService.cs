@@ -31,7 +31,8 @@ namespace Client.Services
             _mapper = mapper;
         }
 
-        //private List<MemberModel> Members { get; set; } = new();
+        public List<MemberModel> MemberCache { get; set; } = new();
+        public Dictionary<string, MemberCacheModel> MemberListCache { get; set; } = new();
 
         public async Task<ServiceResponseModel<MemberModel>> GetMemberAsync(string username)
         {
@@ -39,30 +40,73 @@ namespace Client.Services
             {
                 throw new ArgumentNullException("Invalid username");
             }
-            
-            //MemberModel member = Members.FirstOrDefault(x => x.Username.ToLower().Equals(username.ToLower()));
 
-            //if (member != null)
-            //{
-            //    return new ServiceResponseModel<MemberModel>()
-            //    {
-            //        Success = true,
-            //        Data = member,
-            //        Message = "Cached user"
-            //    };
-            //}
-            //else
-            //{
-            //    Members = new();
-            //}
+            MemberModel member = MemberListCache
+                .FirstOrDefault(x => x.Value.PaginatedResponse.Data.Any(m => m.Username.Equals(username)))
+                .Value?.PaginatedResponse.Data
+                .FirstOrDefault(x => x.Username.Equals(username));
+
+            if (member != null)
+            {
+                Console.WriteLine($"Member found in member-list cache [{username}]");
+
+                return new ServiceResponseModel<MemberModel>()
+                {
+                    Success = true,
+                    Data = member,
+                    Message = "Member list cache"
+                };
+            }
+
+            member = MemberCache.FirstOrDefault(m => m.Username.Equals(username));
+
+            if (member != null && member.CacheTime.AddMinutes(5) > DateTime.Now)
+            {
+                Console.WriteLine($"Member found in cache [{username}]");
+
+                return new ServiceResponseModel<MemberModel>()
+                {
+                    Success = true,
+                    Data = member,
+                    Message = "Member cache"
+                };
+            }
+            else if (member != null)
+            {
+                Console.WriteLine($"Remove outdated member from cache [{username}]");
+                MemberCache.Remove(member);
+            }
+
+            Console.WriteLine($"Member not found in cache [{username}]");
 
             string apiEndpoint = _config["apiLocation"] + _config["usersEndpoint"] + $"/{username}";
             using HttpResponseMessage response = await _httpClient.GetAsync(apiEndpoint);
-            return await response.Content.ReadFromJsonAsync<ServiceResponseModel<MemberModel>>(_options);
+            ServiceResponseModel<MemberModel> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<MemberModel>>(_options);
+            member = result.Data;
+            member.CacheTime = DateTime.Now;
+            MemberCache.Add(member);
+            return result;
         }
 
         public async Task<PaginationResponseModel<IEnumerable<MemberModel>>> GetMembersAsync(UserParameters userParameters)
         {
+            MemberCacheModel cachedData = MemberListCache.GetValueOrDefault(userParameters.Values);
+
+            if (cachedData?.CacheTime.AddMinutes(5) > DateTime.Now)
+            {
+                Console.WriteLine($"Found member list in cache [{userParameters.Values}]");
+                return cachedData.PaginatedResponse;
+            }
+            else if (cachedData != null)
+            {
+                Console.WriteLine($"Member list cache outdated {userParameters.Values}]");
+                MemberListCache.Remove(userParameters.Values);
+            }
+            else
+            {
+                Console.WriteLine($"Member list not in cache [{userParameters.Values}]");
+            }
+
             string apiEndpoint = _config["apiLocation"] + _config["usersEndpoint"];
 
             var queryStringParam = new Dictionary<string, string>
@@ -82,11 +126,18 @@ namespace Client.Services
             {
                 result.MetaData = JsonSerializer.Deserialize<PaginationModel>(response.Headers.GetValues("Pagination").First(), _options);
             }
-            
-            //if (result.Success)
-            //{
-            //    Members = result.Data.ToList();
-            //}
+
+            if (result.Success)
+            {
+                MemberCacheModel cacheResponse = new MemberCacheModel
+                {
+                    CacheTime = DateTime.Now,
+                    SearchKey = userParameters.Values,
+                    PaginatedResponse = result
+                };
+
+                MemberListCache.Add(userParameters.Values, cacheResponse);
+            }
 
             return result;
         }
@@ -97,11 +148,11 @@ namespace Client.Services
             using HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiEndpoint, memberUpdate);
             ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>>(_options);
 
-            //if (result.Success)
-            //{
-            //    MemberModel member = Members.FirstOrDefault(x => x.Username.ToLower().Equals(memberUpdate.Username.ToLower()));
-            //    _mapper.Map(memberUpdate, member);
-            //}
+            if (result.Success)
+            {
+                MemberModel member = (await GetMemberAsync(memberUpdate.Username)).Data;
+                _mapper.Map(memberUpdate, member);
+            }
 
             return result;
         }
@@ -112,23 +163,23 @@ namespace Client.Services
             using HttpResponseMessage response = await _httpClient.PostAsync(apiEndpoint, content);
             ServiceResponseModel<PhotoModel> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<PhotoModel>>(_options);
 
-            //if (result.Success)
-            //{
-            //    MemberModel member = Members.FirstOrDefault(x => x.Username.ToLower().Equals(username.ToLower()));
-            //    member.Photos.Add(result.Data);
+            if (result.Success)
+            {
+                MemberModel member = (await GetMemberAsync(username)).Data;
+                member.Photos.Add(result.Data);
 
-            //    if (result.Data.IsMain)
-            //    {
-            //        // Download image from URL
-            //        // --> The API stores images securely, requiring a JWT bearer
-            //        //     token to view/download the member's images. Because of
-            //        //     this, we cannot just place the image URL inside an img
-            //        //     tag. Instead, the image must be requested from an
-            //        //     HttpClient that contains the proper JWT bearer token,
-            //        //     which is what is happening here.
-            //        member.MainPhotoFilename = await GetPhotoAsync(username, result.Data.Filename);
-            //    }
-            //}
+                if (result.Data.IsMain)
+                {
+                    // Download image from URL
+                    // --> The API stores images securely, requiring a JWT bearer
+                    //     token to view/download the member's images. Because of
+                    //     this, we cannot just place the image URL inside an img
+                    //     tag. Instead, the image must be requested from an
+                    //     HttpClient that contains the proper JWT bearer token,
+                    //     which is what is happening here.
+                    member.MainPhotoFilename = await GetPhotoAsync(username, result.Data.Filename);
+                }
+            }
 
             return result;
         }
@@ -173,14 +224,14 @@ namespace Client.Services
             using HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiEndpoint, photoId);
             ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>>(_options);
 
-            //if (result.Success)
-            //{
-            //    MemberModel member = Members.FirstOrDefault(x => x.Username.ToLower().Equals(username.ToLower()));
-            //    PhotoModel mainPhoto = member.Photos.FirstOrDefault(x => x.Id == photoId);
-            //    member.Photos.ToList().ForEach(x => x.IsMain = false);
-            //    mainPhoto.IsMain = true;
-            //    member.MainPhotoFilename = mainPhoto.Filename;
-            //}
+            if (result.Success)
+            {
+                MemberModel member = (await GetMemberAsync(username)).Data;
+                PhotoModel mainPhoto = member.Photos.FirstOrDefault(x => x.Id == photoId);
+                member.Photos.ToList().ForEach(x => x.IsMain = false);
+                mainPhoto.IsMain = true;
+                member.MainPhotoFilename = mainPhoto.Filename;
+            }
 
             return result;
         }
@@ -198,25 +249,26 @@ namespace Client.Services
             using HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiEndpoint, photo);
             ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>>(_options);
 
-            //if (result.Success)
-            //{
-            //    MemberModel member = Members.FirstOrDefault(x => x.Username.ToLower().Equals(username.ToLower()));
-            //    PhotoModel p = member.Photos.FirstOrDefault(x => x.Id == photo.Id);
-            //    member.Photos.Remove(p);
+            if (result.Success)
+            {
+                MemberModel member = (await GetMemberAsync(username)).Data;
+                PhotoModel p = member.Photos.FirstOrDefault(x => x.Id == photo.Id);
+                member.Photos.Remove(p);
 
-            //    if (photo.IsMain)
-            //    {
-            //        if (member.Photos.Count > 0)
-            //        {
-            //            member.Photos[0].IsMain = true;
-            //            member.MainPhotoFilename = member.Photos[0].Filename;
-            //        }
-            //        else
-            //        {
-            //            member.MainPhotoFilename = null;
-            //        }
-            //    }
-            //}
+                if (photo.IsMain)
+                {
+                    if (member.Photos.Count > 0)
+                    {
+                        member.Photos[0].IsMain = true;
+                        member.MainPhotoFilename = member.Photos[0].Filename;
+                    }
+                    else
+                    {
+                        member.MainPhotoFilename = null;
+                    }
+                }
+                
+            }
 
             return result;
         }

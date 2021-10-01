@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -19,17 +17,20 @@ namespace Client.Authentication
         private readonly IConfiguration _config;
         private readonly HttpClient _httpClient;
         private readonly IAppUserService _appUserService;
+        private readonly IMemberService _memberService;
         private readonly ILocalStorageService _localStorage;
         private readonly AuthenticationState _anonymous;
 
         public AuthStateProvider(IConfiguration config,
                                  HttpClient httpClient,
                                  IAppUserService appUserService,
+                                 IMemberService memberService,
                                  ILocalStorageService localStorage)
         {
             _config = config;
             _httpClient = httpClient;
             _appUserService = appUserService;
+            _memberService = memberService;
             _localStorage = localStorage;
             _anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
@@ -125,6 +126,8 @@ namespace Client.Authentication
             await _localStorage.RemoveItemAsync(authTokenStorageKey);
             Task<AuthenticationState> authState = Task.FromResult(_anonymous);
             _httpClient.DefaultRequestHeaders.Authorization = null;
+            _memberService.MemberCache.Clear();
+            _memberService.MemberListCache.Clear();
             NotifyAuthenticationStateChanged(authState);
         }
     }

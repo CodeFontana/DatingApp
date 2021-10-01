@@ -43,5 +43,7 @@ namespace DataAccessLibrary.Models
         public string State { get; set; }
 
         public IList<PhotoModel> Photos { get; set; }
+
+        public DateTime CacheTime { get; set; }
     }
 }
