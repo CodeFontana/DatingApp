@@ -51,6 +51,7 @@ namespace API.Services
 
             try
             {
+                userParameters.CurrentUsername = requestor;
                 PaginationList<MemberModel> data = await _userRepository.GetMembersAsync(userParameters);
 
                 pagedResponse.Success = true;
