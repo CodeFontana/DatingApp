@@ -92,6 +92,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        AppUserService.OnChange += StateHasChanged;
         AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
         ClaimsPrincipal user = authState.User;
 
@@ -134,5 +135,10 @@
     {
         NavManager.NavigateTo("/");
         await AuthService.LogoutAsync();
+    }
+
+        public void Dispose()
+    {
+        AppUserService.OnChange -= StateHasChanged;
     }
 }
