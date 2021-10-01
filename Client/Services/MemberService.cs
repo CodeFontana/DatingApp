@@ -33,6 +33,7 @@ namespace Client.Services
 
         public List<MemberModel> MemberCache { get; set; } = new();
         public Dictionary<string, MemberCacheModel> MemberListCache { get; set; } = new();
+        public UserParameters MembersFilter { get; set; } = new();
 
         public async Task<ServiceResponseModel<MemberModel>> GetMemberAsync(string username)
         {

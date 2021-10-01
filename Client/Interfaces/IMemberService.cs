@@ -10,6 +10,7 @@ namespace Client.Interfaces
     {
         List<MemberModel> MemberCache { get; set; }
         Dictionary<string, MemberCacheModel> MemberListCache { get; set; }
+        UserParameters MembersFilter { get; set; }
 
         Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string username, MultipartFormDataContent content);
         Task<ServiceResponseModel<string>> DeletePhotoAsync(string username, PhotoModel photo);

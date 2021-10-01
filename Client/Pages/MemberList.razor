@@ -10,24 +10,24 @@
         <h2>Your matches - @metaData?.TotalCount found</h2>
     </div>
 
-    <EditForm class="my-3" Model="@userParameters" OnValidSubmit="HandleFilterSubmit">
+    <EditForm class="my-3" Model="@MemberService.MembersFilter" OnValidSubmit="HandleFilterSubmit">
         <DataAnnotationsValidator />                    
 
         <div id="filterForm" class="form-row">
                 
             <div class="form-group">
                 <label class="bold">Age from: </label>
-                <InputNumber id="ageInput" class="form-control ml-1" @bind-Value="@userParameters.MinAge" />
+                <InputNumber id="ageInput" class="form-control ml-1" @bind-Value="@MemberService.MembersFilter.MinAge" />
             </div>
 
             <div class="form-group px-2">
                 <label>Age to: </label>
-                <InputNumber id="ageInput" class="form-control ml-1" @bind-Value="@userParameters.MaxAge" />
+                <InputNumber id="ageInput" class="form-control ml-1" @bind-Value="@MemberService.MembersFilter.MaxAge" />
             </div>
 
             <div class="form-group px-2">
                 <label>Biology: </label>
-                <InputSelect id="genderInput" class="form-control ml-1" @bind-Value="@userParameters.Gender">
+                <InputSelect id="genderInput" class="form-control ml-1" @bind-Value="@MemberService.MembersFilter.Gender">
                     <option value="female">Female</option>
                     <option value="male">Male</option>
                 </InputSelect>
@@ -88,19 +88,30 @@
 
 @code {
     private List<MemberModel> members = new();
-    private UserParameters userParameters = new();
     private PaginationModel metaData;
     private bool showError = false;
     private string errorText;
 
     protected override async Task OnInitializedAsync()
     {
-        await HandleFilterReset();
+        if (string.IsNullOrWhiteSpace(MemberService.MembersFilter.Gender))
+        {
+            if (AppUserService.AppUser.Gender.ToLower().Equals("female"))
+            {
+                MemberService.MembersFilter.Gender = "male";
+            }
+            else
+            {
+                MemberService.MembersFilter.Gender = "female";
+            }
+        }
+
+        await LoadMembers();
     }
 
     private async Task LoadMembers()
     {
-        PaginationResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync(userParameters);
+        PaginationResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync(MemberService.MembersFilter);
 
         if (result.Success)
         {
@@ -118,7 +129,7 @@
 
     private async Task HandleFilterSubmit()
     {
-        if (userParameters.MinAge > userParameters.MaxAge)
+        if (MemberService.MembersFilter.MinAge > MemberService.MembersFilter.MaxAge)
         {
             showError = true;
             errorText = "Please validate age filters";
@@ -132,19 +143,19 @@
 
     private async Task HandleFilterReset()
     {
-        userParameters.PageNumber = 1;
-        userParameters.PageSize = 5;
-        userParameters.MinAge = 18;
-        userParameters.MaxAge = 99;
-        userParameters.OrderBy = "LastActive";
+        MemberService.MembersFilter.PageNumber = 1;
+        MemberService.MembersFilter.PageSize = 10;
+        MemberService.MembersFilter.MinAge = 18;
+        MemberService.MembersFilter.MaxAge = 99;
+        MemberService.MembersFilter.OrderBy = "LastActive";
 
         if (AppUserService.AppUser.Gender.ToLower().Equals("female"))
         {
-            userParameters.Gender = "male";
+            MemberService.MembersFilter.Gender = "male";
         }
         else
         {
-            userParameters.Gender = "female";
+            MemberService.MembersFilter.Gender = "female";
         }
 
         await LoadMembers();
@@ -152,13 +163,13 @@
 
     private async Task HandleSortSubmit(string sortValue)
     {
-        userParameters.OrderBy = sortValue.ToLower();
+        MemberService.MembersFilter.OrderBy = sortValue.ToLower();
         await HandleFilterSubmit();
     }
 
     private async Task HandlePageChanged(int page)
     {
-        userParameters.PageNumber = page;
+        MemberService.MembersFilter.PageNumber = page;
         members = null;
         await LoadMembers();
     }
