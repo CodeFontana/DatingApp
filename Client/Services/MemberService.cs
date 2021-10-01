@@ -41,24 +41,7 @@ namespace Client.Services
                 throw new ArgumentNullException("Invalid username");
             }
 
-            MemberModel member = MemberListCache
-                .FirstOrDefault(x => x.Value.PaginatedResponse.Data.Any(m => m.Username.Equals(username)))
-                .Value?.PaginatedResponse.Data
-                .FirstOrDefault(x => x.Username.Equals(username));
-
-            if (member != null)
-            {
-                Console.WriteLine($"Member found in member-list cache [{username}]");
-
-                return new ServiceResponseModel<MemberModel>()
-                {
-                    Success = true,
-                    Data = member,
-                    Message = "Member list cache"
-                };
-            }
-
-            member = MemberCache.FirstOrDefault(m => m.Username.Equals(username));
+            MemberModel member = MemberCache.FirstOrDefault(m => m.Username.Equals(username));
 
             if (member != null && member.CacheTime.AddMinutes(5) > DateTime.Now)
             {
