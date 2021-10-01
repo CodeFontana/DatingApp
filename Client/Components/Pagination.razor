@@ -2,7 +2,7 @@
     <ul class="pagination justify-content-center">
         @foreach (var link in links)
         {
-            <li @onclick="() => OnSelectedPage(link)" style="cursor: pointer;" class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
+            <li @onclick="() => OnSelectedPageAsync(link)" style="cursor: pointer;" class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
                 <span class="page-link" href="#">@link.Text</span>
             </li>
         }
@@ -42,7 +42,7 @@
         links.Add(new PaginationLinkModel(MetaData.CurrentPage + 1, MetaData.HasNext, "Next"));
     }
 
-    private async Task OnSelectedPage(PaginationLinkModel link)
+    private async Task OnSelectedPageAsync(PaginationLinkModel link)
     {
         if (link.Page == MetaData.CurrentPage || link.Enabled == false)
         {

@@ -26,9 +26,9 @@ namespace API.Controllers
 
         [HttpGet("users-with-roles")]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<IActionResult> GetUsersWithRoles()
+        public async Task<IActionResult> GetUsersWithRolesAsync()
         {
-            ServiceResponseModel<List<UserWithRolesModel>> response = await _adminService.GetUsersWithRoles(User.Identity.Name);
+            ServiceResponseModel<List<UserWithRolesModel>> response = await _adminService.GetUsersWithRolesAsync(User.Identity.Name);
 
             if (response.Success)
             {
@@ -42,9 +42,9 @@ namespace API.Controllers
 
         [HttpPost("edit-roles/{username}")]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<IActionResult> EditRoles(string username, [FromQuery] string roles)
+        public async Task<IActionResult> EditRolesAsync(string username, [FromQuery] string roles)
         {
-            ServiceResponseModel<IList<string>> response = await _adminService.EditRoles(username, roles);
+            ServiceResponseModel<IList<string>> response = await _adminService.EditRolesAsync(username, roles);
 
             if (response.Success)
             {

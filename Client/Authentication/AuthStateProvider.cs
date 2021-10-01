@@ -105,7 +105,7 @@ namespace Client.Authentication
 
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
 
-                await _appUserService.SetAppUser(authenticatedUser.Identity.Name);
+                await _appUserService.SetAppUserAsync(authenticatedUser.Identity.Name);
 
                 NotifyAuthenticationStateChanged(authState);
                 isAuthenticated = true;

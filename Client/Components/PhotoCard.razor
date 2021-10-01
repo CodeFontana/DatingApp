@@ -7,13 +7,13 @@
     <div class="text-center">
         @if (Photo.IsMain == false)
         {
-            <button class="btn btn-dark mx-1" @onclick="HandleSetMainPhoto">Set Main</button>
+            <button class="btn btn-dark mx-1" @onclick="HandleSetMainPhotoAsync">Set Main</button>
         }
         else
         {
             <button class="btn btn-dark mx-1" disabled>Set Main</button>
         }
-        <button class="btn btn-danger" @onclick="HandleDeletePhoto"><i class="fa fa-trash" /></button>
+        <button class="btn btn-danger" @onclick="HandleDeletePhotoAsync"><i class="fa fa-trash" /></button>
     </div>
 </div>
 
@@ -31,7 +31,7 @@
         photoFilename = await MemberService.GetPhotoAsync(AppUserService.AppUser.Username, Photo.Filename);
     }
 
-    private async Task HandleSetMainPhoto()
+    private async Task HandleSetMainPhotoAsync()
     {
         if (Photo.IsMain)
         {
@@ -51,7 +51,7 @@
         }
     }
 
-    private async Task HandleDeletePhoto()
+    private async Task HandleDeletePhotoAsync()
     {
         ServiceResponseModel<string> result = await MemberService.DeletePhotoAsync(AppUserService.AppUser.Username, Photo);
 

@@ -60,7 +60,7 @@
                                 <strong>Edit Profile</strong>
                             </NavLink>
                             <div class="dropdown-divider"></div>
-                            <NavLink class="nav-link text-dark" @onclick="() => HandleLogout()">
+                            <NavLink class="nav-link text-dark" @onclick="() => HandleLogoutAsync()">
                                 <strong>Logout</strong>
                             </NavLink>
                         </div>
@@ -77,7 +77,7 @@
                     <InputText @bind-Value="loginUser.Username" class="form-control userinput" type="text" placeholder="Username" />
                     <InputText @bind-Value="loginUser.Password" class="form-control userinput" type="password" placeholder="Password" />
                     <div id="buttongroup" class="form-group">
-                        <button class="btn btn-success" type="submit" @onclick="() => HandleLogin()">Login</button>
+                        <button class="btn btn-success" type="submit" @onclick="() => HandleLoginAsync()">Login</button>
                     </div>
                 </div>
             </EditForm>
@@ -105,7 +105,7 @@
         }
     }
 
-    private async Task HandleLogin()
+    private async Task HandleLoginAsync()
     {
         if (string.IsNullOrEmpty(loginUser.Username))
         {
@@ -131,7 +131,7 @@
         }
     }
 
-    private async Task HandleLogout()
+    private async Task HandleLogoutAsync()
     {
         NavManager.NavigateTo("/");
         await AuthService.LogoutAsync();

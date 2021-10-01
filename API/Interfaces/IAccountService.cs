@@ -5,7 +5,7 @@ namespace API.Interfaces
 {
     public interface IAccountService
     {
-        Task<ServiceResponseModel<AuthUserModel>> Login(LoginUserModel loginUser);
-        Task<ServiceResponseModel<AuthUserModel>> Register(RegisterUserModel registerUser);
+        Task<ServiceResponseModel<AuthUserModel>> LoginAsync(LoginUserModel loginUser);
+        Task<ServiceResponseModel<AuthUserModel>> RegisterAsync(RegisterUserModel registerUser);
     }
 }

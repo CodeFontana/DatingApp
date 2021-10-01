@@ -6,8 +6,8 @@ namespace API.Interfaces
 {
     public interface IAdminService
     {
-        Task<ServiceResponseModel<IList<string>>> EditRoles(string username, string roles);
+        Task<ServiceResponseModel<IList<string>>> EditRolesAsync(string username, string roles);
         ServiceResponseModel<string> GetPhotosForModeration();
-        Task<ServiceResponseModel<List<UserWithRolesModel>>> GetUsersWithRoles(string requestor);
+        Task<ServiceResponseModel<List<UserWithRolesModel>>> GetUsersWithRolesAsync(string requestor);
     }
 }

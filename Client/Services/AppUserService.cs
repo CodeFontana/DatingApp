@@ -27,12 +27,12 @@ namespace Client.Services
             get { return _mainPhoto; }
         }
 
-        public async Task<bool> ReloadAppUser()
+        public async Task<bool> ReloadAppUserAsync()
         {
-            return await SetAppUser(_appUser?.Username);
+            return await SetAppUserAsync(_appUser?.Username);
         }
 
-        public async Task<bool> SetAppUser(string username)
+        public async Task<bool> SetAppUserAsync(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
@@ -47,7 +47,7 @@ namespace Client.Services
             if (result.Success)
             {
                 _appUser = result.Data;
-                await SetMainPhoto(_appUser.MainPhotoFilename);
+                await SetMainPhotoAsync(_appUser.MainPhotoFilename);
                 NotifyStateChanged();
                 return true;
             }
@@ -57,7 +57,7 @@ namespace Client.Services
             }
         }
 
-        public async Task SetMainPhoto(string filename)
+        public async Task SetMainPhotoAsync(string filename)
         {
             _mainPhoto = await _memberService.GetPhotoAsync(_appUser.Username, filename);
             NotifyStateChanged();

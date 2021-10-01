@@ -22,7 +22,7 @@ namespace API.Services
             _logger = logger;
         }
 
-        public async Task<ServiceResponseModel<List<UserWithRolesModel>>> GetUsersWithRoles(string requestor)
+        public async Task<ServiceResponseModel<List<UserWithRolesModel>>> GetUsersWithRolesAsync(string requestor)
         {
             ServiceResponseModel<List<UserWithRolesModel>> serviceResponse = new();
 
@@ -67,7 +67,7 @@ namespace API.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponseModel<IList<string>>> EditRoles(string username, string roles)
+        public async Task<ServiceResponseModel<IList<string>>> EditRolesAsync(string username, string roles)
         {
             ServiceResponseModel<IList<string>> serviceResponse = new();
 

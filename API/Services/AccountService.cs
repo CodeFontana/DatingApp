@@ -31,13 +31,13 @@ namespace API.Services
             _logger = logger;
         }
 
-        public async Task<ServiceResponseModel<AuthUserModel>> Register(RegisterUserModel registerUser)
+        public async Task<ServiceResponseModel<AuthUserModel>> RegisterAsync(RegisterUserModel registerUser)
         {
             ServiceResponseModel<AuthUserModel> serviceResponse = new();
 
             try
             {
-                if (await UserExists(registerUser.Username))
+                if (await UserExistsAsync(registerUser.Username))
                 {
                     throw new ArgumentException($"Username is taken [{registerUser.Username}]");
                 }
@@ -78,7 +78,7 @@ namespace API.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponseModel<AuthUserModel>> Login(LoginUserModel loginUser)
+        public async Task<ServiceResponseModel<AuthUserModel>> LoginAsync(LoginUserModel loginUser)
         {
             ServiceResponseModel<AuthUserModel> serviceResponse = new();
 
@@ -120,7 +120,7 @@ namespace API.Services
             return serviceResponse;
         }
 
-        private async Task<bool> UserExists(string username)
+        private async Task<bool> UserExistsAsync(string username)
         {
             return await _userManager.Users.AnyAsync(e => e.UserName == username.ToLower());
         }

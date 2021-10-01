@@ -38,7 +38,7 @@ namespace Client.Authentication
             if (result.Success)
             {
                 await ((AuthStateProvider)_authStateProvider).NotifyUserAuthenticationAsync(result.Data.Token);
-                await _appUserService.SetAppUser(result.Data.Username);
+                await _appUserService.SetAppUserAsync(result.Data.Username);
             }
 
             return result;
@@ -47,7 +47,7 @@ namespace Client.Authentication
         public async Task LogoutAsync()
         {
             await ((AuthStateProvider)_authStateProvider).NotifyUserLogoutAsync();
-            await _appUserService.SetAppUser(null);
+            await _appUserService.SetAppUserAsync(null);
         }
     }
 }

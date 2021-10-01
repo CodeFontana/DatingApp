@@ -11,8 +11,8 @@ namespace Client.Interfaces
 
         event Action OnChange;
 
-        Task<bool> ReloadAppUser();
-        Task<bool> SetAppUser(string username);
-        Task SetMainPhoto(string filename);
+        Task<bool> ReloadAppUserAsync();
+        Task<bool> SetAppUserAsync(string username);
+        Task SetMainPhotoAsync(string filename);
     }
 }

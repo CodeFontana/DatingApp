@@ -14,7 +14,7 @@
     <div class="row">
         @foreach (PhotoModel p in AppUserService.AppUser.Photos)
         {
-            <PhotoCard Photo="@p" OnImageChanged="HandleImageChanged" />
+            <PhotoCard Photo="@p" OnImageChanged="HandleImageChangedAsync" />
         }
     </div>
 
@@ -23,7 +23,7 @@
     <div class="form-group drag-drop-zone">
         <i class="fa fa-upload fa-3x"></i>
         Drop new photo here
-        <InputFile disabled="@uploading" OnChange="HandleImageUpload" accept="image/*" />
+        <InputFile disabled="@uploading" OnChange="HandleImageUploadAsync" accept="image/*" />
     </div>
 </div>
 
@@ -36,7 +36,7 @@
     private bool showError = false;
     private string errorText;
 
-    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    private async Task HandleImageUploadAsync(InputFileChangeEventArgs e)
     {
         try
         {
@@ -87,7 +87,7 @@
         }
     }
 
-    private async Task HandleImageChanged()
+    private async Task HandleImageChangedAsync()
     {
         await OnImageChanged.InvokeAsync();
     }

@@ -23,7 +23,7 @@ namespace API.Services
             _logger = logger;
         }
 
-        public async Task<ServiceResponseModel<MemberModel>> GetUser(string username, string requestor)
+        public async Task<ServiceResponseModel<MemberModel>> GetUserAsync(string username, string requestor)
         {
             ServiceResponseModel<MemberModel> serviceResponse = new();
 
@@ -45,7 +45,7 @@ namespace API.Services
             return serviceResponse;
         }
 
-        public async Task<PaginationResponseModel<PaginationList<MemberModel>>> GetUsers(string requestor, UserParameters userParameters)
+        public async Task<PaginationResponseModel<PaginationList<MemberModel>>> GetUsersAsync(string requestor, UserParameters userParameters)
         {
             PaginationResponseModel<PaginationList<MemberModel>> pagedResponse = new();
 
@@ -71,7 +71,7 @@ namespace API.Services
             return pagedResponse;
         }
 
-        public async Task<ServiceResponseModel<string>> UpdateUser(string username, MemberUpdateModel memberUpdate)
+        public async Task<ServiceResponseModel<string>> UpdateUserAsync(string username, MemberUpdateModel memberUpdate)
         {
             ServiceResponseModel<string> serviceResponse = new();
 

@@ -54,7 +54,7 @@
     <div class="col-12 col-md-8">
         <TabControl>
             <TabPage Text=@($"About {@AppUserService.AppUser.KnownAs}")>
-                <EditForm id="editForm" Model="@memberUpdate" @oninput="(e) => OnProfileUpdated(e)" OnValidSubmit="HandleValidSubmit">
+                <EditForm id="editForm" Model="@memberUpdate" @oninput="(e) => OnProfileUpdated(e)" OnValidSubmit="HandleValidSubmitAsync">
                     <DataAnnotationsValidator />
 
                     <h4>Description</h4>
@@ -90,7 +90,7 @@
                 </EditForm>
             </TabPage>
             <TabPage Text="Edit Photos">
-                <PhotoEditor OnImageChanged="ImageChangedCallback" />
+                <PhotoEditor OnImageChanged="ImageChangedCallbackAsync" />
             </TabPage>
         </TabControl>
     </div>
@@ -104,12 +104,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadMember();
+        await LoadMemberAsync();
     }
 
-    private async Task LoadMember()
+    private async Task LoadMemberAsync()
     {
-        bool result = await AppUserService.ReloadAppUser();
+        bool result = await AppUserService.ReloadAppUserAsync();
 
         if (result)
         {
@@ -127,7 +127,7 @@
         changesMade = true;
     }
 
-    private async Task HandleValidSubmit()
+    private async Task HandleValidSubmitAsync()
     {
         ServiceResponseModel<string> result = await MemberService.UpdateMemberAsync(memberUpdate);
 
@@ -136,7 +136,7 @@
             ToastService.ShowSuccess("Profile updated successfully");
             changesMade = false;
             showError = false;
-            await LoadMember();
+            await LoadMemberAsync();
         }
         else
         {
@@ -146,8 +146,8 @@
         }
     }
 
-    private async Task ImageChangedCallback()
+    private async Task ImageChangedCallbackAsync()
     {
-        await LoadMember();
+        await LoadMemberAsync();
     }
 }

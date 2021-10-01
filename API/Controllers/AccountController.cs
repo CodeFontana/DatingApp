@@ -22,9 +22,9 @@ namespace API.Controllers
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(RegisterUserModel registerUser)
+        public async Task<IActionResult> RegisterAsync(RegisterUserModel registerUser)
         {
-            ServiceResponseModel<AuthUserModel> response = await _accountService.Register(registerUser);
+            ServiceResponseModel<AuthUserModel> response = await _accountService.RegisterAsync(registerUser);
 
             if (response.Success)
             {
@@ -38,9 +38,9 @@ namespace API.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginUserModel loginUser)
+        public async Task<IActionResult> LoginAsync(LoginUserModel loginUser)
         {
-            ServiceResponseModel<AuthUserModel> response = await _accountService.Login(loginUser);
+            ServiceResponseModel<AuthUserModel> response = await _accountService.LoginAsync(loginUser);
 
             if (response.Success)
             {

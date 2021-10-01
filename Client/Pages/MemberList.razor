@@ -10,7 +10,7 @@
         <h2>Your matches - @metaData?.TotalCount found</h2>
     </div>
 
-    <EditForm class="my-3" Model="@MemberService.MembersFilter" OnValidSubmit="HandleFilterSubmit">
+    <EditForm class="my-3" Model="@MemberService.MembersFilter" OnValidSubmit="HandleFilterSubmitAsync">
         <DataAnnotationsValidator />                    
 
         <div id="filterForm" class="form-row">
@@ -41,7 +41,7 @@
                     <div class="row">
                         <div id="filterGroup">
                             <button class="btn btn-primary ml-1" type="submit">Apply Filters</button>
-                            <button class="btn btn-info ml-1" type="button" @onclick="HandleFilterReset">Reset Filters</button>
+                            <button class="btn btn-info ml-1" type="button" @onclick="HandleFilterResetAsync">Reset Filters</button>
                         </div>
                     </div>
                 </div>
@@ -51,8 +51,8 @@
                     </div>
                     <div class="row">
                         <div id="sortGroup" class="btn-group">
-                            <button class="btn btn-dark" type="button" @onclick="@(x => HandleSortSubmit("LastActive"))">Last Active</button>
-                            <button class="btn btn-dark" type="button" @onclick="@(x => HandleSortSubmit("Created"))">Newest Members</button>
+                            <button class="btn btn-dark" type="button" @onclick="@(x => HandleSortSubmitAsync("LastActive"))">Last Active</button>
+                            <button class="btn btn-dark" type="button" @onclick="@(x => HandleSortSubmitAsync("Created"))">Newest Members</button>
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
         </div>
         
         <div class="d-flex justify-content-center">
-                <Pagination MetaData=@metaData Spread="10" PageChanged="HandlePageChanged" />
+                <Pagination MetaData=@metaData Spread="10" PageChanged="HandlePageChangedAsync" />
         </div>
     }
 
@@ -106,10 +106,10 @@
             }
         }
 
-        await LoadMembers();
+        await LoadMembersAsync();
     }
 
-    private async Task LoadMembers()
+    private async Task LoadMembersAsync()
     {
         PaginationResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync(MemberService.MembersFilter);
 
@@ -127,7 +127,7 @@
         }
     }
 
-    private async Task HandleFilterSubmit()
+    private async Task HandleFilterSubmitAsync()
     {
         if (MemberService.MembersFilter.MinAge > MemberService.MembersFilter.MaxAge)
         {
@@ -137,11 +137,11 @@
         else
         {
             showError = false;
-            await LoadMembers();    
+            await LoadMembersAsync();    
         }
     }
 
-    private async Task HandleFilterReset()
+    private async Task HandleFilterResetAsync()
     {
         MemberService.MembersFilter.PageNumber = 1;
         MemberService.MembersFilter.PageSize = 10;
@@ -158,19 +158,19 @@
             MemberService.MembersFilter.Gender = "female";
         }
 
-        await LoadMembers();
+        await LoadMembersAsync();
     }
 
-    private async Task HandleSortSubmit(string sortValue)
+    private async Task HandleSortSubmitAsync(string sortValue)
     {
         MemberService.MembersFilter.OrderBy = sortValue.ToLower();
-        await HandleFilterSubmit();
+        await HandleFilterSubmitAsync();
     }
 
-    private async Task HandlePageChanged(int page)
+    private async Task HandlePageChangedAsync(int page)
     {
         MemberService.MembersFilter.PageNumber = page;
         members = null;
-        await LoadMembers();
+        await LoadMembersAsync();
     }
 }
