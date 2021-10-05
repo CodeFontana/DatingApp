@@ -137,7 +137,7 @@
         await AuthService.LogoutAsync();
     }
 
-        public void Dispose()
+    public void Dispose()
     {
         AppUserService.OnChange -= StateHasChanged;
     }
