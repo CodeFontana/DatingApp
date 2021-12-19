@@ -12,8 +12,10 @@ namespace Client.Interfaces
         Dictionary<string, MemberCacheModel> MemberListCache { get; set; }
         UserParameters MembersFilter { get; set; }
 
+        Task<ServiceResponseModel<string>> ToggleLikeAsync(string username);
         Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string username, MultipartFormDataContent content);
         Task<ServiceResponseModel<string>> DeletePhotoAsync(string username, PhotoModel photo);
+        Task<ServiceResponseModel<IEnumerable<LikeUserModel>>> GetLikesAsync(string predicate);
         Task<ServiceResponseModel<MemberModel>> GetMemberAsync(string username);
         Task<PaginationResponseModel<IEnumerable<MemberModel>>> GetMembersAsync(UserParameters userParameters);
         Task<string> GetPhotoAsync(string username, string filename);

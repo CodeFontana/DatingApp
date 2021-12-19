@@ -20,7 +20,7 @@ namespace DataAccessLibrary.Data
 
         }
 
-        public DbSet<UserLike> Likes {  get; set; }
+        public DbSet<UserLike> Likes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

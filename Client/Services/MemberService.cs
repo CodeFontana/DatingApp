@@ -66,9 +66,14 @@ namespace Client.Services
             string apiEndpoint = _config["apiLocation"] + _config["usersEndpoint"] + $"/{username}";
             using HttpResponseMessage response = await _httpClient.GetAsync(apiEndpoint);
             ServiceResponseModel<MemberModel> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<MemberModel>>(_options);
-            member = result.Data;
-            member.CacheTime = DateTime.Now;
-            MemberCache.Add(member);
+
+            if (result.Success)
+            {
+                member = result.Data;
+                member.CacheTime = DateTime.Now;
+                MemberCache.Add(member);
+            }
+            
             return result;
         }
 
@@ -93,7 +98,7 @@ namespace Client.Services
 
             string apiEndpoint = _config["apiLocation"] + _config["usersEndpoint"];
 
-            var queryStringParam = new Dictionary<string, string>
+            Dictionary<string, string> queryStringParam = new()
             {
                 [nameof(userParameters.PageNumber)] = userParameters.PageNumber.ToString(),
                 [nameof(userParameters.PageSize)] = userParameters.PageSize.ToString(),
@@ -253,6 +258,39 @@ namespace Client.Services
                 }
                 
             }
+
+            return result;
+        }
+
+        public async Task<ServiceResponseModel<string>> ToggleLikeAsync(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                throw new ArgumentNullException("Invalid username");
+            }
+
+            string apiEndpoint = _config["apiLocation"] + _config["likesEndpoint"];
+            using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, username);
+            ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>>(_options);
+
+            return result;
+        }
+
+        public async Task<ServiceResponseModel<IEnumerable<LikeUserModel>>> GetLikesAsync(string predicate)
+        {
+            if (string.IsNullOrWhiteSpace(predicate))
+            {
+                throw new ArgumentNullException("Invalid predicate");
+            }
+
+            Dictionary<string, string> queryStringParam = new()
+            {
+                ["likes"] = predicate
+            };
+
+            string apiEndpoint = _config["apiLocation"] + _config["likesEndpoint"];
+            using HttpResponseMessage response = await _httpClient.GetAsync(apiEndpoint);
+            ServiceResponseModel<IEnumerable<LikeUserModel>> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<IEnumerable<LikeUserModel>>>(_options);
 
             return result;
         }
