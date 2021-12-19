@@ -46,7 +46,7 @@ namespace API.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponseModel<string>> AddLikeAsync(string requestor, string username, int sourceUserId)
+        public async Task<ServiceResponseModel<string>> ToggleLikeAsync(string requestor, string username, int sourceUserId)
         {
             ServiceResponseModel<string> serviceResponse = new();
 
@@ -67,12 +67,14 @@ namespace API.Services
 
                 UserLike userLike = await _likesRepository.GetUserLikeAsync(sourceUserId, likedUser.Id);
 
+                // Change this to toggle the like
+
                 if (userLike != null)
                 {
                     throw new Exception($"You already like {username}");
                 }
 
-                userLike = new UserLike
+                userLike = new()
                 {
                     SourceUserId = sourceUserId,
                     LikedUserId = likedUser.Id
@@ -95,8 +97,7 @@ namespace API.Services
             catch (Exception e)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = $"Failed to add a like for [{username}] on behalf of [{requestor}]";
-                _logger.LogError(serviceResponse.Message);
+                serviceResponse.Message = e.Message;
                 _logger.LogError(e.Message);
             }
 
