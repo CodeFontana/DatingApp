@@ -1,4 +1,8 @@
-﻿.shortnav {
+﻿main {
+    min-width: 350px;
+}
+
+.shortnav {
     margin-top: 100px;
 }
 
