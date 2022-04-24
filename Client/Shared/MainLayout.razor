@@ -1,29 +1,213 @@
 @inherits LayoutComponentBase
-@using Blazored.Toast.Configuration
 
-<BlazoredToasts Position="ToastPosition.BottomRight"
-                Timeout="10"
-                IconType="IconType.FontAwesome"
-                SuccessClass="success-toast-override"
-                SuccessIcon="fa fa-check"
-                ErrorIcon="fa fa-times"
-                WarningIcon="fa fa-exclamation-triangle"
-                InfoIcon="fa fa-clipboard"/>
-
+<MudThemeProvider Theme="_currentTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
 <Spinner />
-<main class="container-fluid">
-    <NavMenu />
-    
-    <AuthorizeView>
-        <Authorized>
-            <div class="shortnav">
-                @Body
-            </div>
-        </Authorized>
-        <NotAuthorized>
-            <div class="tallnav">
-                @Body
-            </div>
-        </NotAuthorized>
-    </AuthorizeView>
-</main>
+
+<MudLayout>
+    <MudAppBar Elevation="0" Color="@(_currentTheme == lightTheme ? Color.Primary : Color.Inherit)">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudSpacer />
+        @if (_currentTheme == lightTheme)
+        {
+            <MudButton OnClick="@((e) => ToggleThemeAsync())"><MudIcon Icon="@Icons.Material.Filled.DarkMode" Color="Color.Default"></MudIcon></MudButton>
+        }
+        else
+        {
+            <MudButton OnClick="@((e) => ToggleThemeAsync())"><MudIcon Icon="@Icons.Material.Filled.LightMode"></MudIcon></MudButton>
+        }
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">Dating App</MudText>
+        </MudDrawerHeader>
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private MudTheme _currentTheme = new();
+    private bool _drawerOpen = true;
+
+    protected override void OnInitialized()
+    {
+        _currentTheme = darkTheme;
+    }
+
+    private void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private void ToggleThemeAsync()
+    {
+        if (_currentTheme == lightTheme)
+        {
+            _currentTheme = darkTheme;
+        }
+        else
+        {
+            _currentTheme = lightTheme;
+        }
+    }
+
+    private MudTheme lightTheme = new()
+        {
+            Typography = new()
+            {
+                Default = new()
+                {
+                    //FontFamily = new[] { "Lato", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" }
+                }
+            },
+            Palette = new()
+            {
+                Black = "#000000ff",
+                White = "#ffffffff",
+                Primary = "#2c3e50",
+                PrimaryContrastText = "#ffffffff",
+                Secondary = "#526162",
+                SecondaryContrastText = "#ffffffff",
+                Tertiary = "#5E82A7",
+                TertiaryContrastText = "#ffffffff",
+                Info = "#3498db",
+                InfoContrastText = "#ffffffff",
+                Success = "#00c853ff",
+                SuccessContrastText = "#ffffffff",
+                Warning = "#f39c12",
+                WarningContrastText = "#ffffffff",
+                Error = "#e74c3c",
+                ErrorContrastText = "#ffffffff",
+                Dark = "#27272f",
+                DarkContrastText = "#ffffffff",
+                TextPrimary = "#424242ff",
+                TextSecondary = "#00000089",
+                TextDisabled = "#00000060",
+                ActionDefault = "#00000089",
+                ActionDisabled = "#00000042",
+                ActionDisabledBackground = "#0000001e",
+                Background = "#ffffffff",
+                BackgroundGrey = "#f5f5f5ff",
+                Surface = "#ffffffff",
+                DrawerBackground = "#ffffffff",
+                DrawerText = "#424242ff",
+                DrawerIcon = "#616161ff",
+                AppbarBackground = "#594ae2ff",
+                AppbarText = "#ffffffff",
+                LinesDefault = "#0000001e",
+                LinesInputs = "#bdbdbdff",
+                TableLines = "#e0e0e0ff",
+                TableStriped = "#00000005",
+                TableHover = "#0000000a",
+                Divider = "#e0e0e0ff",
+                DividerLight = "#000000cc",
+                PrimaryDarken = "#253444",
+                PrimaryLighten = "#3F5973",
+                SecondaryDarken = "#3A4545",
+                SecondaryLighten = "#728688",
+                TertiaryDarken = "#3B546C",
+                TertiaryLighten = "#97AFC6",
+                InfoDarken = "rgb(12,128,223)",
+                InfoLighten = "rgb(71,167,245)",
+                SuccessDarken = "rgb(0,163,68)",
+                SuccessLighten = "rgb(0,235,98)",
+                WarningDarken = "rgb(214,129,0)",
+                WarningLighten = "rgb(255,167,36)",
+                ErrorDarken = "rgb(242,28,13)",
+                ErrorLighten = "rgb(246,96,85)",
+                DarkDarken = "#222229",
+                DarkLighten = "#434350",
+                HoverOpacity = 0.06,
+                GrayDefault = "#95a5a6",
+                GrayLight = "#b4bcc2",
+                GrayLighter = "#ecf0f1",
+                GrayDark = "#7b8a8b",
+                GrayDarker = "#343a40",
+                OverlayDark = "rgba(33,33,33,0.4980392156862745)",
+                OverlayLight = "rgba(255,255,255,0.4980392156862745)"
+            }
+        };
+
+    private MudTheme darkTheme = new()
+        {
+            Typography = new()
+            {
+                Default = new()
+                {
+                    //FontFamily = new[] { "Lato", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" }
+                }
+            },
+            Palette = new()
+            {
+                Black = "#27272f",
+                White = "#ffffffff",
+                Primary = "#594ae2ff",
+                PrimaryContrastText = "#ffffffff",
+                Secondary = "#4BA0E2ff",
+                SecondaryContrastText = "#ffffffff",
+                Tertiary = "#4E7797ff",
+                TertiaryContrastText = "#ffffffff",
+                Info = "#2196f3ff",
+                InfoContrastText = "#ffffffff",
+                Success = "#00c853ff",
+                SuccessContrastText = "#ffffffff",
+                Warning = "#ff9800ff",
+                WarningContrastText = "#ffffffff",
+                Error = "#f44336ff",
+                ErrorContrastText = "#ffffffff",
+                Dark = "#27272f",
+                DarkContrastText = "#ffffffff",
+                TextPrimary = "rgba(255,255,255, 0.70)",
+                TextSecondary = "rgba(255,255,255, 0.50)",
+                TextDisabled = "rgba(255,255,255, 0.2)",
+                ActionDefault = "#adadb1",
+                ActionDisabled = "rgba(255,255,255, 0.26)",
+                ActionDisabledBackground = "rgba(255,255,255, 0.12)",
+                Background = "#1a1a27ff",
+                BackgroundGrey = "#151521ff",
+                Surface = "#1e1e2dff",
+                DrawerBackground = "#1a1a27ff",
+                DrawerText = "#92929fff",
+                DrawerIcon = "#92929fff",
+                AppbarBackground = "#1a1a27cc",
+                AppbarText = "#92929fff",
+                LinesDefault = "#33323eff",
+                LinesInputs = "#bdbdbdff",
+                TableLines = "#33323eff",
+                TableStriped = "#00000005",
+                TableHover = "#0000000a",
+                Divider = "#292838ff",
+                DividerLight = "#000000cc",
+                PrimaryDarken = "rgb(62,44,221)",
+                PrimaryLighten = "rgb(118,106,231)",
+                SecondaryDarken = "#2182CB",
+                SecondaryLighten = "#72B5E8",
+                TertiaryDarken = "#3D5E77",
+                TertiaryLighten = "#6E96B4",
+                InfoDarken = "rgb(12,128,223)",
+                InfoLighten = "rgb(71,167,245)",
+                SuccessDarken = "rgb(0,163,68)",
+                SuccessLighten = "rgb(0,235,98)",
+                WarningDarken = "rgb(214,129,0)",
+                WarningLighten = "rgb(255,167,36)",
+                ErrorDarken = "rgb(242,28,13)",
+                ErrorLighten = "rgb(246,96,85)",
+                DarkDarken = "#222229",
+                DarkLighten = "#434350",
+                HoverOpacity = 0.06,
+                GrayDefault = "#9E9E9E",
+                GrayLight = "#2a2833",
+                GrayLighter = "#1e1e2d",
+                GrayDark = "#757575",
+                GrayDarker = "#616161",
+                OverlayDark = "rgba(33,33,33,0.4980392156862745)",
+                OverlayLight = "#1e1e2d80"
+            }
+        };
+}

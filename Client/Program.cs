@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Authorization;
-using Blazored.Toast;
 using Blazored.LocalStorage;
 using Client.Interfaces;
 using Client.Authentication;
 using Client.Services;
 using Client.Helpers;
+using MudBlazor.Services;
 
 namespace Client
 {
@@ -21,7 +21,7 @@ namespace Client
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddBlazoredLocalStorage();
-            builder.Services.AddBlazoredToast();
+            builder.Services.AddMudServices();
             builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
