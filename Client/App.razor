@@ -10,7 +10,7 @@
                 <NotAuthorized>
                     @if (AuthContext.User.Identity.IsAuthenticated == false)
                     {
-                        <RedirectToLogin />
+                        <Redirect Url="/" />
                     }
                     else
                     {
