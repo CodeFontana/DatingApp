@@ -1,6 +1,6 @@
 ﻿@inject IMemberService MemberService
 @inject IAppUserService AppUserService
-@inject IToastService ToastService
+@inject ISnackbar Snackbar
 
 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
     <img class="img-thumbnail rounded p-1" src="@photoFilename">
@@ -42,12 +42,12 @@
 
         if (result.Success)
         {
-            ToastService.ShowSuccess("Main photo updated successfully");
+            Snackbar.Add("Main photo updated successfully", Severity.Success);
             await OnImageChanged.InvokeAsync();
         }
         else
         {
-            ToastService.ShowError($"{result.Message}");
+            Snackbar.Add($"{result.Message}", Severity.Error);
         }
     }
 
@@ -57,12 +57,12 @@
 
         if (result.Success)
         {
-            ToastService.ShowSuccess("Photo deleted successfully");
+            Snackbar.Add("Photo deleted successfully", Severity.Success);
             await OnImageChanged.InvokeAsync();
         }
         else
         {
-            ToastService.ShowError($"{result.Message}");
+            Snackbar.Add($"{result.Message}", Severity.Error);
         }
     }
 }

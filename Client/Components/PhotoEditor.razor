@@ -1,7 +1,7 @@
 ﻿@inject IMemberService MemberService
 @inject IAppUserService AppUserService
 @inject ISpinnerService SpinnerService
-@inject IToastService ToastService
+@inject ISnackbar Snackbar
 
 @if (showError)
 {
@@ -64,7 +64,7 @@
 
             if (result.Success)
             {
-                ToastService.ShowSuccess("Photo added successfully");
+                Snackbar.Add("Photo added successfully", Severity.Success);
                 showError = false;
                 await OnImageChanged.InvokeAsync();
             }
@@ -72,14 +72,14 @@
             {
                 showError = true;
                 errorText = $"{result.Message}";
-                ToastService.ShowError($"{result.Message}");
+                Snackbar.Add($"{result.Message}", Severity.Error);
             }
         }
         catch (Exception ex)
         {
             showError = true;
             errorText = $"{ex.Message}";
-            ToastService.ShowError($"{ex.Message}");
+            Snackbar.Add($"{ex.Message}", Severity.Error);
         }
         finally
         {

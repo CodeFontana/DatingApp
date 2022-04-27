@@ -3,7 +3,7 @@
 @inject IAuthenticationService AuthService
 @inject IMemberService MemberService
 @inject IAppUserService AppUserService
-@inject IToastService ToastService
+@inject ISnackbar Snackbar
 
 <AuthorizeView Context="AuthContext">
     <Authorized>
@@ -109,12 +109,12 @@
     {
         if (string.IsNullOrEmpty(loginUser.Username))
         {
-            ToastService.ShowInfo("Please enter your username");
+            Snackbar.Add("Please enter your username", Severity.Info);
             return;
         }
         else if (string.IsNullOrEmpty(loginUser.Password))
         {
-            ToastService.ShowInfo("Please enter your password");
+            Snackbar.Add("Please enter your password", Severity.Info);
             return;
         }
 
@@ -127,7 +127,7 @@
         }
         else
         {
-            ToastService.ShowError($"Login failed: {authResult.Message}");
+            Snackbar.Add($"Login failed: {authResult.Message}", Severity.Error);
         }
     }
 

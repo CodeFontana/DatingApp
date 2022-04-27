@@ -2,8 +2,8 @@
 @attribute [Authorize]
 @inject IMemberService MemberService
 @inject IAppUserService AppUserService
-@inject IToastService ToastService
 @inject IMapper Mapper
+@inject ISnackbar Snackbar
 
 @if (showError)
 {
@@ -133,7 +133,7 @@
 
         if (result.Success)
         {
-            ToastService.ShowSuccess("Profile updated successfully");
+            Snackbar.Add("Profile updated successfully", Severity.Success);
             changesMade = false;
             showError = false;
             await LoadMemberAsync();
@@ -142,7 +142,7 @@
         {
             showError = true;
             errorText = $"Profile update failed: {result.Message}";
-            ToastService.ShowError(errorText);
+            Snackbar.Add(errorText, Severity.Error);
         }
     }
 

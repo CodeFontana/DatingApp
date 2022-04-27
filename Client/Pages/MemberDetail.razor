@@ -1,7 +1,7 @@
 ﻿@page "/member/{username}"
 @attribute [Authorize]
 @inject IMemberService MemberService
-@inject IToastService ToastService
+@inject ISnackbar Snackbar
 
 <div class="container">
 
@@ -89,7 +89,7 @@
         {
             showError = true;
             errorText = $"Request failed: {result.Message}";
-            ToastService.ShowError($"Request failed: {result.Message}");
+            Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
         }
     }
 }
