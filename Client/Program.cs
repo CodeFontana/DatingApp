@@ -10,6 +10,7 @@ using Client.Authentication;
 using Client.Services;
 using Client.Helpers;
 using MudBlazor.Services;
+using MudBlazor;
 
 namespace Client
 {
@@ -21,7 +22,17 @@ namespace Client
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddBlazoredLocalStorage();
-            builder.Services.AddMudServices();
+            builder.Services.AddMudServices(config =>
+            {
+                config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
+                config.SnackbarConfiguration.PreventDuplicates = false;
+                config.SnackbarConfiguration.NewestOnTop = false;
+                config.SnackbarConfiguration.ShowCloseIcon = true;
+                config.SnackbarConfiguration.VisibleStateDuration = 10000;
+                config.SnackbarConfiguration.HideTransitionDuration = 500;
+                config.SnackbarConfiguration.ShowTransitionDuration = 500;
+                config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+            });
             builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
