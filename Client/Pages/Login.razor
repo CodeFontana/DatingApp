@@ -4,39 +4,55 @@
 @inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavManager
 
-<h3 class="text-center">Member Login</h3>
-
-@if (showError)
-{
-    <div class="alert alert-danger" role="alert">
-        @errorText
-    </div>
-}
-
-<div class="container">
-    <EditForm Model="@loginUser" OnValidSubmit="HandleValidSubmitAsync" class="card card-body bg-light text-dark mt-5">
+<MudContainer MaxWidth="MaxWidth.ExtraSmall">
+    <EditForm Model="@_loginUser" OnValidSubmit="HandleValidSubmitAsync">
         <DataAnnotationsValidator />
-
-        <div class="form-group">
-            <label>Username</label>
-            <InputText @bind-Value="loginUser.Username" class="form-control mr-sm-2" type="text" />
-            <ValidationMessage For="(() => loginUser.Username)" />
-        </div>
-        <div class="form-group">
-            <label>Password</label>
-            <InputText @bind-Value="loginUser.Password" class="form-control mr-sm-2" type="password" />
-            <ValidationMessage For="(() => loginUser.Password)" />
-        </div>
-        <button class="btn btn-success my-2" type="submit">Login</button>
-        <button class="btn btn-primary my-2" type="button" @onclick="() => HandleRegister()">Register</button>
-
+        <MudCard Elevation="5">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h3" Align="Align.Center">Member Login</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudDivider DividerType="DividerType.Middle" />
+            <MudCardContent>
+                <MudTextField Label="Username"
+                              Class="mt-3" @bind-Value="_loginUser.Username"
+                              For="@(() => _loginUser.Username)" />
+                <MudTextField Label="Password"
+                              Class="mt-3" @bind-Value="_loginUser.Password"
+                              For="@(() => _loginUser.Password)"
+                              InputType="InputType.Password" />
+            </MudCardContent>
+            <MudCardActions Class="d-flex justify-center mt-5">
+                <MudButton Class="mx-2"
+                           ButtonType="ButtonType.Submit"
+                           Size="Size.Large"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Filled.Login">
+                    Login
+                </MudButton>
+                <MudButton Class="mx-2"
+                           Size="Size.Large" 
+                           Variant="Variant.Filled"
+                           Color="Color.Secondary"
+                           StartIcon="@Icons.Filled.EditNote"
+                           OnClick="HandleRegister">
+                    Register
+                </MudButton>
+            </MudCardActions>
+            @if (_showError)
+            {
+                <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+            }
+        </MudCard>
     </EditForm>
-</div>
+</MudContainer>
 
 @code {
-    private LoginUserModel loginUser = new();
-    private bool showError = false;
-    private string errorText;
+    private LoginUserModel _loginUser = new();
+    private bool _showError = false;
+    private string _errorText;
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,10 +67,10 @@
 
     private async Task HandleValidSubmitAsync()
     {
-        showError = false;
-        errorText = "";
+        _showError = false;
+        _errorText = "";
 
-        ServiceResponseModel<AuthUserModel> result = await AuthService.LoginAsync(loginUser);
+        ServiceResponseModel<AuthUserModel> result = await AuthService.LoginAsync(_loginUser);
 
         if (result.Success)
         {
@@ -62,8 +78,8 @@
         }
         else
         {
-            errorText = $"Login failed: {result.Message}";
-            showError = true;
+            _errorText = $"Login failed: {result.Message}";
+            _showError = true;
         }
     }
 

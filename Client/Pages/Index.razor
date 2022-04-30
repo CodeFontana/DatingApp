@@ -13,14 +13,31 @@ else
                 <MudText Typo="Typo.h2" Align="Align.Center">Find your match</MudText>
             </MudItem>
             <MudItem xs="12" Class="d-flex justify-center">
-                <MudText Align="Align.Center" Style="font-size: 1.25rem; font-weight: 300;">Come on in to view your matches... all you need to do is sign up!</MudText>
+                <MudText Align="Align.Center"
+                     Style="font-size: 1.25rem; font-weight: 300;">
+                    Come on in to view your matches... all you need to do is sign up!
+                </MudText>
             </MudItem>
             <MudItem xs="6">
-                <MudDivider DividerType="DividerType.Middle"  />
+                <MudDivider DividerType="DividerType.Middle" />
             </MudItem>
             <MudItem xs="12" Class="d-flex justify-center">
-                <MudButton Class="mr-2" Variant="Variant.Filled" Color="Color.Success" @onclick="() => registerMode = !registerMode">Register</MudButton>
-                <MudButton Class="mr-2" Variant="Variant.Filled" Color="Color.Info">Learn more</MudButton>
+                <MudButton Class="mx-2"
+                       Variant="Variant.Filled"
+                       Color="Color.Info"
+                       @onclick="() => registerMode = !registerMode"
+                       StartIcon="@Icons.Filled.EditNote"
+                       Size="Size.Large">
+                    Register
+                </MudButton>
+                <MudButton Class="mx-2"
+                       Variant="Variant.Filled"
+                       Color="Color.Success"
+                       @onclick="HandleLogin"
+                       StartIcon="@Icons.Filled.Login"
+                       Size="Size.Large">
+                    Login
+                </MudButton>
             </MudItem>
         </MudGrid>
     </MudContainer>
@@ -32,5 +49,10 @@ else
     private void HandleOnCancelRegistration(bool result)
     {
         registerMode = false;
+    }
+
+    private void HandleLogin()
+    {
+        NavManager.NavigateTo("/login");
     }
 }

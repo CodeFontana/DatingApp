@@ -77,7 +77,7 @@
                 </Authorized>
 
                 <NotAuthorized>
-                    
+
                     <MudBreakpointProvider>
                         <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
                             <MudSpacer />
@@ -109,7 +109,8 @@
                                                        Variant="Variant.Filled"
                                                        Color="Color.Success"
                                                        ButtonType="ButtonType.Submit"
-                                                       Size="Size.Medium">
+                                                       Size="Size.Medium"
+                                                       StartIcon="@Icons.Filled.Login">
                                                 Login
                                             </MudButton>
                                         </MudItem>
@@ -125,7 +126,7 @@
         </MudAppBar>
     </MudGrid>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-8">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-16">
             @Body
         </MudContainer>
     </MudMainContent>
