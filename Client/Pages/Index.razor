@@ -3,7 +3,7 @@
 
 @if (registerMode)
 {
-    <Registration OnCancelRegistration="HandleOnCancelRegistration" />
+    <Registration OnCancelRegistration="OnCancelRegistration" />
 }
 else
 {
@@ -46,7 +46,7 @@ else
 @code {
     private bool registerMode = false;
 
-    private void HandleOnCancelRegistration(bool result)
+    private void OnCancelRegistration(bool result)
     {
         registerMode = false;
     }

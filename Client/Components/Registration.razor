@@ -3,85 +3,114 @@
 @inject NavigationManager NavManager
 @inject ISnackbar Snackbar
 
-<div class="row justify-content-center">
-    <div class="col-xs-12 col-sm-10 col-md-6 col-lg-3">
-        <EditForm Model="@registerUser" OnValidSubmit="HandleValidSubmitAsync" id="SignUpForm" class="card card-body text-dark mt-5">
-            <DataAnnotationsValidator />
+<MudContainer MaxWidth="MaxWidth.Small">
+    <EditForm Model="@_registerUser" OnValidSubmit="OnRegisterAsync">
+        <DataAnnotationsValidator />
+        <MudCard Elevation="5">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h2" Align="Align.Center">Sign up</MudText>
+                    <MudDivider DividerType="DividerType.Middle" />
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <div class="d-flex align-center">
+                    <MudRadioGroup Class="mx-auto"
+                                   @bind-Value="_registerUser.Gender"
+                                   T="string"
+                                   Required="true"
+                                   For="@(() => _registerUser.Gender)">
+                        <MudRadio Option="@("Female")">Female</MudRadio>
+                        <MudRadio Option="@("Male")">Male</MudRadio>
+                    </MudRadioGroup>
+                </div>
+                <div class="d-flex align-center">
+                    <MudTextField Label="Username"
+                                  Class="mt-3"
+                                  @bind-Value="_registerUser.Username"
+                                  For="@(() => _registerUser.Username)" />
+                </div>
+                <div class="d-flex align-center">
+                    <MudTextField Label="Preferred name or nickname"
+                                  Class="mt-3"
+                                  @bind-Value="_registerUser.KnownAs"
+                                  For="@(() => _registerUser.KnownAs)" />
+                </div>
+                <div class="d-flex align-center">
+                    <MudDatePicker Label="Birthdate"
+                                   Class="mt-3"
+                                   @bind-Date="_registerUser.DateOfBirth"
+                                   DisableToolbar="true"
+                                   For="@(() => _registerUser.DateOfBirth)" />
+                </div>
+                <div class="d-flex align-center">
+                    <MudTextField Label="Town or City"
+                                  Class="mt-3"
+                                  @bind-Value="_registerUser.City"
+                                  For="@(() => _registerUser.City)" />
+                </div>
+                <div class="d-flex align-center">
+                    <MudTextField Label="State or Province"
+                                  Class="mt-3"
+                                  @bind-Value="_registerUser.State"
+                                  For="@(() => _registerUser.State)" />
+                </div>
+                <div class="d-flex align-center">
+                    <MudTextField Label="Password"
+                                  Class="mt-3"
+                                  @bind-Value="_registerUser.Password"
+                                  For="@(() => _registerUser.Password)"
+                                  InputType="@_passwordInput"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@_passwordInputIcon"
+                                  OnAdornmentClick="ToggleShowPassword"
+                                  AdornmentAriaLabel="Show Password" />
+                </div>
+                <div class="d-flex align-center">
+                    <MudTextField Label="Confirm Password"
+                                  Class="mt-3"
+                                  @bind-Value="_registerUser.ConfirmPassword"
+                                  For="@(() => _registerUser.ConfirmPassword)"
+                                  InputType="@_passwordInput" />
+                </div>
+            </MudCardContent>
+            <MudCardActions Class="d-flex justify-center">
+                <MudButton Class="mx-2" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success">Create Account</MudButton>
+                <MudButton Class="mx-2" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Error" @onclick="() => OnCancel()">Cancel</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
 
-            <h2 class="text-center text-primary">Sign up</h2>
-            <hr />
-            <div class="text-center mb-3">
-                Biology:
-                <InputRadioGroup @bind-Value="registerUser.Gender" class="form-control" >
-                        <InputRadio Value="@("Female")" class="mx-2" /> Female
-                        <InputRadio Value="@("Male")" class="mx-2" /> Male
-                    </InputRadioGroup>
-                <ValidationMessage For="(() => registerUser.Gender)" />
-            </div>
-            <div class="form-group">
-                <InputText @bind-Value="registerUser.Username" class="form-control" type="text" placeholder="Username" />
-                <ValidationMessage For="(() => registerUser.Username)" />
-            </div>
-            <div class="form-group">
-                <InputText @bind-Value="registerUser.KnownAs" class="form-control" type="text" placeholder="Preferred name or nickname" />
-                <ValidationMessage For="(() => registerUser.KnownAs)" />
-            </div>
-            <div class="form-group">
-                <label>
-                    Birthdate
-                    <InputDate @bind-Value="registerUser.DateOfBirth" class="form-control" />
-                </label>
-                <ValidationMessage For="(() => registerUser.DateOfBirth)" />
-            </div>
-            <div class="form-group">
-                <InputText @bind-Value="registerUser.City" class="form-control" type="text" placeholder="Town or City" />
-                <ValidationMessage For="(() => registerUser.City)" />
-            </div>
-            <div class="form-group">
-                <InputText @bind-Value="registerUser.State" class="form-control" type="text" placeholder="State or Province" />
-                <ValidationMessage For="(() => registerUser.State)" />
-            </div>
-            <div class="form-group">
-                <InputText @bind-Value="registerUser.Password" class="form-control" type="password" placeholder="Password" />
-                <ValidationMessage For="(() => registerUser.Password)" />
-            </div>
-            <div class="form-group">
-                <InputText @bind-Value="registerUser.ConfirmPassword" class="form-control" type="password" placeholder="Confirm password" />
-                <ValidationMessage For="(() => registerUser.ConfirmPassword)" />
-            </div>
-            <div id="buttongroup" class="form-group text-center">
-                <button class="btn btn-success mx-2" type="submit">Create Account</button>
-                <button class="btn btn-outline-danger mx-2" type="button" @onclick="() => HandleCancel()">Cancel</button>
-            </div>
-        </EditForm>
-
-        @if (showRegError)
+    @if (_showError)
+    {
+        @if (_showError)
         {
-            <div class="alert alert-danger text-center" role="alert">
-                @regErrorText
-            </div>
+            <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
         }
-    </div>
-</div>
+    }
+</MudContainer>
 
 @code {
     [Parameter]
     public EventCallback<bool> OnCancelRegistration { get; set; }
 
-    private RegisterUserModel registerUser = new();
-    private bool showRegError = false;
-    private string regErrorText;
+    private RegisterUserModel _registerUser = new();
+    private InputType _passwordInput = InputType.Password;
+    private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+    private bool _showPassword = false;
+    private bool _showError = false;
+    private string _errorText;
 
-    private async Task HandleValidSubmitAsync()
+    private async Task OnRegisterAsync()
     {
-        showRegError = false;
-        regErrorText = "";
+        _showError = false;
+        _errorText = "";
 
-        ServiceResponseModel<AuthUserModel> regResult = await RegService.RegisterAsync(registerUser);
+        ServiceResponseModel<AuthUserModel> regResult = await RegService.RegisterAsync(_registerUser);
 
         if (regResult.Success)
         {
-            ServiceResponseModel<AuthUserModel> authResult = await AuthService.LoginAsync(new() { Username = registerUser.Username, Password = registerUser.Password });
+            ServiceResponseModel<AuthUserModel> authResult = await AuthService.LoginAsync(new() { Username = _registerUser.Username, Password = _registerUser.Password });
 
             if (authResult.Success)
             {
@@ -89,23 +118,39 @@
             }
             else
             {
-                showRegError = true;
-                regErrorText = $"Login failed: {authResult.Message}";
+                _showError = true;
+                _errorText = $"Login failed: {authResult.Message}";
                 Snackbar.Add($"Login failed: {authResult.Message}", Severity.Error);
             }
         }
         else
         {
-            showRegError = true;
-            regErrorText = $"Registration failed: {regResult.Message}";
+            _showError = true;
+            _errorText = $"Registration failed: {regResult.Message}";
             Snackbar.Add($"Registration failed: {regResult.Message}", Severity.Error);
         }
 
-        registerUser = new();
+        _registerUser = new();
     }
 
-    private void HandleCancel()
+    private void OnCancel()
     {
         OnCancelRegistration.InvokeAsync(true);
+    }
+
+    private void ToggleShowPassword()
+    {
+        if (_showPassword)
+        {
+            _showPassword = false;
+            _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+            _passwordInput = InputType.Password;
+        }
+        else
+        {
+            _showPassword = true;
+            _passwordInputIcon = Icons.Material.Filled.Visibility;
+            _passwordInput = InputType.Text;
+        }
     }
 }
