@@ -1,39 +1,33 @@
 ﻿@page "/"
 @inject NavigationManager NavManager
 
-@if (registerMode)
-{
-    <Registration OnCancelRegistration="OnCancelRegistration" />
-}
-else
-{
-    <MudContainer>
-        <MudGrid Justify="Justify.Center">
-            <MudItem xs="12" Class="d-flex justify-center">
-                <MudText Typo="Typo.h2" Align="Align.Center">Find your match</MudText>
-            </MudItem>
-            <MudItem xs="12" Class="d-flex justify-center">
-                <MudText Align="Align.Center"
+<MudContainer>
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="12" Class="d-flex justify-center">
+            <MudText Typo="Typo.h2" Align="Align.Center">Find your match</MudText>
+        </MudItem>
+        <MudItem xs="12" Class="d-flex justify-center">
+            <MudText Align="Align.Center"
                      Style="font-size: 1.25rem; font-weight: 300;">
-                    Come on in to view your matches... all you need to do is sign up!
-                </MudText>
-            </MudItem>
-            <MudItem xs="6">
-                <MudDivider DividerType="DividerType.Middle" />
-            </MudItem>
-            <MudItem xs="12" Class="d-flex justify-center">
-                <MudButton Class="mx-2"
+                Come on in to view your matches... all you need to do is sign up!
+            </MudText>
+        </MudItem>
+        <MudItem xs="6">
+            <MudDivider DividerType="DividerType.Middle" />
+        </MudItem>
+        <MudItem xs="12" Class="d-flex justify-center">
+            <MudButton Class="mx-2"
                        Variant="Variant.Filled"
                        Color="Color.Info"
-                       @onclick="() => registerMode = !registerMode"
+                       @onclick="OnRegister"
                        StartIcon="@Icons.Filled.EditNote"
                        Size="Size.Large">
-                    Register
-                </MudButton>
-                <MudButton Class="mx-2"
+                Register
+            </MudButton>
+            <MudButton Class="mx-2"
                        Variant="Variant.Filled"
                        Color="Color.Success"
-                       @onclick="HandleLogin"
+                       @onclick="OnLogin"
                        StartIcon="@Icons.Filled.Login"
                        Size="Size.Large">
                     Login
@@ -44,15 +38,13 @@ else
 }
 
 @code {
-    private bool registerMode = false;
-
-    private void OnCancelRegistration(bool result)
-    {
-        registerMode = false;
-    }
-
-    private void HandleLogin()
+    private void OnLogin()
     {
         NavManager.NavigateTo("/login");
+    }
+
+    private void OnRegister()
+    {
+        NavManager.NavigateTo("/register");
     }
 }
