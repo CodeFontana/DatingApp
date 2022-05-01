@@ -12,119 +12,131 @@
 <Spinner />
 
 <MudLayout Style="min-width: 350px;">
-    <MudGrid>
-        <MudAppBar Elevation="0" Color="@(_currentTheme == lightTheme ? Color.Primary : Color.Inherit)">
-            <MudItem xs="12" sm="4" md="6" Class="d-flex align-center">
-                @if (_currentTheme == lightTheme)
-                {
-                    <MudButton OnClick="@((e) => ToggleThemeAsync())">
-                        <MudIcon Icon="@Icons.Material.Filled.DarkMode" Color="Color.Default"></MudIcon>
-                    </MudButton>
-                }
-                else
-                {
-                    <MudButton OnClick="@((e) => ToggleThemeAsync())">
-                        <MudIcon Icon="@Icons.Material.Filled.LightMode"></MudIcon>
-                    </MudButton>
-                }
+    <MudAppBar Elevation="0" Color="@(_currentTheme == lightTheme ? Color.Primary : Color.Inherit)" Style="min-width: 350px;">
+        @if (_drawerOpen == false)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="() => _drawerOpen = !_drawerOpen" />
+            <MudText Typo="Typo.h6" Style="white-space: nowrap">Dating App</MudText>
+        }
 
-                <MudText Inline="true" Typo="Typo.h6" Style="white-space: nowrap">Dating App</MudText>
-            </MudItem>
+        <MudSpacer />
 
-            <AuthorizeView Context="AuthContext">
+        <AuthorizeView Context="AppBarContext">
+            <Authorized>
+                @if (AppUserService.AppUser is not null)
+                {
+                    <MudMenu AnchorOrigin="Origin.BottomLeft">
+                        <ActivatorContent>
+                            <MudAvatar Image="@AppUserService.MainPhoto" />
+                        </ActivatorContent>
+                        <ChildContent>
+                            <MudMenuItem>
+                                <NavLink href="/member/edit">
+                                    <strong>Edit Profile</strong>
+                                </NavLink>
+                            </MudMenuItem>
+                            <MudMenuItem>
+                                <NavLink @onclick="() => HandleLogoutAsync()">
+                                    <strong>Logout</strong>
+                                </NavLink>
+                            </MudMenuItem>
+                        </ChildContent>
+                    </MudMenu>
+                }
+            </Authorized>
+            <NotAuthorized>
+                <MudBreakpointProvider>
+                    <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
+                        <EditForm class="d-flex align-center" Model="@_loginUser" OnValidSubmit="HandleLoginAsync">
+                            <MudTextField Class="d-inline-flex mx-2"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense"
+                                          Label="Username"
+                                          @bind-Value="_loginUser.Username"
+                                          Adornment="Adornment.End"
+                                          AdornmentIcon="@Icons.Filled.Person"
+                                          AdornmentAriaLabel="Username"
+                                          Style=@(_currentTheme == lightTheme ? "color: #495057; background: #fff; border-radius: .25rem;" : "") />
+                            <MudTextField Class="d-inline-flex mx-2"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense" Label="Password"
+                                          InputType="@_passwordInput"
+                                          @bind-Value="_loginUser.Password"
+                                          Adornment="Adornment.End"
+                                          AdornmentIcon="@_passwordInputIcon"
+                                          OnAdornmentClick="ToggleShowPassword"
+                                          AdornmentAriaLabel="Show Password"
+                                          Style=@(_currentTheme == lightTheme ? "color: #495057; background: #fff; border-radius: .25rem;" : "") />
+                            <MudButton Class="d-inline-flex mx-2"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Success"
+                                       ButtonType="ButtonType.Submit"
+                                       Size="Size.Medium"
+                                       StartIcon="@Icons.Filled.Login">
+                                Login
+                            </MudButton>
+                        </EditForm>
+                    </MudHidden>
+                </MudBreakpointProvider>
+            </NotAuthorized>
+        </AuthorizeView>
+
+        @if (_currentTheme == lightTheme)
+        {
+            <MudButton OnClick="@((e) => ToggleThemeAsync())">
+                <MudIcon Icon="@Icons.Material.Filled.DarkMode" Color="Color.Default"></MudIcon>
+            </MudButton>
+        }
+        else
+        {
+            <MudButton OnClick="@((e) => ToggleThemeAsync())">
+                <MudIcon Icon="@Icons.Material.Filled.LightMode"></MudIcon>
+            </MudButton>
+        }
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Color="@(_currentTheme == lightTheme ? Color.Primary : Color.Dark)">
+        <MudDrawerHeader Class="d-flex align-center">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="() => _drawerOpen = !_drawerOpen" />
+            <MudText Typo="Typo.h6" Style="white-space: nowrap">Dating App</MudText>
+        </MudDrawerHeader>
+        <MudDrawerContainer>
+            <AuthorizeView Context="DrawerContext">
                 <Authorized>
+                    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
+                        <MudText Typo="Typo.body1">Home</MudText>
+                    </MudNavLink>
 
-                    <MudNavLink Href="/members"
-                                Match="NavLinkMatch.All"
-                                Icon="@Icons.Material.Filled.People">
+                    <MudNavLink Href="/members" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.People">
                         <MudText Typo="Typo.body1">Members</MudText>
                     </MudNavLink>
 
-                    <MudNavLink Href="/lists"
-                                Match="NavLinkMatch.All"
-                                Icon="@Icons.Material.Filled.List">
+                    <MudNavLink Href="/lists" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.List">
                         <MudText Typo="Typo.body1">Lists</MudText>
                     </MudNavLink>
 
-                    <MudNavLink Href="/messages"
-                                Match="NavLinkMatch.All"
-                                Icon="@Icons.Material.Filled.Message">
+                    <MudNavLink Href="/messages" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Message">
                         <MudText Typo="Typo.body1">Messages</MudText>
                     </MudNavLink>
-
-                    <MudSpacer />
-
-                    @if (AppUserService.AppUser is not null)
-                    {
-                        <MudMenu AnchorOrigin="Origin.BottomLeft">
-                            <ActivatorContent>
-                                <MudAvatar Image="@AppUserService.MainPhoto" />
-                            </ActivatorContent>
-                            <ChildContent>
-                                <MudMenuItem>
-                                    <NavLink href="/member/edit">
-                                        <strong>Edit Profile</strong>
-                                    </NavLink>
-                                </MudMenuItem>
-                                <MudMenuItem>
-                                    <NavLink @onclick="() => HandleLogoutAsync()">
-                                        <strong>Logout</strong>
-                                    </NavLink>
-                                </MudMenuItem>
-                            </ChildContent>
-                        </MudMenu>
-                    }
                 </Authorized>
-
                 <NotAuthorized>
+                    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
+                        <MudText Typo="Typo.body1">Home</MudText>
+                    </MudNavLink>
 
-                    <MudBreakpointProvider>
-                        <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
-                            <MudSpacer />
-                            <MudItem xs="12" sm="9" lg="6">
-                                <EditForm Model="@_loginUser" OnValidSubmit="HandleLoginAsync">
-                                    <MudGrid>
+                    <MudNavLink Href="/register" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.EditNote">
+                        <MudText Typo="Typo.body1">Register</MudText>
+                    </MudNavLink>
 
-                                        <MudItem xs="12" Class="d-flex align-center">
-                                            <MudTextField Class="d-inline-flex mx-2"
-                                                          Variant="Variant.Outlined"
-                                                          Margin="Margin.Dense"
-                                                          Label="Username"
-                                                          @bind-Value="_loginUser.Username"
-                                                          Adornment="Adornment.End"
-                                                          AdornmentIcon="@Icons.Filled.Person"
-                                                          AdornmentAriaLabel="Username"
-                                                          Style=@(_currentTheme == lightTheme ? "color: #495057; background: #fff; border-radius: .25rem;" : "") />
-                                            <MudTextField Class="d-inline-flex mx-2"
-                                                          Variant="Variant.Outlined"
-                                                          Margin="Margin.Dense" Label="Password"
-                                                          InputType="@_passwordInput"
-                                                          @bind-Value="_loginUser.Password"
-                                                          Adornment="Adornment.End"
-                                                          AdornmentIcon="@_passwordInputIcon"
-                                                          OnAdornmentClick="ToggleShowPassword"
-                                                          AdornmentAriaLabel="Show Password"
-                                                          Style=@(_currentTheme == lightTheme ? "color: #495057; background: #fff; border-radius: .25rem;" : "") />
-                                            <MudButton Class="d-inline-flex mx-2"
-                                                       Variant="Variant.Filled"
-                                                       Color="Color.Success"
-                                                       ButtonType="ButtonType.Submit"
-                                                       Size="Size.Medium"
-                                                       StartIcon="@Icons.Filled.Login">
-                                                Login
-                                            </MudButton>
-                                        </MudItem>
-
-                                    </MudGrid>
-                                </EditForm>
-                            </MudItem>
-                        </MudHidden>
-                    </MudBreakpointProvider>
+                    <MudNavLink Href="/login" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Login">
+                        <MudText Typo="Typo.body1">Login</MudText>
+                    </MudNavLink>
 
                 </NotAuthorized>
             </AuthorizeView>
-        </MudAppBar>
-    </MudGrid>
+        </MudDrawerContainer>
+    </MudDrawer>
+
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-16">
             @Body
@@ -138,6 +150,7 @@
     private InputType _passwordInput = InputType.Password;
     private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
     private bool _showPassword = false;
+    private bool _drawerOpen = false;
 
     protected override async Task OnInitializedAsync()
     {
