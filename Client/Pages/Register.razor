@@ -1,4 +1,5 @@
 ﻿@page "/register"
+@inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavManager
 @inject IMemberService MemberService
 @inject IRegistrationService RegService
@@ -99,6 +100,17 @@
     private bool _showPassword = false;
     private bool _showError = false;
     private string _errorText;
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        ClaimsPrincipal user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            NavManager.NavigateTo("/members");
+        }
+    }
 
     private async Task OnRegisterAsync()
     {
