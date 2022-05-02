@@ -1,5 +1,4 @@
 ﻿@page "/"
-@inject NavigationManager NavManager
 
 <div>
     <MudContainer Class="animate__bounceInUp">
@@ -37,15 +36,3 @@
         </MudGrid>
     </MudContainer>
 </div>
-
-@code {
-    private void OnLogin()
-    {
-        NavManager.NavigateTo("/login");
-    }
-
-    private void OnRegister()
-    {
-        NavManager.NavigateTo("/register");
-    }
-}
