@@ -4,8 +4,7 @@ namespace Client.Pages;
 
 public partial class Index
 {
-    [Inject]
-    NavigationManager NavManager { get; set; }
+    [Inject] NavigationManager NavManager { get; set; }
 
     private void OnLogin()
     {
