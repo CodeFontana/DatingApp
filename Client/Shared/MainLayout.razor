@@ -13,16 +13,38 @@
 
 <MudLayout Style="min-width: 350px;">
     <MudAppBar Elevation="0" Color="@(_currentTheme == lightTheme ? Color.Primary : Color.Inherit)" Style="min-width: 350px;">
+
         @if (_drawerOpen == false)
         {
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="() => _drawerOpen = !_drawerOpen" />
             <MudText Typo="Typo.h6" Style="white-space: nowrap">Dating App</MudText>
         }
 
-        <MudSpacer />
-
         <AuthorizeView Context="AppBarContext">
             <Authorized>
+
+                <MudBreakpointProvider>
+                    <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+
+                        <MudContainer Class="d-flex" MaxWidth="MaxWidth.ExtraSmall">
+                            <MudNavLink Href="/members" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.People" Style="width: unset;">
+                                <MudText Typo="Typo.body1">Members</MudText>
+                            </MudNavLink>
+
+                            <MudNavLink Class="mx-auto" Href="/lists" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.List" Style="width: unset;">
+                                <MudText Typo="Typo.body1">Lists</MudText>
+                            </MudNavLink>
+
+                            <MudNavLink Href="/messages" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Message" Style="width: unset;">
+                                <MudText Typo="Typo.body1">Messages</MudText>
+                            </MudNavLink>
+                        </MudContainer>
+
+                    </MudHidden>
+                </MudBreakpointProvider>
+
+                <MudSpacer />
+
                 @if (AppUserService.AppUser is not null)
                 {
                     <MudMenu AnchorOrigin="Origin.BottomLeft">
@@ -45,6 +67,9 @@
                 }
             </Authorized>
             <NotAuthorized>
+
+                <MudSpacer />
+
                 <MudBreakpointProvider>
                     <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
                         <EditForm class="d-flex align-center" Model="@_loginUser" OnValidSubmit="HandleLoginAsync">
@@ -78,6 +103,7 @@
                         </EditForm>
                     </MudHidden>
                 </MudBreakpointProvider>
+
             </NotAuthorized>
         </AuthorizeView>
 
