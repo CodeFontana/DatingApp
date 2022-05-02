@@ -20,7 +20,6 @@ public partial class MainLayout
     [Inject] AuthenticationStateProvider AuthStateProvider { get; set; }
     [Inject] NavigationManager NavManager { get; set; }
     [Inject] IAuthenticationService AuthService { get; set; }
-    [Inject] IMemberService MemberService { get; set; }
     [Inject] IAppUserService AppUserService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
 
