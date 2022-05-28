@@ -1,176 +1,80 @@
 ﻿@page "/members"
 @attribute [Authorize]
-@inject IAppUserService AppUserService
-@inject IMemberService MemberService
-@inject ISnackbar Snackbar
 
-<div class="container">
+<div>
+    <MudContainer>
 
-    <div class="text-center">
-        <h2>Your matches - @metaData?.TotalCount found</h2>
-    </div>
+        <MudGrid Justify="Justify.Center">
 
-    <EditForm class="my-3" Model="@MemberService.MembersFilter" OnValidSubmit="HandleFilterSubmitAsync">
-        <DataAnnotationsValidator />                    
+            <MudItem xs="12" Class="d-flex justify-center">
+                <MudText Typo="Typo.h2" Align="Align.Center">Your matches - @_metaData?.TotalCount found</MudText>
+            </MudItem>
 
-        <div id="filterForm" class="form-row">
-                
-            <div class="form-group">
-                <label class="bold">Age from: </label>
-                <InputNumber id="ageInput" class="form-control ml-1" @bind-Value="@MemberService.MembersFilter.MinAge" />
-            </div>
+            <MudItem xs="12" Class="d-flex justify-center">
+                <EditForm class="my-3" Model="@MemberService.MembersFilter" OnValidSubmit="HandleFilterSubmitAsync">
+                    <DataAnnotationsValidator />
 
-            <div class="form-group px-2">
-                <label>Age to: </label>
-                <InputNumber id="ageInput" class="form-control ml-1" @bind-Value="@MemberService.MembersFilter.MaxAge" />
-            </div>
+                    <MudCard Elevation="5">
 
-            <div class="form-group px-2">
-                <label>Biology: </label>
-                <InputSelect id="genderInput" class="form-control ml-1" @bind-Value="@MemberService.MembersFilter.Gender">
-                    <option value="female">Female</option>
-                    <option value="male">Male</option>
-                </InputSelect>
-            </div>
+                        <MudCardHeader>
+                            <CardHeaderActions>
+                                <MudGrid Class="d-flex flex-row align-end gap-5 mx-5">
+                                    <MudNumericField T="int"
+                                                     Label="Age from"
+                                                     @bind-Value="@MemberService.MembersFilter.MinAge"
+                                                     For="@(() => MemberService.MembersFilter.MinAge)" />
+                                    <MudNumericField T="int"
+                                                     Label="Age to"
+                                                     @bind-Value="@MemberService.MembersFilter.MaxAge"
+                                                     For="@(() => MemberService.MembersFilter.MaxAge)" />
+                                    <MudSelect T="string"
+                                               Label="Biology"
+                                               Variant="Variant.Filled"
+                                               @bind-Value="@MemberService.MembersFilter.Gender"
+                                               For="@(() => MemberService.MembersFilter.Gender)">
+                                        <MudSelectItem Value=@("female")>Female</MudSelectItem>
+                                        <MudSelectItem Value=@("male")>Male</MudSelectItem>
+                                    </MudSelect>
+                                    <MudButtonGroup Variant="Variant.Outlined" OverrideStyles=false>
+                                        <MudButton Class="mx-1" Color="Color.Primary" Variant="Variant.Filled" ButtonType="ButtonType.Submit">Apply Filters</MudButton>
+                                        <MudButton Class="mx-1" Color="Color.Info" Variant="Variant.Filled" OnClick="HandleFilterResetAsync">Reset Filters</MudButton>
+                                    </MudButtonGroup>
+                                    <MudButtonGroup Variant="Variant.Outlined" OverrideStyles=false>
+                                        <MudButton Class="mx-1" Color="Color.Dark" Variant="Variant.Filled" OnClick="@(x => HandleSortSubmitAsync("LastActive"))">Last Active</MudButton>
+                                        <MudButton Class="mx-1" Color="Color.Dark" Variant="Variant.Filled" OnClick="@(x => HandleSortSubmitAsync("Created"))">Newest Members</MudButton>
+                                    </MudButtonGroup>
+                                </MudGrid>
+                            </CardHeaderActions>
+                        </MudCardHeader>
 
-            <div id="buttonOuterGroup">
-                <div class="col form-group mx-2">
-                    <div class="row">
-                        <label>Filters: </label>
-                    </div>
-                    <div class="row">
-                        <div id="filterGroup">
-                            <button class="btn btn-primary ml-1" type="submit">Apply Filters</button>
-                            <button class="btn btn-info ml-1" type="button" @onclick="HandleFilterResetAsync">Reset Filters</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col form-group mx-2">
-                    <div class="row">
-                        <label>Sorting: </label>
-                    </div>
-                    <div class="row">
-                        <div id="sortGroup" class="btn-group">
-                            <button class="btn btn-dark" type="button" @onclick="@(x => HandleSortSubmitAsync("LastActive"))">Last Active</button>
-                            <button class="btn btn-dark" type="button" @onclick="@(x => HandleSortSubmitAsync("Created"))">Newest Members</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-                    
-        </div>
-        <ValidationSummary />
-    </EditForm>
+                        <MudCardContent>
+                            @if (_showError)
+                            {
+                                <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+                            }
+                            else if (_members?.Count > 0)
+                            {
+                                @foreach (MemberModel m in _members)
+                                {
+                                    <MemberCard Member="m" />
+                                }
+                            }
+                        </MudCardContent>
 
-    @if (showError)
-    {
-        <div class="alert alert-danger text-center" role="alert">
-            @errorText
-        </div>
-    }
-    else if (members?.Count > 0)
-    {
-        <div class="row">
-            @foreach (MemberModel m in members)
-            {
-                <div class="col-12 col-sm-6 col-md-4 col-xl-2">
-                    <MemberCard Member="m" />
-                </div>
-            }
-        </div>
-        
-        <div class="d-flex justify-content-center">
-                <Pagination MetaData=@metaData Spread="10" PageChanged="HandlePageChangedAsync" />
-        </div>
-    }
+                        <MudCardActions Class="d-flex justify-center">
+                            @if (_members?.Count > 0)
+                            {
+                                <Pagination MetaData=@_metaData Spread="10" PageChanged="HandlePageChangedAsync" />
+                            }
+                        </MudCardActions>
 
+                    </MudCard>
+
+                    <ValidationSummary />
+                </EditForm>
+            </MudItem>
+
+        </MudGrid>
+
+    </MudContainer>
 </div>
-
-@code {
-    private List<MemberModel> members = new();
-    private PaginationModel metaData;
-    private bool showError = false;
-    private string errorText;
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (string.IsNullOrWhiteSpace(MemberService.MembersFilter.Gender))
-        {
-            if (AppUserService.AppUser.Gender.ToLower().Equals("female"))
-            {
-                MemberService.MembersFilter.Gender = "male";
-            }
-            else
-            {
-                MemberService.MembersFilter.Gender = "female";
-            }
-        }
-
-        await LoadMembersAsync();
-    }
-
-    private async Task LoadMembersAsync()
-    {
-        PaginationResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync(MemberService.MembersFilter);
-
-        if (result.Success)
-        {
-            showError = false;
-            members = result.Data.ToList();
-            metaData = result.MetaData;
-        }
-        else
-        {
-            showError = true;
-            errorText = $"Request failed: {result.Message}";
-            Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
-        }
-    }
-
-    private async Task HandleFilterSubmitAsync()
-    {
-        if (MemberService.MembersFilter.MinAge > MemberService.MembersFilter.MaxAge)
-        {
-            showError = true;
-            errorText = "Please validate age filters";
-        }
-        else
-        {
-            showError = false;
-            await LoadMembersAsync();    
-        }
-    }
-
-    private async Task HandleFilterResetAsync()
-    {
-        MemberService.MembersFilter.PageNumber = 1;
-        MemberService.MembersFilter.PageSize = 10;
-        MemberService.MembersFilter.MinAge = 18;
-        MemberService.MembersFilter.MaxAge = 99;
-        MemberService.MembersFilter.OrderBy = "LastActive";
-
-        if (AppUserService.AppUser.Gender.ToLower().Equals("female"))
-        {
-            MemberService.MembersFilter.Gender = "male";
-        }
-        else
-        {
-            MemberService.MembersFilter.Gender = "female";
-        }
-
-        await LoadMembersAsync();
-    }
-
-    private async Task HandleSortSubmitAsync(string sortValue)
-    {
-        MemberService.MembersFilter.OrderBy = sortValue.ToLower();
-        await HandleFilterSubmitAsync();
-    }
-
-    private async Task HandlePageChangedAsync(int page)
-    {
-        MemberService.MembersFilter.PageNumber = page;
-        members = null;
-        await LoadMembersAsync();
-    }
-}
