@@ -6,92 +6,101 @@
 @inject IAuthenticationService AuthService
 @inject ISnackbar Snackbar
 
-<MudContainer MaxWidth="MaxWidth.Small">
-    <EditForm Model="@_registerUser" OnValidSubmit="OnRegisterAsync">
-        <DataAnnotationsValidator />
-        <MudCard Elevation="5">
-            <MudCardHeader>
-                <CardHeaderContent>
-                    <MudText Typo="Typo.h2" Align="Align.Center">Sign up</MudText>
-                    <MudDivider DividerType="DividerType.Middle" />
-                </CardHeaderContent>
-            </MudCardHeader>
-            <MudCardContent>
-                <div class="d-flex align-center">
-                    <MudRadioGroup Class="mx-auto"
-                                   @bind-Value="_registerUser.Gender"
-                                   T="string"
-                                   Required="true"
-                                   For="@(() => _registerUser.Gender)">
-                        <MudRadio Option="@("Female")">Female</MudRadio>
-                        <MudRadio Option="@("Male")">Male</MudRadio>
-                    </MudRadioGroup>
-                </div>
-                <div class="d-flex align-center">
-                    <MudTextField Label="Username"
-                                  Class="mt-3"
-                                  @bind-Value="_registerUser.Username"
-                                  For="@(() => _registerUser.Username)" />
-                </div>
-                <div class="d-flex align-center">
-                    <MudTextField Label="Preferred name or nickname"
-                                  Class="mt-3"
-                                  @bind-Value="_registerUser.KnownAs"
-                                  For="@(() => _registerUser.KnownAs)" />
-                </div>
-                <div class="d-flex align-center">
-                    <MudDatePicker Label="Birthdate"
-                                   Class="mt-3"
-                                   @bind-Date="_registerUser.DateOfBirth"
-                                   DisableToolbar="true"
-                                   For="@(() => _registerUser.DateOfBirth)" />
-                </div>
-                <div class="d-flex align-center">
-                    <MudTextField Label="Town or City"
-                                  Class="mt-3"
-                                  @bind-Value="_registerUser.City"
-                                  For="@(() => _registerUser.City)" />
-                </div>
-                <div class="d-flex align-center">
-                    <MudTextField Label="State or Province"
-                                  Class="mt-3"
-                                  @bind-Value="_registerUser.State"
-                                  For="@(() => _registerUser.State)" />
-                </div>
-                <div class="d-flex align-center">
-                    <MudTextField Label="Password"
-                                  Class="mt-3"
-                                  @bind-Value="_registerUser.Password"
-                                  For="@(() => _registerUser.Password)"
-                                  InputType="@_passwordInput"
-                                  Adornment="Adornment.End"
-                                  AdornmentIcon="@_passwordInputIcon"
-                                  OnAdornmentClick="ToggleShowPassword"
-                                  AdornmentAriaLabel="Show Password" />
-                </div>
-                <div class="d-flex align-center">
-                    <MudTextField Label="Confirm Password"
-                                  Class="mt-3"
-                                  @bind-Value="_registerUser.ConfirmPassword"
-                                  For="@(() => _registerUser.ConfirmPassword)"
-                                  InputType="@_passwordInput" />
-                </div>
-            </MudCardContent>
-            <MudCardActions Class="d-flex justify-center">
-                <MudButton Class="mx-2" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success">Create Account</MudButton>
-                <MudButton Class="mx-2" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Error" @onclick="() => OnCancel()">Cancel</MudButton>
-            </MudCardActions>
-        </MudCard>
-    </EditForm>
+<div>
+    <MudContainer MaxWidth="MaxWidth.Small">
+        
+        <EditForm Model="@_registerUser" OnValidSubmit="OnRegisterAsync">
+            <DataAnnotationsValidator />
+            
+            <MudCard Elevation="5">
 
-    @if (_showError)
-    {
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h2" Align="Align.Center">Sign up</MudText>
+                        <MudDivider DividerType="DividerType.Middle" />
+                    </CardHeaderContent>
+                </MudCardHeader>
+
+                <MudCardContent>
+                    <div class="d-flex align-center">
+                        <MudRadioGroup Class="mx-auto"
+                                       @bind-Value="_registerUser.Gender"
+                                       T="string"
+                                       Required="true"
+                                       For="@(() => _registerUser.Gender)">
+                            <MudRadio Option="@("Female")">Female</MudRadio>
+                            <MudRadio Option="@("Male")">Male</MudRadio>
+                        </MudRadioGroup>
+                    </div>
+                    <div class="d-flex align-center">
+                        <MudTextField Label="Username"
+                                      Class="mt-3"
+                                      @bind-Value="_registerUser.Username"
+                                      For="@(() => _registerUser.Username)" />
+                    </div>
+                    <div class="d-flex align-center">
+                        <MudTextField Label="Preferred name or nickname"
+                                      Class="mt-3"
+                                      @bind-Value="_registerUser.KnownAs"
+                                      For="@(() => _registerUser.KnownAs)" />
+                    </div>
+                    <div class="d-flex align-center">
+                        <MudDatePicker Label="Birthdate"
+                                       Class="mt-3"
+                                       @bind-Date="_registerUser.DateOfBirth"
+                                       DisableToolbar="true"
+                                       For="@(() => _registerUser.DateOfBirth)" />
+                    </div>
+                    <div class="d-flex align-center">
+                        <MudTextField Label="Town or City"
+                                      Class="mt-3"
+                                      @bind-Value="_registerUser.City"
+                                      For="@(() => _registerUser.City)" />
+                    </div>
+                    <div class="d-flex align-center">
+                        <MudTextField Label="State or Province"
+                                      Class="mt-3"
+                                      @bind-Value="_registerUser.State"
+                                      For="@(() => _registerUser.State)" />
+                    </div>
+                    <div class="d-flex align-center">
+                        <MudTextField Label="Password"
+                                      Class="mt-3"
+                                      @bind-Value="_registerUser.Password"
+                                      For="@(() => _registerUser.Password)"
+                                      InputType="@_passwordInput"
+                                      Adornment="Adornment.End"
+                                      AdornmentIcon="@_passwordInputIcon"
+                                      OnAdornmentClick="ToggleShowPassword"
+                                      AdornmentAriaLabel="Show Password" />
+                    </div>
+                    <div class="d-flex align-center">
+                        <MudTextField Label="Confirm Password"
+                                      Class="mt-3"
+                                      @bind-Value="_registerUser.ConfirmPassword"
+                                      For="@(() => _registerUser.ConfirmPassword)"
+                                      InputType="@_passwordInput" />
+                    </div>
+                </MudCardContent>
+
+                <MudCardActions Class="d-flex justify-center">
+                    <MudButton Class="mx-2" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success">Create Account</MudButton>
+                    <MudButton Class="mx-2" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Error" @onclick="() => OnCancel()">Cancel</MudButton>
+                </MudCardActions>
+
+            </MudCard>
+
+        </EditForm>
+
         @if (_showError)
         {
-            <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+            @if (_showError)
+            {
+                <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+            }
         }
-    }
-</MudContainer>
+    </MudContainer>
+</div>
 
 @code {
     private RegisterUserModel _registerUser = new();
