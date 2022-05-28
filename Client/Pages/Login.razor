@@ -15,42 +15,38 @@
             </MudCardHeader>
             <MudDivider DividerType="DividerType.Middle" />
             <MudCardContent>
-                <MudTextField 
-                    Label="Username"
-                    Class="mt-3" 
-                    @bind-Value="_loginUser.Username"
-                    For="@(() => _loginUser.Username)"
-                    Adornment="Adornment.End"
-                    AdornmentIcon="@Icons.Filled.Person"
-                    AdornmentAriaLabel="Username" />
-                <MudTextField 
-                    Label="Password"
-                    Class="mt-3" 
-                    @bind-Value="_loginUser.Password"
-                    For="@(() => _loginUser.Password)"
-                    InputType="@_passwordInput"
-                    Adornment="Adornment.End"
-                    AdornmentIcon="@_passwordInputIcon"
-                    OnAdornmentClick="ToggleShowPassword"
-                    AdornmentAriaLabel="Show Password" />
+                <MudTextField Label="Username"
+                              Class="mt-3"
+                              @bind-Value="_loginUser.Username"
+                              For="@(() => _loginUser.Username)"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Filled.Person"
+                              AdornmentAriaLabel="Username" />
+                <MudTextField Label="Password"
+                              Class="mt-3"
+                              @bind-Value="_loginUser.Password"
+                              For="@(() => _loginUser.Password)"
+                              InputType="@_passwordInput"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@_passwordInputIcon"
+                              OnAdornmentClick="ToggleShowPassword"
+                              AdornmentAriaLabel="Show Password" />
             </MudCardContent>
             <MudCardActions Class="d-flex justify-center mt-5">
-                <MudButton 
-                    Class="mx-2"
-                    ButtonType="ButtonType.Submit"
-                    Size="Size.Large"
-                    Variant="Variant.Filled"
-                    Color="Color.Primary"
-                    StartIcon="@Icons.Filled.Login">
+                <MudButton Class="mx-2"
+                           ButtonType="ButtonType.Submit"
+                           Size="Size.Large"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Filled.Login">
                     Login
                 </MudButton>
-                <MudButton 
-                    Class="mx-2"
-                    Size="Size.Large"
-                    Variant="Variant.Filled"
-                    Color="Color.Secondary"
-                    StartIcon="@Icons.Filled.EditNote"
-                    OnClick="OnRegister">
+                <MudButton Class="mx-2"
+                           Size="Size.Large"
+                           Variant="Variant.Filled"
+                           Color="Color.Secondary"
+                           StartIcon="@Icons.Filled.EditNote"
+                           OnClick="OnRegister">
                     Register
                 </MudButton>
             </MudCardActions>

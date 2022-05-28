@@ -67,34 +67,31 @@
                 <MudBreakpointProvider>
                     <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
                         <EditForm class="d-flex align-center" Model="@_loginUser" OnValidSubmit="HandleLoginAsync">
-                            <MudTextField 
-                                Class="d-inline-flex mx-2"
-                                Variant="Variant.Outlined"
-                                Margin="Margin.Dense"
-                                Label="Username"
-                                @bind-Value="_loginUser.Username"
-                                Adornment="Adornment.End"
-                                AdornmentIcon="@Icons.Filled.Person"
-                                AdornmentAriaLabel="Username"
-                                Style=@(_currentTheme == lightTheme ? "color: #495057; background: #fff; border-radius: .25rem;" : "") />
-                            <MudTextField 
-                                Class="d-inline-flex mx-2"
-                                Variant="Variant.Outlined"
-                                Margin="Margin.Dense" Label="Password"
-                                InputType="@_passwordInput"
-                                @bind-Value="_loginUser.Password"
-                                Adornment="Adornment.End"
-                                AdornmentIcon="@_passwordInputIcon"
-                                OnAdornmentClick="ToggleShowPassword"
-                                AdornmentAriaLabel="Show Password"
-                                Style=@(_currentTheme == lightTheme ? "color: #495057; background: #fff; border-radius: .25rem;" : "") />
-                            <MudButton 
-                                Class="d-inline-flex mx-2"
-                                Variant="Variant.Filled"
-                                Color="Color.Success"
-                                ButtonType="ButtonType.Submit"
-                                Size="Size.Medium"
-                                StartIcon="@Icons.Filled.Login">
+                            <MudTextField Class="d-inline-flex mx-2"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense"
+                                          Label="Username"
+                                          @bind-Value="_loginUser.Username"
+                                          Adornment="Adornment.End"
+                                          AdornmentIcon="@Icons.Filled.Person"
+                                          AdornmentAriaLabel="Username"
+                                          Style=@(_currentTheme == lightTheme ? "color: #495057; background: #fff; border-radius: .25rem;" : "") />
+                            <MudTextField Class="d-inline-flex mx-2"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense" Label="Password"
+                                          InputType="@_passwordInput"
+                                          @bind-Value="_loginUser.Password"
+                                          Adornment="Adornment.End"
+                                          AdornmentIcon="@_passwordInputIcon"
+                                          OnAdornmentClick="ToggleShowPassword"
+                                          AdornmentAriaLabel="Show Password"
+                                          Style=@(_currentTheme == lightTheme ? "color: #495057; background: #fff; border-radius: .25rem;" : "") />
+                            <MudButton Class="d-inline-flex mx-2"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Success"
+                                       ButtonType="ButtonType.Submit"
+                                       Size="Size.Medium"
+                                       StartIcon="@Icons.Filled.Login">
                                 Login
                             </MudButton>
                         </EditForm>
