@@ -1,4 +1,6 @@
 @inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@inject IWebAssemblyHostEnvironment HostEnv
 
 <MudThemeProvider Theme="_currentTheme" />
 <MudDialogProvider />
@@ -123,7 +125,9 @@
         </MudDrawerHeader>
         <MudDrawerContainer>
             <AuthorizeView Context="DrawerContext">
+
                 <Authorized>
+
                     <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
                         <MudText Typo="Typo.body1">Home</MudText>
                     </MudNavLink>
@@ -139,8 +143,11 @@
                     <MudNavLink Href="/messages" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Message">
                         <MudText Typo="Typo.body1">Messages</MudText>
                     </MudNavLink>
+
                 </Authorized>
+
                 <NotAuthorized>
+
                     <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
                         <MudText Typo="Typo.body1">Home</MudText>
                     </MudNavLink>
@@ -154,7 +161,20 @@
                     </MudNavLink>
 
                 </NotAuthorized>
+
             </AuthorizeView>
+
+            @if (HostEnv.IsDevelopment())
+            {
+                <MudNavLink Href="/verifyauth" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Key">
+                    <MudText Typo="Typo.body1">Verify Authentication</MudText>
+                </MudNavLink>
+
+                <MudNavLink Href="/theme" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ColorLens">
+                    <MudText Typo="Typo.body1">Color Theme</MudText>
+                </MudNavLink>
+            }
+
         </MudDrawerContainer>
     </MudDrawer>
 
