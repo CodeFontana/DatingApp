@@ -46,15 +46,16 @@
                             <MudAvatar Image="@AppUserService.MainPhoto" />
                         </ActivatorContent>
                         <ChildContent>
-                            <MudMenuItem>
-                                <NavLink href="/member/edit">
+                            <MudMenuItem Class="px-0 py-0">
+                                <MudNavLink Href="/member/edit" Match="NavLinkMatch.All" Style="white-space: nowrap">
                                     <strong>Edit Profile</strong>
-                                </NavLink>
+                                </MudNavLink>
                             </MudMenuItem>
-                            <MudMenuItem>
-                                <NavLink @onclick="() => HandleLogoutAsync()">
+                            <MudDivider />
+                            <MudMenuItem Class="px-0 py-0">
+                                <MudNavLink @onclick="() => HandleLogoutAsync()">
                                     <strong>Logout</strong>
-                                </NavLink>
+                                </MudNavLink>
                             </MudMenuItem>
                         </ChildContent>
                     </MudMenu>
