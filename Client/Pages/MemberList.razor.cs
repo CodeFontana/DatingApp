@@ -74,7 +74,7 @@ public partial class MemberList
         MemberService.MembersFilter.PageNumber = 1;
         MemberService.MembersFilter.PageSize = 10;
         MemberService.MembersFilter.MinAge = 18;
-        MemberService.MembersFilter.MaxAge = 99;
+        MemberService.MembersFilter.MaxAge = 45;
         MemberService.MembersFilter.OrderBy = "LastActive";
 
         if (AppUserService.AppUser.Gender.ToLower().Equals("female"))
