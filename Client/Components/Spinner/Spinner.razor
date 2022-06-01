@@ -3,19 +3,19 @@
 @if (isVisible)
 {
     <div class="spinner-container">
-        @if (spinType == 0)
+        @if (_spinType == 0)
         {
             <Spinner_Wave />
         }
-        else if (spinType == 1)
+        else if (_spinType == 1)
         {
             <Spinner_ChasingDots />
         }
-        else if (spinType == 2)
+        else if (_spinType == 2)
         {
             <Spinner_ThreeDots />
         }
-        else if (spinType == 3)
+        else if (_spinType == 3)
         {
             <Spinner_FadingCircle />
         }
@@ -28,15 +28,15 @@
 
 @code
 {
+    private Random _rndGen = new();
+    private int _spinType = 0;
     protected bool isVisible { get; set; }
-    protected int spinType = 0;
 
     protected override void OnInitialized()
     {
         SpinnerService.OnShow += ShowSpinner;
         SpinnerService.OnHide += HideSpinner;
-        Random rnd = new();
-        spinType = rnd.Next(4);
+        _spinType = _rndGen.Next(4);
     }
 
     public void ShowSpinner()
