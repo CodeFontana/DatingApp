@@ -3,9 +3,7 @@
         <Found Context="routeData">
             <AuthorizeRouteView Context="AuthContext" RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" >
                 <Authorizing>
-                    <LayoutView Layout="@typeof(MainLayout)">
-                        <MudText Typo="Typo.h4" Align="Align.Center">Please wait...</MudText>
-                    </LayoutView>
+                    <MudText Typo="Typo.h4" Align="Align.Center">Please wait...</MudText>
                 </Authorizing>
                 <NotAuthorized>
                     @if (AuthContext.User.Identity.IsAuthenticated == false)
@@ -14,9 +12,7 @@
                     }
                     else
                     {
-                        <LayoutView Layout="@typeof(MainLayout)">
-                            <MudText Typo="Typo.h4">You are not authorized to access this resource.</MudText>
-                        </LayoutView>
+                        <MudText Typo="Typo.h4">You are not authorized to access this resource.</MudText>
                     }
                 </NotAuthorized>
             </AuthorizeRouteView>
