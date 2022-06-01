@@ -6,10 +6,10 @@ namespace DataAccessLibrary.Pagination
     public class UserParameters
     {
         private const int MAX_PAGE_SIZE = 50;
-        private int _pageSize = 10;
 
         public int PageNumber { get; set; } = 1;
 
+        private int _pageSize = 10;
         public int PageSize
         {
             get => _pageSize;
@@ -33,7 +33,7 @@ namespace DataAccessLibrary.Pagination
         {
             get 
             { 
-                return $"{MinAge}-{MaxAge}-{Gender.ToLower()}-{OrderBy.ToLower()}";
+                return $"{MinAge}-{MaxAge}-{Gender.ToLower()}-{OrderBy.ToLower()}-{PageNumber}";
             }
         }
 
