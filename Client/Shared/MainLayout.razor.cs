@@ -174,7 +174,7 @@ public partial class MainLayout
             
             DrawerBackground = "#FFFFFFFF",
             DrawerText = "#424242FF",
-            DrawerIcon = "#E9ECEF",
+            DrawerIcon = "#F1F1F1FF",
             
             AppbarBackground = "#594AE2FF",
             AppbarText = "#FFFFFFFF",
