@@ -8,7 +8,7 @@
 <Spinner />
 
 <MudLayout Style="min-width: 350px;">
-    <MudAppBar Elevation="0" Color="@(_currentTheme == lightTheme ? Color.Primary : Color.Inherit)" Style="min-width: 350px;">
+    <MudAppBar Elevation="0" Color="@(_currentTheme == lightTheme ? Color.Dark : Color.Inherit)" Style="min-width: 350px;">
 
         @if (_drawerOpen == false)
         {
@@ -91,7 +91,7 @@
                                           Style=@(_currentTheme == lightTheme ? "color: #495057; background: #fff; border-radius: .25rem;" : "") />
                             <MudButton Class="d-inline-flex mx-2"
                                        Variant="Variant.Filled"
-                                       Color="Color.Success"
+                                       Color="Color.Primary"
                                        ButtonType="ButtonType.Submit"
                                        Size="Size.Medium"
                                        StartIcon="@Icons.Filled.Login">
@@ -118,7 +118,7 @@
         }
     </MudAppBar>
 
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Color="@(_currentTheme == lightTheme ? Color.Primary : Color.Dark)">
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Color="@(_currentTheme == lightTheme ? Color.Dark : Color.Dark)">
         <MudDrawerHeader Class="d-flex align-center">
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="() => _drawerOpen = !_drawerOpen" />
             <MudText Typo="Typo.h6" Style="white-space: nowrap">Dating App</MudText>
