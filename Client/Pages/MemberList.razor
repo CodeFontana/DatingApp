@@ -3,7 +3,7 @@
 
 <div>
     <MudContainer MaxWidth="MaxWidth.ExtraLarge">
-        <MudText Typo="Typo.h2" Align="Align.Center">Your matches - @_metaData?.TotalCount found</MudText>
+        <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-5">Your matches - @_metaData?.TotalCount found</MudText>
 
         <EditForm Model="@MemberService.MembersFilter" OnValidSubmit="HandleFilterSubmitAsync">
             <DataAnnotationsValidator />
@@ -99,17 +99,22 @@
                     }
                     else if (_members?.Count > 0)
                     {
-                        @foreach (MemberModel m in _members)
-                        {
-                            <MemberCard Member="m" />
-                        }
+                        <MudGrid Class="d-flex">
+                            @foreach (MemberModel m in _members)
+                            {
+                                <MudItem xs="12" sm="6" md="4" xl="2" Class="d-flex justify-center">
+                                    <MemberCard Member="m" />
+                                </MudItem>
+                            }
+                        </MudGrid>
                     }
                 </MudCardContent>
 
                 <MudCardActions Class="d-flex justify-center">
                     @if (_members?.Count > 0)
                     {
-                        <MudPagination Rectangular="true"
+                        <MudPagination Class="mb-2"
+                                       Rectangular="true"
                                        Color="Color.Primary"
                                        Count="@_metaData.TotalPages"
                                        Selected="@_metaData.CurrentPage"
