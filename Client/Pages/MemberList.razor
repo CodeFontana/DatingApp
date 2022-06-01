@@ -12,7 +12,7 @@
                 <MudCardHeader>
                     <MudGrid Class="d-flex align-end justify-center flex-wrap">
 
-                       <MudItem xs="6" sm="4" md="2" lg="1">
+                        <MudItem xs="6" sm="4" md="2" lg="1">
                             <MudNumericField T="int"
                                              Min="18"
                                              Max="85"
@@ -109,7 +109,7 @@
                 <MudCardActions Class="d-flex justify-center">
                     @if (_members?.Count > 0)
                     {
-                        <Pagination MetaData=@_metaData Spread="10" PageChanged="HandlePageChangedAsync" />
+                        <MudPagination Rectangular="true" Color="Color.Primary" Count="@_metaData.TotalPages" Selected="@_metaData.CurrentPage" SelectedChanged="HandlePageChangedAsync" />
                     }
                 </MudCardActions>
 
