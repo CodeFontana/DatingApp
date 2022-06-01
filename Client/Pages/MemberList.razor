@@ -109,7 +109,11 @@
                 <MudCardActions Class="d-flex justify-center">
                     @if (_members?.Count > 0)
                     {
-                        <MudPagination Rectangular="true" Color="Color.Primary" Count="@_metaData.TotalPages" Selected="@_metaData.CurrentPage" SelectedChanged="HandlePageChangedAsync" />
+                        <MudPagination Rectangular="true"
+                                       Color="Color.Primary"
+                                       Count="@_metaData.TotalPages"
+                                       Selected="@_metaData.CurrentPage"
+                                       SelectedChanged="HandlePageChangedAsync" />
                     }
                 </MudCardActions>
 
