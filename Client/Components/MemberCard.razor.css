@@ -1,33 +1,38 @@
-﻿hr {
-    width: 70%;
-    margin-top: 0px;
-    margin-bottom: 5px;
+﻿::deep img {
+    width: 100%;
 }
 
-.card {
-    border-radius: 6px;
-    box-shadow: 0 0 0 0 rgb(0 0 0 / 5%), 0 2px 3px 0 rgb(0 0 0 / 10%);
+::deep .mud-card {
+    padding: 0px;
+    overflow: hidden;
+    position: relative;
 }
 
-.card:hover img {
-    transform: scale(1.2, 1.2);
-    transition-duration: 500ms;
-    transition-timing-function: ease-out;
-    opacity: 0.7;
+::deep .mud-card-header {
+    padding: 0px;
+    overflow: hidden;
+    position: relative;
 }
 
-.card img {
+::deep .mud-card-header img {
     transform: scale(1.0, 1.0);
     transition-duration: 500ms;
     transition-timing-function: ease-out;
 }
 
-.card-img-wrapper {
-    overflow: hidden;
-    position: relative;
-}
+    ::deep .mud-card-header img:hover {
+        transform: scale(1.2, 1.2);
+        transition-duration: 500ms;
+        transition-timing-function: ease-out;
+        opacity: 0.7;
+    }
 
-.member-icons {
+        ::deep .mud-card-header:hover .mud-paper {
+            bottom: 0;
+            opacity: 1;
+        }
+
+::deep .member-icons {
     position: absolute;
     bottom: -30%;
     left: 0;
@@ -37,11 +42,10 @@
     opacity: 0;
 }
 
-.card-img-wrapper:hover .member-icons {
-    bottom: 0;
-    opacity: 1;
+::deep .mud-paper {
+    background-color: transparent;
 }
 
-.animate {
+::deep .animate {
     transition: all 0.3s ease-in-out;
 }
