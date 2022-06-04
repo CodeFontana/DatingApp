@@ -39,6 +39,7 @@
     right: 0;
     margin-right: auto;
     margin-left: auto;
+    margin-bottom: 1rem;
     opacity: 0;
 }
 
@@ -47,5 +48,5 @@
 }
 
 ::deep .animate {
-    transition: all 0.3s ease-in-out;
+    transition: all 0.4s ease-in-out;
 }
