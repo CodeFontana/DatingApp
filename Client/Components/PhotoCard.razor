@@ -3,7 +3,7 @@
 @inject ISnackbar Snackbar
 
 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-    <img class="img-thumbnail rounded p-1" src="@photoFilename">
+    <img class="img-thumbnail rounded p-1" src="@_photoFilename">
     <div class="text-center">
         @if (Photo.IsMain == false)
         {
@@ -18,17 +18,15 @@
 </div>
 
 @code {
-    [Parameter]
-    public PhotoModel Photo { get; set; }
+    [Parameter] public PhotoModel Photo { get; set; }
 
-    [Parameter]
-    public EventCallback<string> OnImageChanged { get; set; }
+    [Parameter] public EventCallback<string> OnImageChanged { get; set; }
 
-    private string photoFilename { get; set; } = "./assets/user.png";
+    private string _photoFilename { get; set; } = "./assets/user.png";
 
     protected override async Task OnParametersSetAsync()
     {
-        photoFilename = await MemberService.GetPhotoAsync(AppUserService.AppUser.Username, Photo.Filename);
+        _photoFilename = await MemberService.GetPhotoAsync(AppUserService.AppUser.Username, Photo.Filename);
     }
 
     private async Task HandleSetMainPhotoAsync()

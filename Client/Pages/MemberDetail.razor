@@ -7,33 +7,33 @@
 
     <h1>@Username</h1>
 
-    @if (showError)
+    @if (_showError)
     {
         <div class="alert alert-danger text-center" role="alert">
-            @errorText
+            @_errorText
         </div>
     }
-    else if (member != null)
+    else if (_member != null)
     {
         <div class="row">
             <div class="col-12 col-md-4">
                 <div class="card">
-                    <img class="card-img-top img-thumbnail mx-auto" src="@photoFilename" alt="@member.KnownAs" />
+                    <img class="card-img-top img-thumbnail mx-auto" src="@_photoFilename" alt="@_member.KnownAs" />
                     <div class="card-body">
                         <strong>Location:</strong>
-                        <p>@member.City, @member.State</p>
+                        <p>@_member.City, @_member.State</p>
                     </div>
                     <div class="card-body">
                         <strong>Age:</strong>
-                        <p>@member.Age</p>
+                        <p>@_member.Age</p>
                     </div>
                     <div class="card-body">
                         <strong>Last active:</strong>
-                        <p>@DateTime.Now.Subtract(member.LastActive).Humanize()</p>
+                        <p>@DateTime.Now.Subtract(_member.LastActive).Humanize()</p>
                     </div>
                     <div class="card-body">
                         <strong>Member since:</strong>
-                        <p>@member.Created.ToLongDateString()</p>
+                        <p>@_member.Created.ToLongDateString()</p>
                     </div>
                     <div class="card-footer">
                         <div class="btn-group d-flex">
@@ -45,18 +45,18 @@
             </div>
             <div class="col-12 col-md-8">
                 <TabControl>
-                    <TabPage Text=@($"About {@member.KnownAs}")>
+                    <TabPage Text=@($"About {_member.KnownAs}")>
                         <h4>Description</h4>
-                        <p class="pl-1">@member.Introduction</p>
+                        <p class="pl-1">@_member.Introduction</p>
                         <h4>Looking for</h4>
-                        <p class="pl-1">@member.LookingFor</p>
+                        <p class="pl-1">@_member.LookingFor</p>
                     </TabPage>
                     <TabPage Text="Interests">
                         <h4>Interests</h4>
-                        <p class="pl-1">@member.Interests</p>
+                        <p class="pl-1">@_member.Interests</p>
                     </TabPage>
                     <TabPage Text="Photos">
-                        <PhotoGallery Member="@member" />
+                        <PhotoGallery Member="@_member" />
                     </TabPage>
                     <TabPage Text="Messages">
                         <p>Messages will go here!</p>
@@ -68,13 +68,12 @@
 </div>
 
 @code {
-    [Parameter]
-    public string Username { get; set; }
+    [Parameter] public string Username { get; set; }
 
-    private MemberModel member;
-    private string photoFilename = "./assets/user.png";
-    private bool showError = false;
-    private string errorText;
+    private MemberModel _member;
+    private string _photoFilename = "./assets/user.png";
+    private bool _showError = false;
+    private string _errorText;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -82,13 +81,13 @@
 
         if (result.Success)
         {
-            member = result.Data;
-            photoFilename = await MemberService.GetPhotoAsync(member.Username, member.MainPhotoFilename);
+            _member = result.Data;
+            _photoFilename = await MemberService.GetPhotoAsync(_member.Username, _member.MainPhotoFilename);
         }
         else
         {
-            showError = true;
-            errorText = $"Request failed: {result.Message}";
+            _showError = true;
+            _errorText = $"Request failed: {result.Message}";
             Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
         }
     }
