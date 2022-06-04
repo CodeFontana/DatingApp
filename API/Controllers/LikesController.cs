@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     [ServiceFilter(typeof(LogUserActivity))]
     public class LikesController : ControllerBase
     {
