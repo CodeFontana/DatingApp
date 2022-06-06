@@ -2,12 +2,6 @@
     width: 100%;
 }
 
-::deep .mud-card {
-    padding: 0px;
-    overflow: hidden;
-    position: relative;
-}
-
 ::deep .mud-card-header {
     padding: 0px;
     overflow: hidden;
