@@ -1,4 +1,5 @@
-﻿using Client.Interfaces;
+﻿using Blazored.LocalStorage;
+using Client.Interfaces;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -22,10 +23,21 @@ public partial class MainLayout
     [Inject] IAuthenticationService AuthService { get; set; }
     [Inject] IAppUserService AppUserService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
+    [Inject] ILocalStorageService LocalStorage { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        _currentTheme = darkTheme;
+        string theme = await LocalStorage.GetItemAsync<string>("Theme");
+
+        if (string.IsNullOrWhiteSpace(theme) 
+            || string.Equals(theme, "Dark", System.StringComparison.CurrentCultureIgnoreCase))
+        {
+            _currentTheme = darkTheme;
+        }
+        else
+        {
+            _currentTheme = lightTheme;
+        }
 
         AppUserService.OnChange += StateHasChanged;
         AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
@@ -93,15 +105,17 @@ public partial class MainLayout
         }
     }
 
-    private void ToggleThemeAsync()
+    private async Task ToggleThemeAsync()
     {
         if (_currentTheme == lightTheme)
         {
             _currentTheme = darkTheme;
+            await LocalStorage.SetItemAsync("Theme", "Dark");
         }
         else
         {
             _currentTheme = lightTheme;
+            await LocalStorage.SetItemAsync("Theme", "Light");
         }
     }
 
@@ -118,77 +132,77 @@ public partial class MainLayout
         {
             Black = "#000000FF",
             White = "#FFFFFFFF",
-            
+
             Primary = "#E95420",
             PrimaryDarken = "#BE4013",
             PrimaryLighten = "#EE7A50",
             PrimaryContrastText = "#FFFFFFFF",
-            
+
             Secondary = "#AEA79F",
             SecondaryDarken = "#80776D",
             SecondaryLighten = "#C4C0BA",
             SecondaryContrastText = "#FFFFFFFF",
-            
+
             Tertiary = "#6EC3D2",
             TertiaryDarken = "#369DB0",
             TertiaryLighten = "#98D5DF",
             TertiaryContrastText = "#FFFFFFFF",
-            
+
             Info = "#17A2B8",
             InfoDarken = "#107585",
             InfoLighten = "#40D1E7",
             InfoContrastText = "#FFFFFFFF",
-            
+
             Success = "#38B44A",
             SuccessDarken = "#278035",
             SuccessLighten = "#69D178",
             SuccessContrastText = "#FFFFFFFF",
-            
+
             Warning = "#EFB73E",
             WarningDarken = "#C78D10",
             WarningLighten = "#F4CC75",
             WarningContrastText = "#FFFFFFFF",
-            
+
             Error = "#DF382C",
             ErrorDarken = "#A52219",
             ErrorLighten = "#E87067",
             ErrorContrastText = "#FFFFFFFF",
-            
+
             Dark = "#772953",
             DarkDarken = "#5D2040",
             DarkLighten = "#BF4485",
             DarkContrastText = "#FFFFFFFF",
-            
+
             TextPrimary = "#424242ff",
             TextSecondary = "#00000089",
             TextDisabled = "#00000060",
-            
+
             ActionDefault = "#00000089",
             ActionDisabled = "#00000042",
             ActionDisabledBackground = "#0000001E",
-            
+
             Background = "#FFFFFFFF",
             BackgroundGrey = "#F5F5F5FF",
-            
+
             Surface = "#FFFFFFFF",
-            
+
             DrawerBackground = "#FFFFFFFF",
             DrawerText = "#424242FF",
             DrawerIcon = "#F1F1F1FF",
-            
+
             AppbarBackground = "#594AE2FF",
             AppbarText = "#FFFFFFFF",
-            
+
             LinesDefault = "#0000001E",
             LinesInputs = "#BDBDBDFF",
-            
+
             TableLines = "#E0E0E0FF",
             TableStriped = "#00000005",
             TableHover = "#0000000A",
-            
+
             Divider = "#E0E0E0FF",
             DividerLight = "#000000CC",
-            
+
             HoverOpacity = 0.06,
             GrayDefault = "#95A5A6",
 
@@ -285,7 +299,7 @@ public partial class MainLayout
 
             Divider = "#292838FF",
             DividerLight = "#000000CC",
-            
+
             HoverOpacity = 0.06,
 
             GrayDefault = "#9E9E9E",
