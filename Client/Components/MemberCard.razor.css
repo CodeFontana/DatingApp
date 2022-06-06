@@ -44,3 +44,10 @@
 ::deep .animate {
     transition: all 0.4s ease-in-out;
 }
+
+::deep .member-info {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    font-weight: 500;
+}
