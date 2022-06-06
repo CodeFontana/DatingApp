@@ -1,4 +1,4 @@
-﻿/*Credit: https://tobiasahlin.com/spinkit/ */
+/*Credit: https://tobiasahlin.com/spinkit/ */
 
 .loading {
     text-align: center;
@@ -20,39 +20,39 @@
     font-size: 10px;
 }
 
-.spin-wave .spin-rect {
-    background-color: #594AE2ff;
-    height: 100%;
-    width: 20px;
-    display: inline-block;
-    -webkit-animation: spin-waveStretchDelay 1.2s infinite ease-in-out;
-    animation: spin-waveStretchDelay 1.2s infinite ease-in-out;
-}
+    .spin-wave .spin-rect {
+        background-color: #E95420FF;
+        height: 100%;
+        width: 20px;
+        display: inline-block;
+        -webkit-animation: spin-waveStretchDelay 1.2s infinite ease-in-out;
+        animation: spin-waveStretchDelay 1.2s infinite ease-in-out;
+    }
 
-.spin-wave .spin-rect1 {
-    -webkit-animation-delay: -1.2s;
-    animation-delay: -1.2s;
-}
+    .spin-wave .spin-rect1 {
+        -webkit-animation-delay: -1.2s;
+        animation-delay: -1.2s;
+    }
 
-.spin-wave .spin-rect2 {
-    -webkit-animation-delay: -1.1s;
-    animation-delay: -1.1s;
-}
+    .spin-wave .spin-rect2 {
+        -webkit-animation-delay: -1.1s;
+        animation-delay: -1.1s;
+    }
 
-.spin-wave .spin-rect3 {
-    -webkit-animation-delay: -1s;
-    animation-delay: -1s;
-}
+    .spin-wave .spin-rect3 {
+        -webkit-animation-delay: -1s;
+        animation-delay: -1s;
+    }
 
-.spin-wave .spin-rect4 {
-    -webkit-animation-delay: -0.9s;
-    animation-delay: -0.9s;
-}
+    .spin-wave .spin-rect4 {
+        -webkit-animation-delay: -0.9s;
+        animation-delay: -0.9s;
+    }
 
-.spin-wave .spin-rect5 {
-    -webkit-animation-delay: -0.8s;
-    animation-delay: -0.8s;
-}
+    .spin-wave .spin-rect5 {
+        -webkit-animation-delay: -0.8s;
+        animation-delay: -0.8s;
+    }
 
 @-webkit-keyframes spin-waveStretchDelay {
     0%, 40%, 100% {
