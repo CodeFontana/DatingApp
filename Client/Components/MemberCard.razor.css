@@ -1,8 +1,4 @@
-﻿::deep img {
-    width: 100%;
-}
-
-::deep .mud-card-header {
+﻿::deep .mud-card-header {
     padding: 0px;
     overflow: hidden;
     position: relative;
