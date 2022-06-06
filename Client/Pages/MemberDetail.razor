@@ -1,94 +1,86 @@
 ﻿@page "/member/{username}"
 @attribute [Authorize]
-@inject IMemberService MemberService
-@inject ISnackbar Snackbar
 
-<div class="container">
+<div>
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+        <MudText Class="mb-2" Typo="Typo.h3">@Username</MudText>
 
-    <h1>@Username</h1>
+        @if (_showError)
+        {
+            <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+        }
+        else if (_member != null)
+        {
+            <MudGrid>
 
-    @if (_showError)
-    {
-        <div class="alert alert-danger text-center" role="alert">
-            @_errorText
-        </div>
-    }
-    else if (_member != null)
-    {
-        <div class="row">
-            <div class="col-12 col-md-4">
-                <div class="card">
-                    <img class="card-img-top img-thumbnail mx-auto" src="@_photoFilename" alt="@_member.KnownAs" />
-                    <div class="card-body">
-                        <strong>Location:</strong>
-                        <p>@_member.City, @_member.State</p>
-                    </div>
-                    <div class="card-body">
-                        <strong>Age:</strong>
-                        <p>@_member.Age</p>
-                    </div>
-                    <div class="card-body">
-                        <strong>Last active:</strong>
-                        <p>@DateTime.Now.Subtract(_member.LastActive).Humanize()</p>
-                    </div>
-                    <div class="card-body">
-                        <strong>Member since:</strong>
-                        <p>@_member.Created.ToLongDateString()</p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="btn-group d-flex">
-                            <button class="btn btn-primary mx-1 col-6 text-nowrap">Like</button>
-                            <button class="btn btn-success mx-1 col-6 text-nowrap">Message</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-8">
-                <TabControl>
-                    <TabPage Text=@($"About {_member.KnownAs}")>
-                        <h4>Description</h4>
-                        <p class="pl-1">@_member.Introduction</p>
-                        <h4>Looking for</h4>
-                        <p class="pl-1">@_member.LookingFor</p>
-                    </TabPage>
-                    <TabPage Text="Interests">
-                        <h4>Interests</h4>
-                        <p class="pl-1">@_member.Interests</p>
-                    </TabPage>
-                    <TabPage Text="Photos">
-                        <PhotoGallery Member="@_member" />
-                    </TabPage>
-                    <TabPage Text="Messages">
-                        <p>Messages will go here!</p>
-                    </TabPage>
-                </TabControl>
-            </div>
-        </div>
-    }
+                <MudItem xs="12" sm="5" md="4">
+                    <MudCard Elevation="6" Style="border: 1px solid rgba(0,0,0,.125);">
+                        <MudCardHeader>
+                            <MudImage Class="img-thumbnail mx-auto"
+                                  Src="@_photoFilename"
+                                  Alt="@("Photo of @Member.KnownAs")"
+                                  Style="border: 4px solid var(--mud-palette-surface);" />
+                        </MudCardHeader>
+                        <MudCardContent Class="basic-info mx-auto">
+                            <MudText Style="font-weight: bolder;">Location:</MudText>
+                            <MudText Class="mb-3">@_member.City, @_member.State</MudText>
+                            <MudText Style="font-weight: bolder;">Age:</MudText>
+                            <MudText Class="mb-3">@_member.Age</MudText>
+                            <MudText Style="font-weight: bolder;">Last active:</MudText>
+                            <MudText Class="mb-3">@DateTime.Now.Subtract(_member.LastActive).Humanize()</MudText>
+                            <MudText Style="font-weight: bolder;">Member since:</MudText>
+                            <MudText>@_member.Created.ToLongDateString()</MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudGrid Class="d-flex justify-center">
+                                <MudItem xs="6" Class="px-1 pl-3">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="width: 100%;">Like</MudButton>
+                                </MudItem>
+
+                                <MudItem xs="6" Class="px-1 pr-3">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Tertiary" Style="width: 100%">Message</MudButton>
+                                </MudItem>
+                            </MudGrid>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" sm="7" md="8">
+                    <MudTabs Elevation="6" Rounded="true" Color="Color.Secondary">
+
+                        <MudTabPanel Text="@($"About {_member.KnownAs}")">
+                            <MudContainer Class="mt-5 px-0">
+                                <MudText Typo="Typo.h5" Style="font-weight: 500;">Description</MudText>
+                                <MudText Class="pl-2 mt-2">@_member.Introduction</MudText>
+                                <MudText Class="mt-4" Typo="Typo.h5" Style="font-weight: 500;">Looking for</MudText>
+                                <MudText class="pl-2 mt-2">@_member.LookingFor</MudText>
+                            </MudContainer>
+                        </MudTabPanel>
+
+                        <MudTabPanel Text="Interests">
+                            <MudContainer Class="mt-5 px-0">
+                                <MudText Typo="Typo.h5" Style="font-weight: 500;">Interests</MudText>
+                                <MudText class="pl-2 mt-2">@_member.Interests</MudText>
+                            </MudContainer>
+                        </MudTabPanel>
+
+                        <MudTabPanel Text="Photos">
+                            <MudContainer Class="mt-5 px-0">
+                                <PhotoGallery Member="@_member" />
+                            </MudContainer>
+                        </MudTabPanel>
+
+                        <MudTabPanel Text="Messages">
+                            <MudContainer Class="mt-5 px-0">
+                                <MudText>Messages will go here!</MudText>
+                            </MudContainer>
+                        </MudTabPanel>
+
+                    </MudTabs>
+                </MudItem>
+
+            </MudGrid>
+        }
+
+    </MudContainer>
 </div>
-
-@code {
-    [Parameter] public string Username { get; set; }
-
-    private MemberModel _member;
-    private string _photoFilename = "./assets/user.png";
-    private bool _showError = false;
-    private string _errorText;
-
-    protected override async Task OnParametersSetAsync()
-    {
-        ServiceResponseModel<MemberModel> result = await MemberService.GetMemberAsync(Username);
-
-        if (result.Success)
-        {
-            _member = result.Data;
-            _photoFilename = await MemberService.GetPhotoAsync(_member.Username, _member.MainPhotoFilename);
-        }
-        else
-        {
-            _showError = true;
-            _errorText = $"Request failed: {result.Message}";
-            Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
-        }
-    }
-}
