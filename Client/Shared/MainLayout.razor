@@ -19,25 +19,19 @@
         <AuthorizeView Context="AppBarContext">
             <Authorized>
 
-                <MudBreakpointProvider>
-                    <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+                <MudContainer Class="d-none d-sm-flex" MaxWidth="MaxWidth.ExtraSmall">
+                    <MudNavLink Href="/members" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.People" Style="width: unset;">
+                        <MudText Typo="Typo.body1">Members</MudText>
+                    </MudNavLink>
 
-                        <MudContainer Class="d-flex" MaxWidth="MaxWidth.ExtraSmall">
-                            <MudNavLink Href="/members" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.People" Style="width: unset;">
-                                <MudText Typo="Typo.body1">Members</MudText>
-                            </MudNavLink>
+                    <MudNavLink Class="mx-auto" Href="/lists" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.List" Style="width: unset;">
+                        <MudText Typo="Typo.body1">Lists</MudText>
+                    </MudNavLink>
 
-                            <MudNavLink Class="mx-auto" Href="/lists" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.List" Style="width: unset;">
-                                <MudText Typo="Typo.body1">Lists</MudText>
-                            </MudNavLink>
-
-                            <MudNavLink Href="/messages" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Message" Style="width: unset;">
-                                <MudText Typo="Typo.body1">Messages</MudText>
-                            </MudNavLink>
-                        </MudContainer>
-
-                    </MudHidden>
-                </MudBreakpointProvider>
+                    <MudNavLink Href="/messages" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Message" Style="width: unset;">
+                        <MudText Typo="Typo.body1">Messages</MudText>
+                    </MudNavLink>
+                </MudContainer>
 
                 <MudSpacer />
 
@@ -67,39 +61,35 @@
 
                 <MudSpacer />
 
-                <MudBreakpointProvider>
-                    <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
-                        <EditForm class="d-flex align-center" Model="@_loginUser" OnValidSubmit="HandleLoginAsync">
-                            <MudTextField Class="d-inline-flex mx-2"
-                                          Variant="Variant.Outlined"
-                                          Margin="Margin.Dense"
-                                          Label="Username"
-                                          @bind-Value="_loginUser.Username"
-                                          Adornment="Adornment.End"
-                                          AdornmentIcon="@Icons.Filled.Person"
-                                          AdornmentAriaLabel="Username"
-                                          Style=@(_currentTheme == lightTheme ? "color: #495057; background: #fff; border-radius: .25rem;" : "") />
-                            <MudTextField Class="d-inline-flex mx-2"
-                                          Variant="Variant.Outlined"
-                                          Margin="Margin.Dense" Label="Password"
-                                          InputType="@_passwordInput"
-                                          @bind-Value="_loginUser.Password"
-                                          Adornment="Adornment.End"
-                                          AdornmentIcon="@_passwordInputIcon"
-                                          OnAdornmentClick="ToggleShowPassword"
-                                          AdornmentAriaLabel="Show Password"
-                                          Style=@(_currentTheme == lightTheme ? "color: #495057; background: #fff; border-radius: .25rem;" : "") />
-                            <MudButton Class="d-inline-flex mx-2"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Primary"
-                                       ButtonType="ButtonType.Submit"
-                                       Size="Size.Medium"
-                                       StartIcon="@Icons.Filled.Login">
-                                Login
-                            </MudButton>
-                        </EditForm>
-                    </MudHidden>
-                </MudBreakpointProvider>
+                <EditForm class="d-none d-md-flex align-center" Model="@_loginUser" OnValidSubmit="HandleLoginAsync">
+                    <MudTextField Class="d-inline-flex mx-2"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Label="Username"
+                                  @bind-Value="_loginUser.Username"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@Icons.Filled.Person"
+                                  AdornmentAriaLabel="Username"
+                                  Style=@(_currentTheme == lightTheme ? "color: #495057; background: #FFFFFF; border-radius: .25rem;" : "") />
+                    <MudTextField Class="d-inline-flex mx-2"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" Label="Password"
+                                  InputType="@_passwordInput"
+                                  @bind-Value="_loginUser.Password"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@_passwordInputIcon"
+                                  OnAdornmentClick="ToggleShowPassword"
+                                  AdornmentAriaLabel="Show Password"
+                                  Style=@(_currentTheme == lightTheme ? "color: #495057; background: #FFFFFF; border-radius: .25rem;" : "") />
+                    <MudButton Class="d-inline-flex mx-2"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               ButtonType="ButtonType.Submit"
+                               Size="Size.Medium"
+                               StartIcon="@Icons.Filled.Login">
+                        Login
+                    </MudButton>
+                </EditForm>
 
             </NotAuthorized>
         </AuthorizeView>
