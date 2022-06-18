@@ -1,7 +1,7 @@
 ﻿@page "/members"
 @attribute [Authorize]
 
-<div>
+<section>
     <MudContainer MaxWidth="MaxWidth.ExtraLarge">
         <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-5">Your matches - @_metaData?.TotalCount found</MudText>
 
@@ -128,4 +128,4 @@
         </EditForm>
 
     </MudContainer>
-</div>
+</section>

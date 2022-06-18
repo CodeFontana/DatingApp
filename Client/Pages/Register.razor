@@ -6,7 +6,7 @@
 @inject IAuthenticationService AuthService
 @inject ISnackbar Snackbar
 
-<div>
+<section>
     <MudContainer MaxWidth="MaxWidth.Small">
 
         <EditForm Model="@_registerUser" OnValidSubmit="OnRegisterAsync">
@@ -100,7 +100,7 @@
             }
         }
     </MudContainer>
-</div>
+</section>
 
 @code {
     private RegisterUserModel _registerUser = new();

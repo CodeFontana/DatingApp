@@ -29,15 +29,20 @@
         {
             int index = i;
 
-            <MudItem xs="6" sm="4" lg="3" xl="2"
-             Class="d-flex justify-center">
+            <MudItem xs="6" sm="4" lg="3" xl="2" Class="d-flex justify-center">
 
                 <MudImage Class="rounded-lg"
-                  Fluid="true"
                   Src="@Member.Photos[index].Filename"
+                  Width="250"
+                  Height="250"
+                  Fluid="true"
                   @onclick="() => HandleThumbnailClick(index)" />
 
             </MudItem>
         }
     </MudGrid>
+}
+else 
+{
+    <MudText Align="Align.Center" Typo="Typo.h5">No photos available</MudText>
 }

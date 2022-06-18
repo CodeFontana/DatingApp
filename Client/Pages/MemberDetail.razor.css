@@ -1,18 +1,11 @@
 ﻿::deep .img-thumbnail {
     width: 90%;
     height: 90%;
-    border-radius: 6px;
+    border-radius: 1em;
     box-shadow: 0 0 0 0 rgb(0 0 0 / 5%), 0 2px 3px 0 rgb(0 0 0 / 10%);
     max-width: 100%;
 }
 
-::deep .basic-info {
-    width: 90%;
-    height: 90%;
-    max-width: 100%;
-}
-
 ::deep .mud-tab {
-    min-width: unset;
-    text-transform: unset;
+    min-width: 140px;
 }

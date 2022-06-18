@@ -1,9 +1,9 @@
 ﻿@page "/member/{username}"
 @attribute [Authorize]
 
-<div>
+<section>
     <MudContainer MaxWidth="MaxWidth.ExtraLarge">
-        <MudText Class="mb-2" Typo="Typo.h3">@Username</MudText>
+        <MudText Class="ml-2 mb-2" Typo="Typo.h3">@Username</MudText>
 
         @if (_showError)
         {
@@ -21,7 +21,7 @@
                                   Alt="@("Photo of @Member.KnownAs")"
                                   Style="border: 4px solid var(--mud-palette-surface);" />
                         </MudCardHeader>
-                        <MudCardContent Class="basic-info mx-auto">
+                        <MudCardContent Class="mx-auto" Style="width: 90%; height: 90%; max-width: 100%;">
                             <MudText Style="font-weight: bolder;">Location:</MudText>
                             <MudText Class="mb-3">@_member.City, @_member.State</MudText>
                             <MudText Style="font-weight: bolder;">Age:</MudText>
@@ -45,7 +45,7 @@
                     </MudCard>
                 </MudItem>
 
-                <MudItem xs="12" md="8" Class="d-none d-md-block">
+                <MudItem xs="12" md="8" Class="d-none d-md-block" Style="position: relative; top: -60px;">
                     <MudTabs Elevation="6" Centered="true" Rounded="true" Color="Color.Primary">
 
                         <MudTabPanel Text="@($"About {_member.KnownAs}")">
@@ -82,7 +82,7 @@
                 <MudItem xs="12" Class="d-block d-md-none">
                     <MudExpansionPanels MultiExpansion="true">
 
-                        <MudExpansionPanel>
+                        <MudExpansionPanel IsInitiallyExpanded="true">
                             <TitleContent>
                                 <MudText Typo="Typo.h5">@($"About {_member.KnownAs}")</MudText>
                             </TitleContent>
@@ -94,7 +94,7 @@
                             </ChildContent>
                         </MudExpansionPanel>
 
-                        <MudExpansionPanel>
+                        <MudExpansionPanel IsInitiallyExpanded="true">
                             <TitleContent>
                                 <MudText Typo="Typo.h5">Interests</MudText>
                             </TitleContent>
@@ -103,7 +103,7 @@
                             </ChildContent>
                         </MudExpansionPanel>
 
-                        <MudExpansionPanel>
+                        <MudExpansionPanel IsInitiallyExpanded="true">
                             <TitleContent>
                                 <MudText Typo="Typo.h5">Photos</MudText>
                             </TitleContent>
@@ -112,7 +112,7 @@
                             </ChildContent>
                         </MudExpansionPanel>
 
-                        <MudExpansionPanel>
+                        <MudExpansionPanel IsInitiallyExpanded="true">
                             <TitleContent>
                                 <MudText Typo="Typo.h5">Messages</MudText>
                             </TitleContent>
@@ -128,4 +128,4 @@
         }
 
     </MudContainer>
-</div>
+</section>
