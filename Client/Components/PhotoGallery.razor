@@ -1,70 +1,43 @@
 ﻿@inject IMemberService MemberService
 @inject ISpinnerService SpinnerService
 
-@if (SpinnerService.HoldSpinner == false)
+@if (Member is not null
+&& Member.Photos.Count > 0
+&& SpinnerService.HoldSpinner == false)
 {
-    <div class="carousel slide" data-ride="carousel">
-        <div class="carousel-inner">
-            @for (int i = 0; i < Member.Photos.Count; i++)
-            {
-                <div class="carousel-item @(i == _position ? "active":"")">
-                    <img class="img-fluid rounded mx-auto d-block centerstage" src="@Member.Photos[i].Filename">
-                </div>
-            }
-        </div>
-        <a class="carousel-control-prev" role="button" data-slide="prev" @onclick="HandlePrev">
-            <span class="carousel-control-prev-icon"></span>
-        </a>
-        <a class="carousel-control-next" role="button" data-slide="next" @onclick="HandleNext">
-            <span class="carousel-control-next-icon"></span>
-        </a>
-    </div>
-    <div class="row">
+    <MudCarousel Class="d-flex mx-auto mb-5"
+             @ref="_carousel"
+             ItemsSource="@Member.Photos"
+             @bind-SelectedIndex="_position"
+             ShowArrows="true"
+             ShowBullets="false"
+             AutoCycle="false"
+             Style="width: 100%; height: 500px;">
+        <ItemTemplate>
+            <MudContainer Class="d-flex justify-center px-0">
+                <MudImage Class="rounded-lg"
+                      Src="@context.Filename"
+                      Width="500"
+                      Height="500"
+                      Fluid="true" />
+            </MudContainer>
+        </ItemTemplate>
+    </MudCarousel>
+
+    <MudGrid>
         @for (int i = 0; i < Member.Photos.Count; i++)
         {
-            int buttonIndex = i;
-            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <img class="img-thumbnail rounded" src="@Member.Photos[i].Filename" @onclick="() => HandleThumbnailClick(buttonIndex)">
-            </div>
+            int index = i;
+
+            <MudItem xs="6" sm="4" lg="3" xl="2"
+             Class="d-flex justify-center">
+
+                <MudImage Class="rounded-lg"
+                  Fluid="true"
+                  Src="@Member.Photos[index].Filename"
+                  @onclick="() => HandleThumbnailClick(index)" />
+
+            </MudItem>
         }
-    </div>   
-}
-
-@code {
-    [Parameter] public MemberModel Member { get; set; }
-
-    private int _position = 0;
-    
-    protected override async Task OnParametersSetAsync()
-    {
-        SpinnerService.HoldSpinner = true;
-
-        foreach (PhotoModel p in Member.Photos)
-        {
-            p.Filename = await MemberService.GetPhotoAsync(Member.Username, p.Filename);
-        }
-
-        SpinnerService.HoldSpinner = false;
-    }
-
-    private void HandleNext()
-    {
-        if (_position < Member.Photos.Count - 1)
-        {
-            _position += 1;
-        }
-    }
-
-    private void HandlePrev()
-    {
-        if (_position > 0)
-        {
-            _position -= 1;
-        }
-    }
-
-    private void HandleThumbnailClick(int index)
-    {
-        _position = index;
-    }
+    </MudGrid>
 }
