@@ -1,9 +1,9 @@
 ﻿::deep .img-thumbnail {
-    width: 90%;
-    height: 90%;
+    height: auto;
+    width: 100%;
     border-radius: 1em;
-    box-shadow: 0 0 0 0 rgb(0 0 0 / 5%), 0 2px 3px 0 rgb(0 0 0 / 10%);
-    max-width: 100%;
+    box-shadow: 0 0 0 0 rgb(0 0 0 / 5%), 0 2px 3px 0 rgb(0 0 0 / 50%);
+    padding: 0.25rem;
 }
 
 ::deep .mud-tab {
