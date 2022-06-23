@@ -20,7 +20,7 @@
 
     <MudText Class="mt-10" Typo="Typo.h4">Add Photos</MudText>
 
-    <MudPaper @ondragenter="@SetDragClass" @ondragleave="@ClearDragClass" @ondragend="@ClearDragClass" Height="300px" Outlined="true" Class="@_dragClass">
+    <MudPaper @ondragenter="@SetDragClass" @ondragleave="@ClearDragClass" @ondragend="@ClearDragClass" Height="200px" Outlined="true" Class="@_dragClass">
         <InputFile 
             disabled="@_uploading" 
             OnChange="HandleImageUploadAsync" 
