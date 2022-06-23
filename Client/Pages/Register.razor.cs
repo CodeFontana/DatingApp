@@ -1,0 +1,90 @@
+﻿using Client.Interfaces;
+using DataAccessLibrary.Models;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using MudBlazor;
+using System.Security.Claims;
+using System.Threading.Tasks;
+
+namespace Client.Pages;
+
+public partial class Register
+{
+    [Inject] AuthenticationStateProvider AuthStateProvider { get; set; }
+    [Inject] NavigationManager NavManager { get; set; }
+    [Inject] IMemberService MemberService { get; set; }
+    [Inject] IRegistrationService RegService { get; set; }
+    [Inject] IAuthenticationService AuthService { get; set; }
+    [Inject] ISnackbar Snackbar { get; set; }
+
+    private RegisterUserModel _registerUser = new();
+    private InputType _passwordInput = InputType.Password;
+    private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+    private bool _showPassword = false;
+    private bool _showError = false;
+    private string _errorText;
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        ClaimsPrincipal user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            NavManager.NavigateTo("/members");
+        }
+    }
+
+    private async Task OnRegisterAsync()
+    {
+        _showError = false;
+        _errorText = "";
+
+        ServiceResponseModel<AuthUserModel> regResult = await RegService.RegisterAsync(_registerUser);
+
+        if (regResult.Success)
+        {
+            ServiceResponseModel<AuthUserModel> authResult = await AuthService.LoginAsync(new() { Username = _registerUser.Username, Password = _registerUser.Password });
+
+            if (authResult.Success)
+            {
+                NavManager.NavigateTo("/members");
+            }
+            else
+            {
+                _showError = true;
+                _errorText = $"Login failed: {authResult.Message}";
+                Snackbar.Add($"Login failed: {authResult.Message}", Severity.Error);
+            }
+        }
+        else
+        {
+            _showError = true;
+            _errorText = $"Registration failed: {regResult.Message}";
+            Snackbar.Add($"Registration failed: {regResult.Message}", Severity.Error);
+        }
+
+        _registerUser = new();
+    }
+
+    private void OnCancel()
+    {
+        NavManager.NavigateTo("/");
+    }
+
+    private void ToggleShowPassword()
+    {
+        if (_showPassword)
+        {
+            _showPassword = false;
+            _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+            _passwordInput = InputType.Password;
+        }
+        else
+        {
+            _showPassword = true;
+            _passwordInputIcon = Icons.Material.Filled.Visibility;
+            _passwordInput = InputType.Text;
+        }
+    }
+}
