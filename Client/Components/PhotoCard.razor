@@ -13,11 +13,17 @@
                    Variant="Variant.Filled"
                    @onclick="HandleSetMainPhotoAsync"
                    Disabled="Photo.IsMain"
+                   Color="Color.Primary"
                    Style="background-color: var(--mud-palette-dark-darken);">
             Set Main
         </MudButton>
 
-        <MudIconButton Icon="@Icons.Filled.Delete" Variant="Variant.Filled" Color="Color.Error" @onclick="HandleDeletePhotoAsync">></MudIconButton>
+        <MudIconButton 
+            Icon="@Icons.Filled.Delete" 
+            Variant="Variant.Filled" 
+            Color="Color.Error" 
+            @onclick="HandleDeletePhotoAsync">
+        </MudIconButton>
 
     </MudGrid>
 </MudItem>

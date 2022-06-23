@@ -24,7 +24,7 @@
 
     <MudGrid Justify="Justify.Center">
 
-        <MudItem xs="12" md="4">
+        <MudItem xs="12" md="4" lg="3">
             <MudCard Elevation="6" Style="border: 1px solid rgba(0,0,0,.125);">
                 <MudCardHeader>
                     <MudImage Class="img-thumbnail mx-auto"
@@ -63,7 +63,7 @@
             </MudCard>
         </MudItem>
 
-        <MudItem xs="12" md="8">
+        <MudItem xs="12" md="8" lg="9" Style="position: relative; top: -60px;">
             <MudTabs Elevation="6" Centered="true" Rounded="true" Color="Color.Primary">
 
                 <MudTabPanel Text="@($"About {@AppUserService.AppUser.KnownAs}")">

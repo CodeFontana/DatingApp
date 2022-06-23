@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -18,10 +17,24 @@ public partial class PhotoEditor
     private bool _showError = false;
     private string _errorText;
 
+    private static string _defaultDragClass = "relative rounded-lg border-2 border-dashed mt-5 mud-width-full mud-height-full d-flex justify-center align-center";
+    private string _dragClass = _defaultDragClass;
+
+    private void SetDragClass()
+    {
+        _dragClass = $"{_defaultDragClass} mud-border-primary";
+    }
+
+    private void ClearDragClass()
+    {
+        _dragClass = _defaultDragClass;
+    }
+
     private async Task HandleImageUploadAsync(InputFileChangeEventArgs e)
     {
         try
         {
+            ClearDragClass();
             _uploading = true;
             IBrowserFile imageFile = e.File;
 

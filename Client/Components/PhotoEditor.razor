@@ -18,12 +18,17 @@
 
     </MudGrid>
 
-    <MudText Class="mt-2" Typo="Typo.h4">Add Photos</MudText>
+    <MudText Class="mt-10" Typo="Typo.h4">Add Photos</MudText>
 
-    <MudPaper Outlined="true">
-        <InputFile disabled="@_uploading" OnChange="HandleImageUploadAsync" accept="image/*" class="absolute mud-width-full mud-height-full overflow-hidden z-2" style="opacity:0;" />
-        <MudIcon Icon="@Icons.Filled.FileUpload" />
-        <MudText Typo="Typo.h6">Drop new photo here</MudText>
+    <MudPaper @ondragenter="@SetDragClass" @ondragleave="@ClearDragClass" @ondragend="@ClearDragClass" Height="300px" Outlined="true" Class="@_dragClass">
+        <InputFile 
+            disabled="@_uploading" 
+            OnChange="HandleImageUploadAsync" 
+            accept="image/*" 
+            class="absolute mud-width-full mud-height-full overflow-hidden z-2" 
+            style="opacity:0;" />
+        <MudIcon Icon="@Icons.Filled.FileUpload" Size="Size.Large" />
+        <MudText Typo="Typo.h6" Inline="true">Drop new photo here</MudText>
     </MudPaper>
 
 </section>
