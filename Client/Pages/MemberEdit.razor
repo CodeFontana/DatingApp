@@ -8,11 +8,11 @@
     }
 
     <MudGrid>
-        <MudItem xs="12" md="4">
+        <MudItem xs="12" md="4" lg="3">
             <MudText Typo="Typo.h3">Your Profile</MudText>
         </MudItem>
 
-        <MudItem xs="12" md="8">
+        <MudItem xs="12" md="8" lg="9">
             @if (_changesMade)
             {
                 <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
@@ -63,7 +63,7 @@
             </MudCard>
         </MudItem>
 
-        <MudItem xs="12" md="8" lg="9" Style="position: relative; top: -60px;">
+        <MudItem xs="12" md="8" lg="9">
             <MudTabs Elevation="6" Centered="true" Rounded="true" Color="Color.Primary">
 
                 <MudTabPanel Text="@($"About {@AppUserService.AppUser.KnownAs}")">
@@ -77,7 +77,7 @@
                                                   T="string"
                                                   Label="Description"
                                                   Variant="Variant.Outlined"
-                                                  Text="@_memberUpdate.Introduction"
+                                                  @bind-Value="@_memberUpdate.Introduction"
                                                   Lines="6" />
                                     <ValidationMessage For="(() => AppUserService.AppUser.Introduction)" />
 
@@ -85,7 +85,7 @@
                                                   T="string"
                                                   Label="Looking for"
                                                   Variant="Variant.Outlined"
-                                                  Text="@_memberUpdate.LookingFor"
+                                                  @bind-Value="@_memberUpdate.LookingFor"
                                                   Lines="6" />
                                     <ValidationMessage For="(() => AppUserService.AppUser.LookingFor)" />
 
@@ -93,7 +93,7 @@
                                                   T="string"
                                                   Label="Interests"
                                                   Variant="Variant.Outlined"
-                                                  Text="@_memberUpdate.Interests"
+                                                  @bind-Value="@_memberUpdate.Interests"
                                                   Lines="6" />
                                     <ValidationMessage For="(() => AppUserService.AppUser.Interests)" />
 
@@ -103,14 +103,14 @@
                                                           T="string"
                                                           Label="City"
                                                           Variant="Variant.Outlined"
-                                                          Text="@_memberUpdate.City" />
+                                                          @bind-Value="@_memberUpdate.City" />
                                         </MudItem>
                                         <MudItem xs="6">
                                             <MudTextField Class="mb-10"
                                                           T="string"
                                                           Label="State"
                                                           Variant="Variant.Outlined"
-                                                          Text="@_memberUpdate.State" />
+                                                          @bind-Value="@_memberUpdate.State" />
                                         </MudItem>
                                     </MudGrid>
 
