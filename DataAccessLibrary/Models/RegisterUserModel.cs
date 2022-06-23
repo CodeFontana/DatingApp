@@ -19,7 +19,7 @@ namespace DataAccessLibrary.Models
 
         [Required(ErrorMessage = "Please enter your date of birth")]
         [ValidBirthday(ErrorMessage = "You must be at least 18 years old")]
-        public DateTime DateOfBirth { get; set; } = DateTime.Now.AddYears(-20);
+        public DateTime? DateOfBirth { get; set; } = DateTime.Now.AddYears(-21);
 
         [Required(ErrorMessage = "Please enter your town or city")]
         [MaxLength(100, ErrorMessage = "Your town name must be less than (100) characters")]

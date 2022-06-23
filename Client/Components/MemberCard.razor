@@ -1,58 +1,32 @@
-﻿@inject NavigationManager NavManager
-@inject IMemberService MemberService
-@inject IToastService ToastService
-
-<div class="card mb-4">
-    <div class="card-img-wrapper mb-2">
-        <img class="card-img-top" src="@photoFilename" alt="Photo of @Member.KnownAs" />
-        <ul class="list-inline member-icons animate text-center">
-            <li class="list-inline-item">
-                <button class="btn btn-primary" @onclick="HandleUserClick"><i class="fa fa-user" /></button>
-                <button class="btn btn-primary" @onclick="HandleLikeToggleAsync"><i class="fa fa-heart" /></button>
-                <button class="btn btn-primary"><i class="fa fa-envelope" /></button>
-            </li>
-        </ul>
-    </div>
-    <div class="card-body p-1">
-        <h5 class="card-title text-center mb-1">
-            <i class="fa fa-user mr-2" />
-            @Member.KnownAs | @Member.Age
-        </h5>
-        <hr />
-        <h6 class="card-text text-muted text-center">
-            @Member.City
-        </h6>
-    </div>
+﻿<div style="width: 100%">
+    <MudCard Elevation="6" Style="border: 1px solid var(--mud-palette-surface);">
+        <MudCardHeader>
+            <MudImage Src="@_photoFilename" Alt="@("Photo of @Member.KnownAs")" Style="width: 100%;"/>
+            <MudPaper Elevation="0" Class="d-flex justify-center member-icons animate gap-5">
+                <MudIconButton Icon="@Icons.Filled.Person"
+                               Variant="Variant.Filled" Color="Color.Primary"
+                               Size="Size.Large"
+                               aria-label="Profile"
+                               OnClick="HandleUserClick" />
+                <MudIconButton Icon="@Icons.Filled.HeartBroken"
+                               Variant="Variant.Filled" Color="Color.Primary"
+                               Size="Size.Large"
+                               OnClick="HandleLikeToggleAsync"
+                               aria-label="Like" />
+                <MudIconButton Icon="@Icons.Filled.Mail"
+                               Variant="Variant.Filled" Color="Color.Primary"
+                               Size="Size.Large"
+                               aria-label="Message" />
+            </MudPaper>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudText Typo="Typo.h6" Align="Align.Center" Class="member-info">
+                @Member.KnownAs | @Member.Age
+            </MudText>
+            <MudDivider DividerType="DividerType.Middle" />
+            <MudText Typo="Typo.h6" Align="Align.Center" Style="color: #868E96;">
+                @Member.City
+            </MudText>
+        </MudCardContent>
+    </MudCard>
 </div>
-
-@code {
-    [Parameter]
-    public MemberModel Member { get; set; }
-
-    private string photoFilename = "./assets/user.png";
-
-    protected override async Task OnParametersSetAsync()
-    {
-        photoFilename = await MemberService.GetPhotoAsync(Member.Username, Member.MainPhotoFilename);
-        Member.MainPhotoFilename = photoFilename;    
-    }
-
-    private void HandleUserClick()
-    {
-        NavManager.NavigateTo($"/member/{Member.Username}");
-    }
-
-    private async Task HandleLikeToggleAsync()
-    {
-        ServiceResponseModel<string> result = await MemberService.ToggleLikeAsync(Member.Username);
-
-        if (result.Success)
-        {
-            ToastService.ShowSuccess($"Liked {Member.Username}");
-        }
-        else
-        {
-            ToastService.ShowError(result.Message);
-        }
-    }
-}

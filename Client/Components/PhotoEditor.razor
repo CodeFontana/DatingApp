@@ -1,94 +1,34 @@
 ﻿@inject IMemberService MemberService
 @inject IAppUserService AppUserService
 @inject ISpinnerService SpinnerService
-@inject IToastService ToastService
+@inject ISnackbar Snackbar
 
-@if (showError)
-{
-    <div class="alert alert-danger" role="alert">
-        @errorText
-    </div>
-}
+<section>
+    @if (_showError)
+    {
+        <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+    }
 
-<div>
-    <div class="row">
+    <MudGrid Justify="Justify.Center">
+
         @foreach (PhotoModel p in AppUserService.AppUser.Photos)
         {
             <PhotoCard Photo="@p" OnImageChanged="HandleImageChangedAsync" />
         }
-    </div>
 
-    <h3 class="mt-2">Add Photos</h3>
+    </MudGrid>
 
-    <div class="form-group drag-drop-zone">
-        <i class="fa fa-upload fa-3x"></i>
-        Drop new photo here
-        <InputFile disabled="@uploading" OnChange="HandleImageUploadAsync" accept="image/*" />
-    </div>
-</div>
+    <MudText Class="mt-10" Typo="Typo.h4">Add Photos</MudText>
 
-@code {
-    [Parameter]
-    public EventCallback<string> OnImageChanged { get; set; }
+    <MudPaper @ondragenter="@SetDragClass" @ondragleave="@ClearDragClass" @ondragend="@ClearDragClass" Height="200px" Outlined="true" Class="@_dragClass">
+        <InputFile 
+            disabled="@_uploading" 
+            OnChange="HandleImageUploadAsync" 
+            accept="image/*" 
+            class="absolute mud-width-full mud-height-full overflow-hidden z-2" 
+            style="opacity:0;" />
+        <MudIcon Icon="@Icons.Filled.FileUpload" Size="Size.Large" />
+        <MudText Typo="Typo.h6" Inline="true">Drop new photo here</MudText>
+    </MudPaper>
 
-    private long maxFileSize = 1024 * 1024 * 10;
-    private bool uploading = false;
-    private bool showError = false;
-    private string errorText;
-
-    private async Task HandleImageUploadAsync(InputFileChangeEventArgs e)
-    {
-        try
-        {
-            uploading = true;
-            IBrowserFile imageFile = e.File;
-
-            if (imageFile == null)
-            {
-                throw new Exception("Image file not found");
-            }
-            else if (imageFile.Size > maxFileSize)
-            {
-                throw new Exception($"Image file exceeds maximum size [{maxFileSize} bytes]");
-            }
-
-            StreamContent fileContent = new(imageFile.OpenReadStream(maxFileSize));
-
-            using MultipartFormDataContent content = new();
-            content.Add(
-                content: fileContent,
-                name: "\"files\"",
-                fileName: imageFile.Name);
-
-            ServiceResponseModel<PhotoModel> result = await MemberService.AddPhotoAsync(AppUserService.AppUser.Username, content);
-
-            if (result.Success)
-            {
-                ToastService.ShowSuccess("Photo added successfully");
-                showError = false;
-                await OnImageChanged.InvokeAsync();
-            }
-            else
-            {
-                showError = true;
-                errorText = $"{result.Message}";
-                ToastService.ShowError($"{result.Message}");
-            }
-        }
-        catch (Exception ex)
-        {
-            showError = true;
-            errorText = $"{ex.Message}";
-            ToastService.ShowError($"{ex.Message}");
-        }
-        finally
-        {
-            uploading = false;
-        }
-    }
-
-    private async Task HandleImageChangedAsync()
-    {
-        await OnImageChanged.InvokeAsync();
-    }
-}
+</section>

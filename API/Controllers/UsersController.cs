@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     [ServiceFilter(typeof(LogUserActivity))]
     public class UsersController : ControllerBase
     {

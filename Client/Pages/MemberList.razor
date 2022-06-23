@@ -1,176 +1,128 @@
 ﻿@page "/members"
 @attribute [Authorize]
-@inject IAppUserService AppUserService
-@inject IMemberService MemberService
-@inject IToastService ToastService
 
-<div class="container">
+<section>
+    <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-5">Your matches - @_metaData?.TotalCount found</MudText>
 
-    <div class="text-center">
-        <h2>Your matches - @metaData?.TotalCount found</h2>
-    </div>
+    <EditForm Model="@MemberService.MembersFilter" OnValidSubmit="HandleFilterSubmitAsync">
+        <DataAnnotationsValidator />
 
-    <EditForm class="my-3" Model="@MemberService.MembersFilter" OnValidSubmit="HandleFilterSubmitAsync">
-        <DataAnnotationsValidator />                    
+        <MudCard Elevation="20">
+            <MudCardHeader>
+                <MudGrid Class="d-flex align-end justify-center flex-wrap">
 
-        <div id="filterForm" class="form-row">
-                
-            <div class="form-group">
-                <label class="bold">Age from: </label>
-                <InputNumber id="ageInput" class="form-control ml-1" @bind-Value="@MemberService.MembersFilter.MinAge" />
-            </div>
+                    <MudItem xs="6" sm="4" md="2" lg="1">
+                        <MudNumericField T="int"
+                                         Min="18"
+                                         Max="85"
+                                         MaxLength="2"
+                                         Label="Age from"
+                                         @bind-Value="@MemberService.MembersFilter.MinAge"
+                                         For="@(() => MemberService.MembersFilter.MinAge)" />
+                    </MudItem>
 
-            <div class="form-group px-2">
-                <label>Age to: </label>
-                <InputNumber id="ageInput" class="form-control ml-1" @bind-Value="@MemberService.MembersFilter.MaxAge" />
-            </div>
+                    <MudItem xs="6" sm="4" md="2" lg="1">
+                        <MudNumericField T="int"
+                                         Min="18"
+                                         Max="85"
+                                         MaxLength="2"
+                                         Label="Age to"
+                                         @bind-Value="@MemberService.MembersFilter.MaxAge"
+                                         For="@(() => MemberService.MembersFilter.MaxAge)" />
+                    </MudItem>
 
-            <div class="form-group px-2">
-                <label>Biology: </label>
-                <InputSelect id="genderInput" class="form-control ml-1" @bind-Value="@MemberService.MembersFilter.Gender">
-                    <option value="female">Female</option>
-                    <option value="male">Male</option>
-                </InputSelect>
-            </div>
+                    <MudItem xs="12" sm="4" md="2" lg="2">
+                        <MudSelect T="string"
+                                   Label="Biology"
+                                   Variant="Variant.Filled"
+                                   @bind-Value="@MemberService.MembersFilter.Gender"
+                                   For="@(() => MemberService.MembersFilter.Gender)">
+                            <MudSelectItem Value=@("female")>Female</MudSelectItem>
+                            <MudSelectItem Value=@("male")>Male</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
 
-            <div id="buttonOuterGroup">
-                <div class="col form-group mx-2">
-                    <div class="row">
-                        <label>Filters: </label>
-                    </div>
-                    <div class="row">
-                        <div id="filterGroup">
-                            <button class="btn btn-primary ml-1" type="submit">Apply Filters</button>
-                            <button class="btn btn-info ml-1" type="button" @onclick="HandleFilterResetAsync">Reset Filters</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col form-group mx-2">
-                    <div class="row">
-                        <label>Sorting: </label>
-                    </div>
-                    <div class="row">
-                        <div id="sortGroup" class="btn-group">
-                            <button class="btn btn-dark" type="button" @onclick="@(x => HandleSortSubmitAsync("LastActive"))">Last Active</button>
-                            <button class="btn btn-dark" type="button" @onclick="@(x => HandleSortSubmitAsync("Created"))">Newest Members</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-                    
-        </div>
+                    <MudItem xs="12" sm="12" md="6" lg="4">
+                        <MudGrid>
+                            <MudItem Class="d-flex flex-grow-1" xs="12" sm="6">
+                                <MudButton Class="flex-grow-1"
+                                           Color="Color.Primary"
+                                           Variant="Variant.Filled"
+                                           ButtonType="ButtonType.Submit"
+                                           Style="white-space: nowrap">
+                                    Apply Filters
+                                </MudButton>
+                            </MudItem>
+                            <MudItem Class="d-flex flex-grow-1" xs="12" sm="6">
+                                <MudButton Class="flex-grow-1"
+                                           Color="Color.Info"
+                                           Variant="Variant.Filled"
+                                           OnClick="HandleFilterResetAsync"
+                                           Style="white-space: nowrap">
+                                    Reset Filters
+                                </MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="12" md="6" lg="4">
+                        <MudGrid>
+                            <MudItem Class="d-flex flex-grow-1" xs="12" sm="6">
+                                <MudButton Class="flex-grow-1"
+                                           Color="Color.Dark"
+                                           Variant="Variant.Filled"
+                                           OnClick="@(x => HandleSortSubmitAsync("LastActive"))"
+                                           Style="white-space: nowrap">
+                                    Last Active
+                                </MudButton>
+                            </MudItem>
+                            <MudItem Class="d-flex flex-grow-1" xs="12" sm="6">
+                                <MudButton Class="flex-grow-1"
+                                           Color="Color.Dark"
+                                           Variant="Variant.Filled"
+                                           OnClick="@(x => HandleSortSubmitAsync("Created"))"
+                                           Style="white-space: nowrap">
+                                    Newest Members
+                                </MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+                </MudGrid>
+            </MudCardHeader>
+
+            <MudCardContent>
+                @if (_showError)
+                {
+                    <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+                }
+                else if (_members?.Count > 0)
+                {
+                    <MudGrid Class="d-flex">
+                        @foreach (MemberModel m in _members)
+                        {
+                            <MudItem xs="12" sm="6" md="4" xl="2">
+                                <MemberCard Member="m" />
+                            </MudItem>
+                        }
+                    </MudGrid>
+                }
+            </MudCardContent>
+
+            <MudCardActions Class="d-flex justify-center">
+                @if (_members?.Count > 0)
+                {
+                    <MudPagination Class="mb-2"
+                               Rectangular="true"
+                               Color="Color.Primary"
+                               Count="@_metaData.TotalPages"
+                               Selected="@_metaData.CurrentPage"
+                               SelectedChanged="HandlePageChangedAsync" />
+                }
+            </MudCardActions>
+
+        </MudCard>
+
         <ValidationSummary />
     </EditForm>
-
-    @if (showError)
-    {
-        <div class="alert alert-danger text-center" role="alert">
-            @errorText
-        </div>
-    }
-    else if (members?.Count > 0)
-    {
-        <div class="row">
-            @foreach (MemberModel m in members)
-            {
-                <div class="col-12 col-sm-6 col-md-4 col-xl-2">
-                    <MemberCard Member="m" />
-                </div>
-            }
-        </div>
-        
-        <div class="d-flex justify-content-center">
-                <Pagination MetaData=@metaData Spread="10" PageChanged="HandlePageChangedAsync" />
-        </div>
-    }
-
-</div>
-
-@code {
-    private List<MemberModel> members = new();
-    private PaginationModel metaData;
-    private bool showError = false;
-    private string errorText;
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (string.IsNullOrWhiteSpace(MemberService.MembersFilter.Gender))
-        {
-            if (AppUserService.AppUser.Gender.ToLower().Equals("female"))
-            {
-                MemberService.MembersFilter.Gender = "male";
-            }
-            else
-            {
-                MemberService.MembersFilter.Gender = "female";
-            }
-        }
-
-        await LoadMembersAsync();
-    }
-
-    private async Task LoadMembersAsync()
-    {
-        PaginationResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync(MemberService.MembersFilter);
-
-        if (result.Success)
-        {
-            showError = false;
-            members = result.Data.ToList();
-            metaData = result.MetaData;
-        }
-        else
-        {
-            showError = true;
-            errorText = $"Request failed: {result.Message}";
-            ToastService.ShowError($"Request failed: {result.Message}");
-        }
-    }
-
-    private async Task HandleFilterSubmitAsync()
-    {
-        if (MemberService.MembersFilter.MinAge > MemberService.MembersFilter.MaxAge)
-        {
-            showError = true;
-            errorText = "Please validate age filters";
-        }
-        else
-        {
-            showError = false;
-            await LoadMembersAsync();    
-        }
-    }
-
-    private async Task HandleFilterResetAsync()
-    {
-        MemberService.MembersFilter.PageNumber = 1;
-        MemberService.MembersFilter.PageSize = 10;
-        MemberService.MembersFilter.MinAge = 18;
-        MemberService.MembersFilter.MaxAge = 99;
-        MemberService.MembersFilter.OrderBy = "LastActive";
-
-        if (AppUserService.AppUser.Gender.ToLower().Equals("female"))
-        {
-            MemberService.MembersFilter.Gender = "male";
-        }
-        else
-        {
-            MemberService.MembersFilter.Gender = "female";
-        }
-
-        await LoadMembersAsync();
-    }
-
-    private async Task HandleSortSubmitAsync(string sortValue)
-    {
-        MemberService.MembersFilter.OrderBy = sortValue.ToLower();
-        await HandleFilterSubmitAsync();
-    }
-
-    private async Task HandlePageChangedAsync(int page)
-    {
-        MemberService.MembersFilter.PageNumber = page;
-        members = null;
-        await LoadMembersAsync();
-    }
-}
+</section>

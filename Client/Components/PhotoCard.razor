@@ -1,68 +1,29 @@
 ﻿@inject IMemberService MemberService
 @inject IAppUserService AppUserService
-@inject IToastService ToastService
+@inject ISnackbar Snackbar
 
-<div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-    <img class="img-thumbnail rounded p-1" src="@photoFilename">
-    <div class="text-center">
-        @if (Photo.IsMain == false)
-        {
-            <button class="btn btn-dark mx-1" @onclick="HandleSetMainPhotoAsync">Set Main</button>
-        }
-        else
-        {
-            <button class="btn btn-dark mx-1" disabled>Set Main</button>
-        }
-        <button class="btn btn-danger" @onclick="HandleDeletePhotoAsync"><i class="fa fa-trash" /></button>
-    </div>
-</div>
+<MudItem xs="12" sm="6" lg="4" xl="3">
+    <MudGrid Justify="Justify.Center">
 
-@code {
-    [Parameter]
-    public PhotoModel Photo { get; set; }
+        <MudItem xs="12">
+            <MudImage Class="img-thumbnail rounded-lg" Src="@_photoFilename" />
+        </MudItem>
 
-    [Parameter]
-    public EventCallback<string> OnImageChanged { get; set; }
+        <MudButton Class="mx-2"
+                   Variant="Variant.Filled"
+                   @onclick="HandleSetMainPhotoAsync"
+                   Disabled="Photo.IsMain"
+                   Color="Color.Primary"
+                   Style="background-color: var(--mud-palette-dark-darken);">
+            Set Main
+        </MudButton>
 
-    private string photoFilename { get; set; } = "./assets/user.png";
+        <MudIconButton 
+            Icon="@Icons.Filled.Delete" 
+            Variant="Variant.Filled" 
+            Color="Color.Error" 
+            @onclick="HandleDeletePhotoAsync">
+        </MudIconButton>
 
-    protected override async Task OnParametersSetAsync()
-    {
-        photoFilename = await MemberService.GetPhotoAsync(AppUserService.AppUser.Username, Photo.Filename);
-    }
-
-    private async Task HandleSetMainPhotoAsync()
-    {
-        if (Photo.IsMain)
-        {
-            return;
-        }
-
-        ServiceResponseModel<string> result = await MemberService.SetMainPhotoAsync(AppUserService.AppUser.Username, Photo.Id);
-
-        if (result.Success)
-        {
-            ToastService.ShowSuccess("Main photo updated successfully");
-            await OnImageChanged.InvokeAsync();
-        }
-        else
-        {
-            ToastService.ShowError($"{result.Message}");
-        }
-    }
-
-    private async Task HandleDeletePhotoAsync()
-    {
-        ServiceResponseModel<string> result = await MemberService.DeletePhotoAsync(AppUserService.AppUser.Username, Photo);
-
-        if (result.Success)
-        {
-            ToastService.ShowSuccess("Photo deleted successfully");
-            await OnImageChanged.InvokeAsync();
-        }
-        else
-        {
-            ToastService.ShowError($"{result.Message}");
-        }
-    }
-}
+    </MudGrid>
+</MudItem>

@@ -1,30 +1,11 @@
-﻿div .row {
-    min-width: 375px;
+﻿::deep .img-thumbnail {
+    height: auto;
+    width: 100%;
+    border-radius: 1em;
+    box-shadow: 0 0 0 0 rgb(0 0 0 / 5%), 0 2px 3px 0 rgb(0 0 0 / 50%);
+    padding: 0.25rem;
 }
 
-.img-thumbnail {
-    margin: 25px;
-    width: 85%;
-    height: 85%;
-}
-
-.card {
-    border-radius: 6px;
-    box-shadow: 0 0 0 0 rgb(0 0 0 / 5%), 0 2px 3px 0 rgb(0 0 0 / 10%);
-    margin-bottom: 30px;
-}
-
-.card img {
-    border-radius: 6px;
-    box-shadow: 0 0 0 0 rgb(0 0 0 / 5%), 0 2px 3px 0 rgb(0 0 0 / 10%);
-}
-
-.card-body {
-    padding: 0 25px;
-}
-
-.card-footer {
-    padding 10px 15px;
-    background-color: #fff;
-    border-top: none;
+::deep .mud-tab {
+    min-width: 140px;
 }

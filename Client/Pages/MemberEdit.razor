@@ -1,153 +1,136 @@
 ﻿@page "/member/edit"
 @attribute [Authorize]
-@inject IMemberService MemberService
-@inject IAppUserService AppUserService
-@inject IToastService ToastService
-@inject IMapper Mapper
 
-@if (showError)
-{
-    <div class="alert alert-danger" role="alert">
-        @errorText
-    </div>
-}
+<section>
+    @if (_showError)
+    {
+        <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+    }
 
-<div class="row">
-    <div class="col-12 col-md-4 text-center">
-        <h1>Your profile</h1>
-    </div>
-    <div class="col-12 col-md-8 text-center">
-        @if (changesMade)
-        {
-            <div class="alert alert-info" role="alert">
-                <strong>Changes made: </strong>Remember to save your changes!
-            </div>
-        }
-    </div>
-    <div class="col-12 col-md-4">
-        <div class="card">
-            <img class="card-img-top img-thumbnail mx-auto" src="@AppUserService.MainPhoto" alt="@AppUserService.AppUser.KnownAs" />
-            <div class="card-body">
-                <strong>Location:</strong>
-                <p>@AppUserService.AppUser.City, @AppUserService.AppUser.State</p>
-            </div>
-            <div class="card-body">
-                <strong>Age:</strong>
-                <p>@AppUserService.AppUser.Age</p>
-            </div>
-            <div class="card-body">
-                <strong>Last active:</strong>
-                <p>@DateTime.Now.Subtract(@AppUserService.AppUser.LastActive).Humanize()</p>
-            </div>
-            <div class="card-body">
-                <strong>Member since:</strong>
-                <p>@AppUserService.AppUser.Created.ToLongDateString()</p>
-            </div>
-            @if (changesMade)
+    <MudGrid>
+        <MudItem xs="12" md="4" lg="3">
+            <MudText Typo="Typo.h3">Your Profile</MudText>
+        </MudItem>
+
+        <MudItem xs="12" md="8" lg="9">
+            @if (_changesMade)
             {
-                <div class="card-footer">
-                    <button class="btn btn-success btn-block" type="submit" form="editForm">Save Changes</button>
-                </div>
+                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+                    Remember to save your changes!
+                </MudAlert>
             }
-        </div>
-    </div>
-    <div class="col-12 col-md-8">
-        <TabControl>
-            <TabPage Text=@($"About {@AppUserService.AppUser.KnownAs}")>
-                <EditForm id="editForm" Model="@memberUpdate" @oninput="(e) => OnProfileUpdated(e)" OnValidSubmit="HandleValidSubmitAsync">
-                    <DataAnnotationsValidator />
+        </MudItem>
+    </MudGrid>
 
-                    <h4>Description</h4>
-                    <InputTextArea class="form-control" rows="6" @bind-Value="memberUpdate.Introduction" />
-                    <ValidationMessage For="(() => AppUserService.AppUser.Introduction)" />
+    <MudGrid Justify="Justify.Center">
 
-                    <h4 class="mt-2">Looking for</h4>
-                    <InputTextArea class="form-control" rows="6" @bind-Value="memberUpdate.LookingFor" />
-                    <ValidationMessage For="(() => AppUserService.AppUser.LookingFor)" />
+        <MudItem xs="12" md="4" lg="3">
+            <MudCard Elevation="6" Style="border: 1px solid rgba(0,0,0,.125);">
+                <MudCardHeader>
+                    <MudImage Class="img-thumbnail mx-auto"
+                              Src="@AppUserService.MainPhoto"
+                              Alt="@AppUserService.AppUser.KnownAs"
+                              Style="border: 4px solid var(--mud-palette-surface);" />
+                </MudCardHeader>
+                <MudCardContent Class="mx-auto" Style="width: 90%; height: 90%; max-width: 100%;">
+                    <MudText Style="font-weight: bolder;">Location:</MudText>
+                    <MudText Class="mb-3">@AppUserService.AppUser.City, @AppUserService.AppUser.State</MudText>
+                    <MudText Style="font-weight: bolder;">Age:</MudText>
+                    <MudText Class="mb-3">@AppUserService.AppUser.Age</MudText>
+                    <MudText Style="font-weight: bolder;">Last active:</MudText>
+                    <MudText Class="mb-3">@DateTime.Now.Subtract(@AppUserService.AppUser.LastActive).Humanize()</MudText>
+                    <MudText Style="font-weight: bolder;">Member since:</MudText>
+                    <MudText>@AppUserService.AppUser.Created.ToLongDateString()</MudText>
+                </MudCardContent>
+                @if (_changesMade)
+                {
+                    <MudCardActions>
+                        <MudGrid Class="d-flex justify-center">
 
-                    <h4 class="mt-2">Interests</h4>
-                    <InputTextArea class="form-control" rows="6" @bind-Value="memberUpdate.Interests" />
-                    <ValidationMessage For="(() => AppUserService.AppUser.Interests)" />
+                            <MudItem xs="8" Class="px-1 pl-3">
+                                <MudButton Variant="Variant.Filled"
+                                       Color="Color.Success"
+                                       ButtonType="ButtonType.Submit"
+                                       form="editForm"
+                                       Style="width: 100%;">
+                                    Save Changes
+                                </MudButton>
+                            </MudItem>
 
-                    <h4 class="mt-2">Location Details:</h4>
-                    <div class="form-inline">
+                        </MudGrid>
+                    </MudCardActions>
+                }
+            </MudCard>
+        </MudItem>
 
-                        <div class="col-6">
-                            <label>City:</label>
-                            <InputText class="form-control userinput" @bind-Value="memberUpdate.City" />
-                        </div>
+        <MudItem xs="12" md="8" lg="9">
+            <MudTabs Elevation="6" Centered="true" Rounded="true" Color="Color.Primary">
 
-                        <div class="col-6">
-                            <label>State:</label>
-                            <InputText class="form-control userinput" @bind-Value="memberUpdate.State" />
-                        </div>
+                <MudTabPanel Text="@($"About {@AppUserService.AppUser.KnownAs}")">
+                    <MudContainer Class="mt-5 px-0">
+                        <EditForm id="editForm" Model="@_memberUpdate" @oninput="(e) => OnProfileUpdated(e)" OnValidSubmit="HandleValidSubmitAsync">
+                            <DataAnnotationsValidator />
 
-                        <ValidationMessage For="(() => memberUpdate.City)" />
-                        <ValidationMessage For="(() => memberUpdate.State)" />
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudTextField Class="mb-10"
+                                                  T="string"
+                                                  Label="Description"
+                                                  Variant="Variant.Outlined"
+                                                  @bind-Value="@_memberUpdate.Introduction"
+                                                  Lines="6" />
+                                    <ValidationMessage For="(() => AppUserService.AppUser.Introduction)" />
 
-                    </div>
+                                    <MudTextField Class="mb-10"
+                                                  T="string"
+                                                  Label="Looking for"
+                                                  Variant="Variant.Outlined"
+                                                  @bind-Value="@_memberUpdate.LookingFor"
+                                                  Lines="6" />
+                                    <ValidationMessage For="(() => AppUserService.AppUser.LookingFor)" />
 
-                </EditForm>
-            </TabPage>
-            <TabPage Text="Edit Photos">
-                <PhotoEditor OnImageChanged="ImageChangedCallbackAsync" />
-            </TabPage>
-        </TabControl>
-    </div>
-</div>
+                                    <MudTextField Class="mb-10"
+                                                  T="string"
+                                                  Label="Interests"
+                                                  Variant="Variant.Outlined"
+                                                  @bind-Value="@_memberUpdate.Interests"
+                                                  Lines="6" />
+                                    <ValidationMessage For="(() => AppUserService.AppUser.Interests)" />
 
-@code {
-    private bool showError = false;
-    private string errorText;
-    private bool changesMade = false;
-    private MemberUpdateModel memberUpdate = new();
+                                    <MudGrid>
+                                        <MudItem xs="6">
+                                            <MudTextField Class="mb-10"
+                                                          T="string"
+                                                          Label="City"
+                                                          Variant="Variant.Outlined"
+                                                          @bind-Value="@_memberUpdate.City" />
+                                        </MudItem>
+                                        <MudItem xs="6">
+                                            <MudTextField Class="mb-10"
+                                                          T="string"
+                                                          Label="State"
+                                                          Variant="Variant.Outlined"
+                                                          @bind-Value="@_memberUpdate.State" />
+                                        </MudItem>
+                                    </MudGrid>
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadMemberAsync();
-    }
+                                    <ValidationMessage For="(() => _memberUpdate.City)" />
+                                    <ValidationMessage For="(() => _memberUpdate.State)" />
+                                </MudItem>
+                            </MudGrid>
 
-    private async Task LoadMemberAsync()
-    {
-        bool result = await AppUserService.ReloadAppUserAsync();
+                        </EditForm>
+                    </MudContainer>
+                </MudTabPanel>
 
-        if (result)
-        {
-            Mapper.Map(AppUserService.AppUser, memberUpdate);
-        }
-        else
-        {
-            errorText = "Failed to load your profile";
-            showError = true;
-        }
-    }
+                <MudTabPanel Text="Photos">
+                    <MudContainer Class="mt-5 px-0">
+                        <PhotoEditor OnImageChanged="ImageChangedCallbackAsync" />
+                    </MudContainer>
+                </MudTabPanel>
 
-    private void OnProfileUpdated(ChangeEventArgs e)
-    {
-        changesMade = true;
-    }
+            </MudTabs>
+        </MudItem>
 
-    private async Task HandleValidSubmitAsync()
-    {
-        ServiceResponseModel<string> result = await MemberService.UpdateMemberAsync(memberUpdate);
-
-        if (result.Success)
-        {
-            ToastService.ShowSuccess("Profile updated successfully");
-            changesMade = false;
-            showError = false;
-            await LoadMemberAsync();
-        }
-        else
-        {
-            showError = true;
-            errorText = $"Profile update failed: {result.Message}";
-            ToastService.ShowError(errorText);
-        }
-    }
-
-    private async Task ImageChangedCallbackAsync()
-    {
-        await LoadMemberAsync();
-    }
-}
+    </MudGrid>
+</section>
