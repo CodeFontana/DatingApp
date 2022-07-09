@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Helpers;
-using API.Helpers;
+using API.Filters;
 
 namespace API.Extensions
 {
@@ -21,7 +21,7 @@ namespace API.Extensions
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ILikesRepository, LikesRepository>();
-            services.AddScoped<LogUserActivity>();
+            services.AddScoped<UserActivity>();
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             services.AddDbContext<DataContext>(options =>
             {

@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace API.Errors
+﻿namespace API.Models
 {
-    public class ApiException
+    public class ApiExceptionModel
     {
         public int StatusCode { get; set; }
         public string Message { get; set; }
         public string Details { get; set; }
 
-        public ApiException(int statusCode, string message = null, string details = null)
+        public ApiExceptionModel(int statusCode, string message = null, string details = null)
         {
             StatusCode = statusCode;
             Message = message;

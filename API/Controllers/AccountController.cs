@@ -3,14 +3,14 @@ using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using API.Interfaces;
-using API.Helpers;
+using API.Filters;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    [ServiceFilter(typeof(LogUserActivity))]
+    [ServiceFilter(typeof(UserActivity))]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;

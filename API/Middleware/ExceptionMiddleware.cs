@@ -1,4 +1,4 @@
-﻿using API.Errors;
+﻿using API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -39,9 +39,9 @@ namespace API.Middleware
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                ApiException response = _env.IsDevelopment()
-                    ? new ApiException(context.Response.StatusCode, e.Message, e.StackTrace?.ToString())
-                    : new ApiException(context.Response.StatusCode, "Internal Server Error");
+                ApiExceptionModel response = _env.IsDevelopment()
+                    ? new ApiExceptionModel(context.Response.StatusCode, e.Message, e.StackTrace?.ToString())
+                    : new ApiExceptionModel(context.Response.StatusCode, "Internal Server Error");
 
                 JsonSerializerOptions options = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
                 string json = JsonSerializer.Serialize(response, options);

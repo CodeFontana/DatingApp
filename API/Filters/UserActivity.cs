@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace API.Helpers
+namespace API.Filters
 {
-    public class LogUserActivity : IAsyncActionFilter
+    public class UserActivity : IAsyncActionFilter
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
