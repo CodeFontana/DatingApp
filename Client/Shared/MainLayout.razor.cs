@@ -204,8 +204,8 @@ public partial class MainLayout
             DividerLight = "#000000CC",
 
             HoverOpacity = 0.06,
-            GrayDefault = "#95A5A6",
 
+            GrayDefault = "#95A5A6",
             GrayLight = "#B4BCC2",
             GrayLighter = "#ECF0F1",
             GrayDark = "#7B8A8B",
