@@ -23,7 +23,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUserLikesAsync([FromQuery] string predicate)
+        public async Task<ActionResult<ServiceResponseModel<IEnumerable<LikeUserModel>>>> GetUserLikesAsync([FromQuery] string predicate)
         {
             int sourceUserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
@@ -40,7 +40,7 @@ namespace API.Controllers
         }
 
         [HttpPost("{username}")]
-        public async Task<IActionResult> ToggleLikeAsync(string username)
+        public async Task<ActionResult<ServiceResponseModel<string>>> ToggleLikeAsync(string username)
         {
             int sourceUserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 

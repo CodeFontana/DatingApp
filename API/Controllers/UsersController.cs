@@ -27,7 +27,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{username}")]
-        public async Task<IActionResult> GetUserAsync(string username)
+        public async Task<ActionResult<ServiceResponseModel<MemberModel>>> GetUserAsync(string username)
         {
             ServiceResponseModel<MemberModel> response = await _usersService.GetUserAsync(username, User.Identity.Name);
 
@@ -42,7 +42,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsersAsync([FromQuery] UserParameters userParameters)
+        public async Task<ActionResult<PaginationResponseModel<PaginationList<MemberModel>>>> GetUsersAsync([FromQuery] UserParameters userParameters)
         {
             PaginationResponseModel<PaginationList<MemberModel>> response = await _usersService.GetUsersAsync(User.Identity.Name, userParameters);
 
@@ -58,7 +58,7 @@ namespace API.Controllers
         }
 
         [HttpGet("photo/{username}/{filename}")]
-        public async Task<IActionResult> GetUserPhotoAsync(string username, string filename)
+        public async Task<ActionResult<ServiceResponseModel<byte[]>>> GetUserPhotoAsync(string username, string filename)
         {
             ServiceResponseModel<byte[]> response = await _photoService.GetPhotoAsync(username, filename);
 
@@ -73,7 +73,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateUserAsync(MemberUpdateModel memberUpdate)
+        public async Task<ActionResult<ServiceResponseModel<string>>> UpdateUserAsync(MemberUpdateModel memberUpdate)
         {
             ServiceResponseModel<string> response = await _usersService.UpdateUserAsync(User.Identity.Name, memberUpdate);
 
@@ -88,7 +88,7 @@ namespace API.Controllers
         }
 
         [HttpPost("photo/add")]
-        public async Task<IActionResult> AddPhotoAsync([FromForm] IEnumerable<IFormFile> files)
+        public async Task<ActionResult<ServiceResponseModel<PhotoModel>>> AddPhotoAsync([FromForm] IEnumerable<IFormFile> files)
         {
             ServiceResponseModel<PhotoModel> response = await _photoService.AddPhotoAsync(User.Identity.Name, files);
 
@@ -103,7 +103,7 @@ namespace API.Controllers
         }
 
         [HttpPut("photo/set-main")]
-        public async Task<IActionResult> SetMainPhotoAsync([FromBody] int photoId)
+        public async Task<ActionResult> SetMainPhotoAsync([FromBody] int photoId)
         {
             ServiceResponseModel<string> response = await _photoService.SetMainPhotoAsync(User.Identity.Name, photoId);
 
@@ -118,7 +118,7 @@ namespace API.Controllers
         }
 
         [HttpPut("photo/delete")]
-        public async Task<IActionResult> DeletePhotoAsync([FromBody] PhotoModel photo)
+        public async Task<ActionResult> DeletePhotoAsync([FromBody] PhotoModel photo)
         {
             ServiceResponseModel<string> response = await _photoService.DeletePhotoAsync(User.Identity.Name, photo);
 

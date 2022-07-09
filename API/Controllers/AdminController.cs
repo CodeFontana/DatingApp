@@ -21,7 +21,7 @@ namespace API.Controllers
 
         [HttpGet("users-with-roles")]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<IActionResult> GetUsersWithRolesAsync()
+        public async Task<ActionResult<ServiceResponseModel<List<UserWithRolesModel>>>> GetUsersWithRolesAsync()
         {
             ServiceResponseModel<List<UserWithRolesModel>> response = await _adminService.GetUsersWithRolesAsync(User.Identity.Name);
 
@@ -37,7 +37,7 @@ namespace API.Controllers
 
         [HttpPost("edit-roles/{username}")]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<IActionResult> EditRolesAsync(string username, [FromQuery] string roles)
+        public async Task<ActionResult<ServiceResponseModel<IList<string>>>> EditRolesAsync(string username, [FromQuery] string roles)
         {
             ServiceResponseModel<IList<string>> response = await _adminService.EditRolesAsync(username, roles);
 
@@ -53,7 +53,7 @@ namespace API.Controllers
 
         [HttpGet("photos-to-moderate")]
         [Authorize(Policy = "ModeratePhotoRole")]
-        public IActionResult GetPhotosForModeration()
+        public ActionResult<ServiceResponseModel<string>> GetPhotosForModeration()
         {
             ServiceResponseModel<string> response = _adminService.GetPhotosForModeration();
 

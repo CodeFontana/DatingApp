@@ -22,7 +22,7 @@ namespace API.Controllers
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<IActionResult> RegisterAsync(RegisterUserModel registerUser)
+        public async Task<ActionResult<ServiceResponseModel<AuthUserModel>>> RegisterAsync(RegisterUserModel registerUser)
         {
             ServiceResponseModel<AuthUserModel> response = await _accountService.RegisterAsync(registerUser);
 
@@ -38,7 +38,7 @@ namespace API.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> LoginAsync(LoginUserModel loginUser)
+        public async Task<ActionResult<ServiceResponseModel<AuthUserModel>>> LoginAsync(LoginUserModel loginUser)
         {
             ServiceResponseModel<AuthUserModel> response = await _accountService.LoginAsync(loginUser);
 
