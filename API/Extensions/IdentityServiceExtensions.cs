@@ -3,6 +3,7 @@ using System.Text;
 using DataAccessLibrary.Data;
 using DataAccessLibrary.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,24 +28,38 @@ namespace API.Extensions
 
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => 
+                .AddJwtBearer(options =>
                 {
-                    options.TokenValidationParameters = new TokenValidationParameters
+                    options.TokenValidationParameters = new()
                     {
+                        ValidateIssuer = true,
+                        ValidIssuer = config.GetValue<string>("Authentication:JwtIssuer"),
+                        ValidateAudience = true,
+                        ValidAudience = config.GetValue<string>("Authentication:JwtAudience"),
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"])),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.ASCII.GetBytes(
+                                config.GetValue<string>("Authentication:JwtSecurityKey"))),
                         ClockSkew = TimeSpan.FromMinutes(10)
                     };
                 });
 
             services
-                .AddAuthorization(opt =>
+                .AddAuthorization(config =>
                 {
-                    opt.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
-                    opt.AddPolicy("ModeratePhotoRole", policy => policy.RequireRole("Moderator"));
+                    config.AddPolicy("RequireAdminRole", policy =>
+                    {
+                        policy.RequireRole("Admin");
+                    });
+
+                    config.AddPolicy("ModeratePhotoRole", policy =>
+                    {
+                        policy.RequireRole("Moderator");
+                    });
+
+                    config.FallbackPolicy = new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .Build();
                 });
 
             return services;
