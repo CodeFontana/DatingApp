@@ -75,6 +75,11 @@ namespace API.Controllers
         [HttpPut]
         public async Task<ActionResult<ServiceResponseModel<string>>> UpdateUserAsync(MemberUpdateModel memberUpdate)
         {
+            if (ModelState.IsValid == false)
+            {
+                return BadRequest(ModelState);
+            }
+
             ServiceResponseModel<string> response = await _usersService.UpdateUserAsync(User.Identity.Name, memberUpdate);
 
             if (response.Success)
