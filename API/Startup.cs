@@ -22,8 +22,9 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddApplicationServices(_config);
-        services.AddControllers();
         services.AddIdentityServices(_config);
+        services.AddResponseCaching();
+        services.AddControllers();
         services.AddCors(policy =>
         {
             policy.AddPolicy("OpenCorsPolicy", options =>
@@ -75,12 +76,10 @@ public class Startup
 
         app.UseHttpsRedirection();
         app.UseCors("OpenCorsPolicy");
-
         app.UseRouting();
-
         app.UseAuthentication();
         app.UseAuthorization();
-
+        app.UseResponseCaching();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();

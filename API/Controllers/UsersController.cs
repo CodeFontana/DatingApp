@@ -42,6 +42,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Any, NoStore = false)]
         public async Task<ActionResult<PaginationResponseModel<PaginationList<MemberModel>>>> GetUsersAsync([FromQuery] UserParameters userParameters)
         {
             PaginationResponseModel<PaginationList<MemberModel>> response = await _usersService.GetUsersAsync(User.Identity.Name, userParameters);

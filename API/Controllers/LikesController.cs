@@ -23,6 +23,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Any, NoStore = false)]
         public async Task<ActionResult<ServiceResponseModel<IEnumerable<LikeUserModel>>>> GetUserLikesAsync([FromQuery] string predicate)
         {
             int sourceUserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
