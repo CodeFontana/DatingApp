@@ -15,7 +15,7 @@ public class DataContext : IdentityDbContext<
     IdentityRoleClaim<int>, 
     IdentityUserToken<int>>
 {
-    public DataContext(DbContextOptions options) : base(options)
+    public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
 
     }

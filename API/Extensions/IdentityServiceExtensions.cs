@@ -57,9 +57,9 @@ namespace API.Extensions
                         policy.RequireRole("Moderator");
                     });
 
-                    config.FallbackPolicy = new AuthorizationPolicyBuilder()
-                        .RequireAuthenticatedUser()
-                        .Build();
+                    //config.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    //    .RequireAuthenticatedUser()
+                    //    .Build();
                 });
 
             return services;
