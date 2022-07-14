@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace API.Controllers.v1
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [Authorize]
     [ServiceFilter(typeof(UserActivity))]
     public class LikesController : ControllerBase

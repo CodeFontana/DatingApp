@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 using API.Extensions;
 using API.Middleware;
 using Microsoft.AspNetCore.Builder;
@@ -24,7 +25,10 @@ public class Startup
         services.AddApplicationServices(_config);
         services.AddIdentityServices(_config);
         services.AddResponseCaching();
-        services.AddControllers();
+        services.AddControllers().AddJsonOptions(config =>
+        {
+            config.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
         services.AddCors(policy =>
         {
             policy.AddPolicy("OpenCorsPolicy", options =>
@@ -61,6 +65,19 @@ public class Startup
                     Array.Empty<string>()
                 }
             });
+        });
+
+        services.AddApiVersioning(options =>
+        {
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.DefaultApiVersion = new(1, 0);
+            options.ReportApiVersions = true;
+        });
+
+        services.AddVersionedApiExplorer(options =>
+        {
+            options.GroupNameFormat = "'v'VVV";
+            options.SubstituteApiVersionInUrl = true;
         });
     }
 

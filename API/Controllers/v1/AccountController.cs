@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Authorization;
 using API.Interfaces;
 using API.Filters;
 
-namespace API.Controllers
+namespace API.Controllers.v1
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [Authorize]
     [ServiceFilter(typeof(UserActivity))]
     public class AccountController : ControllerBase
