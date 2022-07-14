@@ -8,83 +8,82 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-namespace API
+namespace API;
+
+public class Startup
 {
-    public class Startup
+    private readonly IConfiguration _config;
+
+    public Startup(IConfiguration config)
     {
-        private readonly IConfiguration _config;
+        _config = config;
+    }
 
-        public Startup(IConfiguration config)
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddApplicationServices(_config);
+        services.AddControllers();
+        services.AddIdentityServices(_config);
+        services.AddCors(policy =>
         {
-            _config = config;
-        }
-
-        public void ConfigureServices(IServiceCollection services)
+            policy.AddPolicy("OpenCorsPolicy", options =>
+                options
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+        });
+        services.AddSwaggerGen(c =>
         {
-            services.AddApplicationServices(_config);
-            services.AddControllers();
-            services.AddIdentityServices(_config);
-            services.AddCors(policy =>
-            {
-                policy.AddPolicy("OpenCorsPolicy", options =>
-                    options
-                        .AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod());
+            c.SwaggerDoc("v1", new OpenApiInfo 
+            { 
+                Title = "DatingApp API", 
+                Version = "v1" 
             });
-            services.AddSwaggerGen(c =>
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                c.SwaggerDoc("v1", new OpenApiInfo 
-                { 
-                    Title = "DatingApp API", 
-                    Version = "v1" 
-                });
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                In = ParameterLocation.Header,
+                Description = "Specify JWT bearer token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey
+            });
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
                 {
-                    In = ParameterLocation.Header,
-                    Description = "Specify JWT bearer token",
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
-                });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
+                    new OpenApiSecurityScheme
                     {
-                        new OpenApiSecurityScheme
+                        Reference = new OpenApiReference
                         {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
             });
-        }
+        });
+    }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        app.UseMiddleware<ExceptionMiddleware>();
+
+        if (env.IsDevelopment())
         {
-            app.UseMiddleware<ExceptionMiddleware>();
-
-            if (env.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
-            }
-
-            app.UseHttpsRedirection();
-            app.UseCors("OpenCorsPolicy");
-
-            app.UseRouting();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
         }
+
+        app.UseHttpsRedirection();
+        app.UseCors("OpenCorsPolicy");
+
+        app.UseRouting();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
     }
 }
