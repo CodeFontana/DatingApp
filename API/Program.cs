@@ -116,8 +116,8 @@ public class Program
         app.MapHealthChecks("/health", new HealthCheckOptions
         {
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-        });
-
+        }).AllowAnonymous();
+        app.MapHealthChecksUI().AllowAnonymous();
         app.Run();
     }
 
