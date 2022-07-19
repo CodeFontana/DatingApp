@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -83,7 +84,8 @@ public class Program
         });
 
         builder.Services.AddHealthChecks()
-                        .AddDbContextCheck<DataContext>("Identity Database Health Check");
+                        .AddDbContextCheck<DataContext>("Identity Database Health Check")
+                        .AddSqlServer(builder.Configuration.GetConnectionString("Default"));
 
         builder.Services.AddHealthChecksUI(options =>
         {
