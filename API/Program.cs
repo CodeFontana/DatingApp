@@ -1,22 +1,3 @@
-using System;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using API.Extensions;
-using API.Middleware;
-using DataAccessLibrary.Data;
-using DataAccessLibrary.Entities;
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
-
 namespace API;
 
 public class Program

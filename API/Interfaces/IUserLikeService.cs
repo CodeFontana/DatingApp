@@ -1,12 +1,7 @@
-﻿using DataAccessLibrary.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿namespace API.Interfaces;
 
-namespace API.Interfaces
+public interface IUserLikeService
 {
-    public interface IUserLikeService
-    {
-        Task<ServiceResponseModel<string>> ToggleLikeAsync(string reqeustor, string username, int sourceUserId);
-        Task<ServiceResponseModel<IEnumerable<LikeUserModel>>> GetUserLikesAsync(string requestor, string predicate, int sourceUserId);
-    }
+    Task<ServiceResponseModel<string>> ToggleLikeAsync(string reqeustor, string username, int sourceUserId);
+    Task<ServiceResponseModel<IEnumerable<LikeUserModel>>> GetUserLikesAsync(string requestor, string predicate, int sourceUserId);
 }

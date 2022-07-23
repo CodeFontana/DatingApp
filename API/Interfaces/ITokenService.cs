@@ -1,10 +1,6 @@
-using DataAccessLibrary.Entities;
-using System.Threading.Tasks;
+namespace API.Interfaces;
 
-namespace API.Interfaces
+public interface ITokenService
 {
-    public interface ITokenService
-    {
-        Task<string> CreateTokenAsync(AppUser user);
-    }
+    Task<string> CreateTokenAsync(AppUser user);
 }

@@ -1,55 +1,47 @@
-using System.Threading.Tasks;
-using DataAccessLibrary.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using API.Interfaces;
-using API.Filters;
+namespace API.Controllers.v1;
 
-namespace API.Controllers.v1
+[ApiController]
+[Route("api/v{version:apiVersion}/[controller]")]
+[Authorize]
+[ServiceFilter(typeof(UserActivity))]
+public class AccountController : ControllerBase
 {
-    [ApiController]
-    [Route("api/v{version:apiVersion}/[controller]")]
-    [Authorize]
-    [ServiceFilter(typeof(UserActivity))]
-    public class AccountController : ControllerBase
+    private readonly IAccountService _accountService;
+
+    public AccountController(IAccountService accountService)
     {
-        private readonly IAccountService _accountService;
+        _accountService = accountService;
+    }
 
-        public AccountController(IAccountService accountService)
+    [HttpPost("register")]
+    [AllowAnonymous]
+    public async Task<ActionResult<ServiceResponseModel<AuthUserModel>>> RegisterAsync(RegisterUserModel registerUser)
+    {
+        ServiceResponseModel<AuthUserModel> response = await _accountService.RegisterAsync(registerUser);
+
+        if (response.Success)
         {
-            _accountService = accountService;
+            return Ok(response);
         }
-
-        [HttpPost("register")]
-        [AllowAnonymous]
-        public async Task<ActionResult<ServiceResponseModel<AuthUserModel>>> RegisterAsync(RegisterUserModel registerUser)
+        else
         {
-            ServiceResponseModel<AuthUserModel> response = await _accountService.RegisterAsync(registerUser);
-
-            if (response.Success)
-            {
-                return Ok(response);
-            }
-            else
-            {
-                return BadRequest(response);
-            }
+            return BadRequest(response);
         }
+    }
 
-        [HttpPost("login")]
-        [AllowAnonymous]
-        public async Task<ActionResult<ServiceResponseModel<AuthUserModel>>> LoginAsync(LoginUserModel loginUser)
+    [HttpPost("login")]
+    [AllowAnonymous]
+    public async Task<ActionResult<ServiceResponseModel<AuthUserModel>>> LoginAsync(LoginUserModel loginUser)
+    {
+        ServiceResponseModel<AuthUserModel> response = await _accountService.LoginAsync(loginUser);
+
+        if (response.Success)
         {
-            ServiceResponseModel<AuthUserModel> response = await _accountService.LoginAsync(loginUser);
-
-            if (response.Success)
-            {
-                return Ok(response);
-            }
-            else
-            {
-                return Unauthorized(response);
-            }
+            return Ok(response);
+        }
+        else
+        {
+            return Unauthorized(response);
         }
     }
 }

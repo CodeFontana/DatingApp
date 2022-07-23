@@ -1,60 +1,50 @@
-﻿using API.Filters;
-using API.Interfaces;
-using DataAccessLibrary.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿namespace API.Controllers.v1;
 
-namespace API.Controllers.v1
+[ApiController]
+[Route("api/v{version:apiVersion}/[controller]")]
+[Authorize]
+[ServiceFilter(typeof(UserActivity))]
+public class LikesController : ControllerBase
 {
-    [ApiController]
-    [Route("api/v{version:apiVersion}/[controller]")]
-    [Authorize]
-    [ServiceFilter(typeof(UserActivity))]
-    public class LikesController : ControllerBase
+    private readonly IUserLikeService _userLikeService;
+
+    public LikesController(IUserLikeService userLikeService)
     {
-        private readonly IUserLikeService _userLikeService;
+        _userLikeService = userLikeService;
+    }
 
-        public LikesController(IUserLikeService userLikeService)
+    [HttpGet]
+    [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Any, NoStore = false)]
+    public async Task<ActionResult<ServiceResponseModel<IEnumerable<LikeUserModel>>>> GetUserLikesAsync([FromQuery] string predicate)
+    {
+        int sourceUserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+        ServiceResponseModel<IEnumerable<LikeUserModel>> response = await _userLikeService.GetUserLikesAsync(User.Identity.Name, predicate, sourceUserId);
+
+        if (response.Success)
         {
-            _userLikeService = userLikeService;
+            return Ok(response);
         }
-
-        [HttpGet]
-        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Any, NoStore = false)]
-        public async Task<ActionResult<ServiceResponseModel<IEnumerable<LikeUserModel>>>> GetUserLikesAsync([FromQuery] string predicate)
+        else
         {
-            int sourceUserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-
-            ServiceResponseModel<IEnumerable<LikeUserModel>> response = await _userLikeService.GetUserLikesAsync(User.Identity.Name, predicate, sourceUserId);
-
-            if (response.Success)
-            {
-                return Ok(response);
-            }
-            else
-            {
-                return BadRequest(response);
-            }
+            return BadRequest(response);
         }
+    }
 
-        [HttpPost("{username}")]
-        public async Task<ActionResult<ServiceResponseModel<string>>> ToggleLikeAsync(string username)
+    [HttpPost("{username}")]
+    public async Task<ActionResult<ServiceResponseModel<string>>> ToggleLikeAsync(string username)
+    {
+        int sourceUserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+        ServiceResponseModel<string> response = await _userLikeService.ToggleLikeAsync(User.Identity.Name, username, sourceUserId);
+
+        if (response.Success)
         {
-            int sourceUserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-
-            ServiceResponseModel<string> response = await _userLikeService.ToggleLikeAsync(User.Identity.Name, username, sourceUserId);
-
-            if (response.Success)
-            {
-                return Ok(response);
-            }
-            else
-            {
-                return BadRequest(response);
-            }
+            return Ok(response);
+        }
+        else
+        {
+            return BadRequest(response);
         }
     }
 }

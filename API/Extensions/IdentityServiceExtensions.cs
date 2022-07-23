@@ -1,68 +1,56 @@
-using System;
-using System.Text;
-using DataAccessLibrary.Data;
-using DataAccessLibrary.Entities;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
+namespace API.Extensions;
 
-namespace API.Extensions
+public static class IdentityServiceExtensions
 {
-    public static class IdentityServiceExtensions
+    public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
     {
-        public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
-        {
-            services
-                .AddIdentityCore<AppUser>(opt =>
-                {
-                    opt.Password.RequireNonAlphanumeric = false;
-                })
-                .AddRoles<AppRole>()
-                .AddRoleManager<RoleManager<AppRole>>()
-                .AddSignInManager<SignInManager<AppUser>>()
-                .AddRoleValidator<RoleValidator<AppRole>>()
-                .AddEntityFrameworkStores<DataContext>();
+        services
+            .AddIdentityCore<AppUser>(opt =>
+            {
+                opt.Password.RequireNonAlphanumeric = false;
+            })
+            .AddRoles<AppRole>()
+            .AddRoleManager<RoleManager<AppRole>>()
+            .AddSignInManager<SignInManager<AppUser>>()
+            .AddRoleValidator<RoleValidator<AppRole>>()
+            .AddEntityFrameworkStores<DataContext>();
 
-            services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+        services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new()
                 {
-                    options.TokenValidationParameters = new()
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = config.GetValue<string>("Authentication:JwtIssuer"),
-                        ValidateAudience = true,
-                        ValidAudience = config.GetValue<string>("Authentication:JwtAudience"),
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.ASCII.GetBytes(
-                                config.GetValue<string>("Authentication:JwtSecurityKey"))),
-                        ClockSkew = TimeSpan.FromMinutes(10)
-                    };
+                    ValidateIssuer = true,
+                    ValidIssuer = config.GetValue<string>("Authentication:JwtIssuer"),
+                    ValidateAudience = true,
+                    ValidAudience = config.GetValue<string>("Authentication:JwtAudience"),
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.ASCII.GetBytes(
+                            config.GetValue<string>("Authentication:JwtSecurityKey"))),
+                    ClockSkew = TimeSpan.FromMinutes(10)
+                };
+            });
+
+        services
+            .AddAuthorization(config =>
+            {
+                config.AddPolicy("RequireAdminRole", policy =>
+                {
+                    policy.RequireRole("Admin");
                 });
 
-            services
-                .AddAuthorization(config =>
+                config.AddPolicy("ModeratePhotoRole", policy =>
                 {
-                    config.AddPolicy("RequireAdminRole", policy =>
-                    {
-                        policy.RequireRole("Admin");
-                    });
-
-                    config.AddPolicy("ModeratePhotoRole", policy =>
-                    {
-                        policy.RequireRole("Moderator");
-                    });
-
-                    config.FallbackPolicy = new AuthorizationPolicyBuilder()
-                        .RequireAuthenticatedUser()
-                        .Build();
+                    policy.RequireRole("Moderator");
                 });
 
-            return services;
-        }
+                config.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+            });
+
+        return services;
     }
 }
