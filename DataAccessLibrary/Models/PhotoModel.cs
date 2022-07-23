@@ -1,9 +1,8 @@
-﻿namespace DataAccessLibrary.Models
+﻿namespace DataAccessLibrary.Models;
+
+public class PhotoModel
 {
-    public class PhotoModel
-    {
-        public int Id { get; set; }
-        public string Filename { get; set; }
-        public bool IsMain { get; set; }
-    }
+    public int Id { get; set; }
+    public string Filename { get; set; }
+    public bool IsMain { get; set; }
 }

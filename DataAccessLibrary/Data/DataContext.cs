@@ -1,8 +1,3 @@
-using DataAccessLibrary.Entities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-
 namespace DataAccessLibrary.Data;
 
 public class DataContext : IdentityDbContext<

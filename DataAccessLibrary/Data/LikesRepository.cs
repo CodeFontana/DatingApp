@@ -1,63 +1,51 @@
-﻿using DataAccessLibrary.Entities;
-using DataAccessLibrary.Extensions;
-using DataAccessLibrary.Interfaces;
-using DataAccessLibrary.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace DataAccessLibrary.Data;
 
-namespace DataAccessLibrary.Data
+public class LikesRepository : ILikesRepository
 {
-    public class LikesRepository : ILikesRepository
+    private readonly DataContext _context;
+
+    public LikesRepository(DataContext context)
     {
-        private readonly DataContext _context;
+        _context = context;
+    }
 
-        public LikesRepository(DataContext context)
+    public async Task<UserLike> GetUserLikeAsync(int sourceUserId, int likedUserId)
+    {
+        return await _context.Likes.FindAsync(sourceUserId, likedUserId);
+    }
+
+    public async Task<IEnumerable<LikeUserModel>> GetUserLikesAsync(string predicate, int userId)
+    {
+        IQueryable<AppUser> users = _context.Users.OrderBy(u => u.UserName).AsQueryable();
+        IQueryable<UserLike> likes = _context.Likes.AsQueryable();
+
+        if (predicate.ToLower().Equals("liked"))
         {
-            _context = context;
+            likes = likes.Where(like => like.SourceUserId == userId);
+            users = likes.Select(like => like.LikedUser);
         }
 
-        public async Task<UserLike> GetUserLikeAsync(int sourceUserId, int likedUserId)
+        if (predicate.ToLower().Equals("likedby"))
         {
-            return await _context.Likes.FindAsync(sourceUserId, likedUserId);
+            likes = likes.Where(like => like.LikedUserId == userId);
+            users = likes.Select(like => like.SourceUser);
         }
 
-        public async Task<IEnumerable<LikeUserModel>> GetUserLikesAsync(string predicate, int userId)
+        return await users.Select(user => new LikeUserModel
         {
-            IQueryable<AppUser> users = _context.Users.OrderBy(u => u.UserName).AsQueryable();
-            IQueryable<UserLike> likes = _context.Likes.AsQueryable();
+            Username = user.UserName,
+            KnownAs = user.KnownAs,
+            Age = user.DateOfBirth.CalculateAge(),
+            MainPhoto = user.Photos.FirstOrDefault(p => p.IsMain).Filename,
+            City = user.City,
+            Id = user.Id
+        }).ToListAsync();
+    }
 
-            if (predicate.ToLower().Equals("liked"))
-            {
-                likes = likes.Where(like => like.SourceUserId == userId);
-                users = likes.Select(like => like.LikedUser);
-            }
-
-            if (predicate.ToLower().Equals("likedby"))
-            {
-                likes = likes.Where(like => like.LikedUserId == userId);
-                users = likes.Select(like => like.SourceUser);
-            }
-
-            return await users.Select(user => new LikeUserModel
-            {
-                Username = user.UserName,
-                KnownAs = user.KnownAs,
-                Age = user.DateOfBirth.CalculateAge(),
-                MainPhoto = user.Photos.FirstOrDefault(p => p.IsMain).Filename,
-                City = user.City,
-                Id = user.Id
-            }).ToListAsync();
-        }
-
-        public async Task<AppUser> GetUserWithLikesAsync(int userId)
-        {
-            return await _context.Users
-                .Include(x => x.LikedUsers)
-                .FirstOrDefaultAsync(x => x.Id == userId);
-        }
+    public async Task<AppUser> GetUserWithLikesAsync(int userId)
+    {
+        return await _context.Users
+            .Include(x => x.LikedUsers)
+            .FirstOrDefaultAsync(x => x.Id == userId);
     }
 }

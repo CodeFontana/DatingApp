@@ -1,9 +1,6 @@
-﻿using DataAccessLibrary.Models;
+﻿namespace DataAccessLibrary.Pagination;
 
-namespace DataAccessLibrary.Pagination
+public class PaginationResponseModel<T> : ServiceResponseModel<T>
 {
-    public class PaginationResponseModel<T> : ServiceResponseModel<T>
-    {
-        public PaginationModel MetaData { get; set; }
-    }
+    public PaginationModel MetaData { get; set; }
 }
