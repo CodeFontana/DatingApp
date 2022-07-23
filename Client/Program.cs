@@ -36,9 +36,8 @@ public class Program
         builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
         builder.Services.AddAuthorizationCore();
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-        builder.Services.AddScoped<IRegistrationService, RegistrationService>();
         builder.Services.AddScoped<IMemberService, MemberService>();
-        builder.Services.AddScoped<IAppUserService, AppUserService>();
+        builder.Services.AddScoped<IMemberStateService, MemberStateService>();
         builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
         builder.Services.AddScoped<ISpinnerService, SpinnerService>();
         builder.Services.AddScoped<SpinnerHandler>();

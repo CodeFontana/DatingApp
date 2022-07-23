@@ -16,7 +16,7 @@ public partial class MemberList
     private bool _showError = false;
     private string _errorText;
 
-    [Inject] IAppUserService AppUserService { get; set; }
+    [Inject] IMemberStateService MemberStateService { get; set; }
     [Inject] IMemberService MemberService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
 
@@ -24,7 +24,7 @@ public partial class MemberList
     {
         if (string.IsNullOrWhiteSpace(MemberService.MembersFilter.Gender))
         {
-            if (AppUserService.AppUser.Gender.ToLower().Equals("female"))
+            if (MemberStateService.AppUser.Gender.ToLower().Equals("female"))
             {
                 MemberService.MembersFilter.Gender = "male";
             }
@@ -77,7 +77,7 @@ public partial class MemberList
         MemberService.MembersFilter.MaxAge = 45;
         MemberService.MembersFilter.OrderBy = "LastActive";
 
-        if (AppUserService.AppUser.Gender.ToLower().Equals("female"))
+        if (MemberStateService.AppUser.Gender.ToLower().Equals("female"))
         {
             MemberService.MembersFilter.Gender = "male";
         }

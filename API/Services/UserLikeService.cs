@@ -2,11 +2,11 @@
 
 public class UserLikeService : IUserLikeService
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IMemberRepository _userRepository;
     private readonly ILikesRepository _likesRepository;
     private readonly ILogger<UserLikeService> _logger;
 
-    public UserLikeService(IUserRepository userRepository, ILikesRepository likesRepository, ILogger<UserLikeService> logger)
+    public UserLikeService(IMemberRepository userRepository, ILikesRepository likesRepository, ILogger<UserLikeService> logger)
     {
         _userRepository = userRepository;
         _likesRepository = likesRepository;

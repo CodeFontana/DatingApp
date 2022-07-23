@@ -1,63 +1,36 @@
-﻿using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
-
-namespace API.Services;
+﻿namespace API.Services;
 
 public class AccountService : IAccountService
 {
-    private readonly UserManager<AppUser> _userManager;
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly ITokenService _tokenService;
-    private readonly IMapper _mapper;
     private readonly ILogger<AccountService> _logger;
+    private readonly IAccountRepository _accountRepository;
+    private readonly ITokenService _tokenService;
 
-    public AccountService(UserManager<AppUser> userManager,
-                          SignInManager<AppUser> signInManager,
-                          ITokenService tokenService,
-                          IMapper mapper,
-                          ILogger<AccountService> logger)
+    public AccountService(ILogger<AccountService> logger,
+                          IAccountRepository accountRepository,
+                          ITokenService tokenService)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _tokenService = tokenService;
-        _mapper = mapper;
         _logger = logger;
+        _accountRepository = accountRepository;
+        _tokenService = tokenService;
     }
 
-    public async Task<ServiceResponseModel<AuthUserModel>> RegisterAsync(RegisterUserModel registerUser)
+    public async Task<ServiceResponseModel<AuthUserModel>> RegisterAsync(string requestor, RegisterUserModel registerUser)
     {
+        _logger.LogInformation($"Register new user {registerUser.Email}... [{requestor}]");
         ServiceResponseModel<AuthUserModel> serviceResponse = new();
 
         try
         {
-            if (await UserExistsAsync(registerUser.Username))
-            {
-                throw new ArgumentException($"Username is taken [{registerUser.Username}]");
-            }
-
-            AppUser user = _mapper.Map<AppUser>(registerUser);
-
-            IdentityResult result = await _userManager.CreateAsync(user, registerUser.Password);
-
-            if (result.Succeeded == false)
-            {
-                throw new Exception($"Failed to register user [{user.UserName}]");
-            }
-
-            IdentityResult roleResult = await _userManager.AddToRoleAsync(user, "Member");
-
-            if (roleResult.Succeeded == false)
-            {
-                await _userManager.DeleteAsync(user);
-                throw new Exception($"Failed to register user [{user.UserName}]");
-            }
+            AppUser appUser = await _accountRepository.CreateAccountAsync(registerUser);
 
             serviceResponse.Success = true;
             serviceResponse.Data = new AuthUserModel
             {
-                Username = user.UserName,
-                Token = await _tokenService.CreateTokenAsync(user)
+                Username = appUser.UserName,
+                Token = await _tokenService.CreateTokenAsync(appUser)
             };
-            serviceResponse.Message = $"Successfully registered user [{user.UserName}]";
+            serviceResponse.Message = $"Successfully registered user [{appUser.UserName}]";
             _logger.LogInformation(serviceResponse.Message);
         }
         catch (Exception e)
@@ -76,27 +49,12 @@ public class AccountService : IAccountService
 
         try
         {
-            AppUser appUser = await _userManager.Users
-                .Include(p => p.Photos)
-                .SingleOrDefaultAsync(u => u.UserName == loginUser.Username.ToLower());
-
-            if (appUser == null)
-            {
-                throw new ArgumentException($"Invalid username [{loginUser.Username}]");
-            }
-
-            SignInResult result = await _signInManager.CheckPasswordSignInAsync(
-                appUser, loginUser.Password, false);
-
-            if (result.Succeeded == false)
-            {
-                throw new Exception($"Invalid password for user [{loginUser.Username}]");
-            }
+            AppUser appUser = await _accountRepository.LoginAsync(loginUser);
 
             serviceResponse.Success = true;
             serviceResponse.Data = new AuthUserModel
             {
-                Username = appUser.UserName,
+                Username = appUser.Email,
                 Token = await _tokenService.CreateTokenAsync(appUser)
             };
             serviceResponse.Message = $"Successfully authenticated user [{appUser.UserName}]";
@@ -112,8 +70,143 @@ public class AccountService : IAccountService
         return serviceResponse;
     }
 
-    private async Task<bool> UserExistsAsync(string username)
+    public async Task<ServiceResponseModel<AccountModel>> GetAccountAsync(string requestor, string username)
     {
-        return await _userManager.Users.AnyAsync(e => e.UserName == username.ToLower());
+        _logger.LogInformation($"Get user account {username}... [{requestor}]");
+        ServiceResponseModel<AccountModel> serviceResponse = new();
+
+        try
+        {
+            AppUser appUser = await _accountRepository.GetAccountAsync(username);
+
+            if (appUser != null)
+            {
+                AccountModel appAcount = new()
+                {
+                    Id = appUser.Id,
+                    Username = appUser.UserName,
+                    Email = appUser.Email,
+                    Created = appUser.Created,
+                    LastActive = appUser.LastActive
+                };
+
+                serviceResponse.Success = true;
+                serviceResponse.Data = appAcount;
+                serviceResponse.Message = $"Successfully retrieved user [{appAcount.Username}]";
+                _logger.LogInformation(serviceResponse.Message);
+            }
+            else
+            {
+                throw new Exception("Username not found");
+            }
+        }
+        catch (Exception e)
+        {
+            serviceResponse.Success = false;
+            serviceResponse.Message = e.Message;
+            _logger.LogError(e.Message);
+        }
+
+        return serviceResponse;
+    }
+
+    public async Task<ServiceResponseModel<List<AccountModel>>> GetAccountsAsync(string requestor)
+    {
+        _logger.LogInformation($"Get user accounts... [{requestor}]");
+        ServiceResponseModel<List<AccountModel>> serviceResponse = new();
+
+        try
+        {
+            List<AppUser> appUsers = await _accountRepository.GetAccountsAsync();
+
+            if (appUsers != null)
+            {
+                List<AccountModel> appAcount = new();
+
+                foreach (AppUser appUser in appUsers)
+                {
+                    appAcount.Add(new AccountModel()
+                    {
+                        Id = appUser.Id,
+                        Username = appUser.UserName,
+                        Email = appUser.Email,
+                        Created = appUser.Created,
+                        LastActive = appUser.LastActive
+                    });
+                }
+
+                serviceResponse.Success = true;
+                serviceResponse.Data = appAcount;
+                serviceResponse.Message = $"Successfully retrieved users [Count={appAcount.Count}]";
+                _logger.LogInformation(serviceResponse.Message);
+            }
+            else
+            {
+                throw new Exception("No users found");
+            }
+        }
+        catch (Exception e)
+        {
+            serviceResponse.Success = false;
+            serviceResponse.Message = e.Message;
+            _logger.LogError(e.Message);
+        }
+
+        return serviceResponse;
+    }
+
+    public async Task<ServiceResponseModel<bool>> UpdateAccountAsync(string requestor, AccountUpdateModel updateAccount)
+    {
+        _logger.LogInformation($"Update user account {updateAccount.Id}/{updateAccount.UserName}... [{requestor}]");
+        ServiceResponseModel<bool> serviceResponse = new();
+
+        try
+        {
+            await _accountRepository.UpdateAccountAsync(updateAccount);
+
+            serviceResponse.Success = true;
+            serviceResponse.Data = true;
+            serviceResponse.Message = $"Successfully updated user [{updateAccount.UserName}]";
+            _logger.LogInformation(serviceResponse.Message);
+        }
+        catch (Exception e)
+        {
+            serviceResponse.Success = false;
+            serviceResponse.Message = e.Message;
+            _logger.LogError(e.Message);
+        }
+
+        return serviceResponse;
+    }
+
+    public async Task<ServiceResponseModel<bool>> DeleteAccountAsync(string requestor, string username)
+    {
+        _logger.LogInformation($"Delete user account {username}... [{requestor}]");
+        ServiceResponseModel<bool> serviceResponse = new();
+
+        try
+        {
+            IdentityResult result = await _accountRepository.DeleteAccountAsync(requestor, username);
+
+            if (result.Succeeded)
+            {
+                serviceResponse.Success = result.Succeeded;
+                serviceResponse.Data = result.Succeeded;
+                serviceResponse.Message = $"Successfully deleted user [{username}] -- {result}";
+                _logger.LogInformation(serviceResponse.Message);
+            }
+            else
+            {
+                throw new Exception($"Failed to delete user [{username}] -- {result}");
+            }
+        }
+        catch (Exception e)
+        {
+            serviceResponse.Success = false;
+            serviceResponse.Message = e.Message;
+            _logger.LogError(e.Message);
+        }
+
+        return serviceResponse;
     }
 }

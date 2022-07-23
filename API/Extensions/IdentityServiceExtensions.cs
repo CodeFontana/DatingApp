@@ -38,7 +38,7 @@ public static class IdentityServiceExtensions
             {
                 config.AddPolicy("RequireAdminRole", policy =>
                 {
-                    policy.RequireRole("Admin");
+                    policy.RequireRole("Administrator");
                 });
 
                 config.AddPolicy("ModeratePhotoRole", policy =>

@@ -1,19 +1,19 @@
 ﻿namespace DataAccessLibrary.Data;
 
-public class UserRepository : IUserRepository
+public class MemberRepository : IMemberRepository
 {
-    private readonly DataContext _context;
+    private readonly DataContext _db;
     private readonly IMapper _mapper;
 
-    public UserRepository(DataContext context, IMapper mapper)
+    public MemberRepository(DataContext context, IMapper mapper)
     {
-        _context = context;
+        _db = context;
         _mapper = mapper;
     }
 
     public async Task<MemberModel> GetMemberAsync(string username)
     {
-        return await _context.Users
+        return await _db.Users
             .Where(x => x.UserName == username)
             .ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
@@ -21,7 +21,7 @@ public class UserRepository : IUserRepository
 
     public async Task<PaginationList<MemberModel>> GetMembersAsync(UserParameters userParameters)
     {
-        IQueryable<AppUser> query = _context.Users.AsQueryable();
+        IQueryable<AppUser> query = _db.Users.AsQueryable();
         
         query = query.Where(u => u.UserName != userParameters.CurrentUsername);
         query = query.Where(u => u.Gender.ToLower() == userParameters.Gender.ToLower());
@@ -47,30 +47,30 @@ public class UserRepository : IUserRepository
 
     public async Task<AppUser> GetUserByIdAsync(int id)
     {
-        return await _context.Users.FindAsync(id);
+        return await _db.Users.FindAsync(id);
     }
 
     public async Task<AppUser> GetUserByUsernameAsync(string username)
     {
-        return await _context.Users
+        return await _db.Users
             .Include(p => p.Photos)
             .SingleOrDefaultAsync(x => x.UserName == username);
     }
 
     public async Task<IEnumerable<AppUser>> GetUsersAsync()
     {
-        return await _context.Users
+        return await _db.Users
             .Include(p => p.Photos)
             .ToListAsync();
     }
 
     public async Task<bool> SaveAllAsync()
     {
-        return await _context.SaveChangesAsync() > 0;
+        return await _db.SaveChangesAsync() > 0;
     }
 
     public void Update(AppUser user)
     {
-        _context.Entry(user).State = EntityState.Modified;
+        _db.Entry(user).State = EntityState.Modified;
     }
 }

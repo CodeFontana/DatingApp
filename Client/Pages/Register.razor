@@ -33,6 +33,12 @@
                                       For="@(() => _registerUser.Username)" />
                     </div>
                     <div class="d-flex align-center">
+                        <MudTextField Label="Email"
+                                      Class="mt-3"
+                                      @bind-Value="_registerUser.Email"
+                                      For="@(() => _registerUser.Email)" />
+                    </div>
+                    <div class="d-flex align-center">
                         <MudTextField Label="Preferred name or nickname"
                                       Class="mt-3"
                                       @bind-Value="_registerUser.KnownAs"

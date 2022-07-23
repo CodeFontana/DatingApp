@@ -2,11 +2,11 @@
 
 public class UsersService : IUsersService
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IMemberRepository _userRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<UsersService> _logger;
 
-    public UsersService(IUserRepository userRepository, IMapper mapper, ILogger<UsersService> logger)
+    public UsersService(IMemberRepository userRepository, IMapper mapper, ILogger<UsersService> logger)
     {
         _userRepository = userRepository;
         _mapper = mapper;

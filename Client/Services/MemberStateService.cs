@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace Client.Services
 {
-    public class AppUserService : IAppUserService
+    public class MemberStateService : IMemberStateService
     {
         private readonly IMemberService _memberService;
         private MemberModel _appUser;
         private string _mainPhoto;
 
-        public AppUserService(IMemberService memberService)
+        public MemberStateService(IMemberService memberService)
         {
             _mainPhoto = "./assets/user.png";
             _memberService = memberService;

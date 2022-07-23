@@ -16,20 +16,20 @@ namespace Client.Authentication
     {
         private readonly IConfiguration _config;
         private readonly HttpClient _httpClient;
-        private readonly IAppUserService _appUserService;
+        private readonly IMemberStateService _memberStateService;
         private readonly IMemberService _memberService;
         private readonly ILocalStorageService _localStorage;
         private readonly AuthenticationState _anonymous;
 
         public AuthStateProvider(IConfiguration config,
                                  HttpClient httpClient,
-                                 IAppUserService appUserService,
+                                 IMemberStateService memberStateService,
                                  IMemberService memberService,
                                  ILocalStorageService localStorage)
         {
             _config = config;
             _httpClient = httpClient;
-            _appUserService = appUserService;
+            _memberStateService = memberStateService;
             _memberService = memberService;
             _localStorage = localStorage;
             _anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
@@ -99,13 +99,11 @@ namespace Client.Authentication
                         "jwtAuthType"));
 
                 authState = Task.FromResult(new AuthenticationState(authenticatedUser));
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                await _memberStateService.SetAppUserAsync(authenticatedUser.Identity.Name);
 
                 string authTokenStorageKey = _config["authTokenStorageKey"];
                 await _localStorage.SetItemAsync(authTokenStorageKey, token);
-
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
-
-                await _appUserService.SetAppUserAsync(authenticatedUser.Identity.Name);
 
                 NotifyAuthenticationStateChanged(authState);
                 isAuthenticated = true;
@@ -129,6 +127,7 @@ namespace Client.Authentication
             _memberService.MemberCache.Clear();
             _memberService.MemberListCache.Clear();
             NotifyAuthenticationStateChanged(authState);
+            await _memberStateService.SetAppUserAsync(null);
         }
     }
 }

@@ -15,18 +15,15 @@ namespace Client.Authentication
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _options;
         private readonly AuthenticationStateProvider _authStateProvider;
-        private readonly IAppUserService _appUserService;
 
         public AuthenticationService(IConfiguration config,
                                      HttpClient httpClient,
-                                     AuthenticationStateProvider authStateProvider,
-                                     IAppUserService appUserService)
+                                     AuthenticationStateProvider authStateProvider)
         {
             _config = config;
             _httpClient = httpClient;
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             _authStateProvider = authStateProvider;
-            _appUserService = appUserService;
         }
 
         public async Task<ServiceResponseModel<AuthUserModel>> LoginAsync(LoginUserModel loginUser)
@@ -38,16 +35,21 @@ namespace Client.Authentication
             if (result.Success)
             {
                 await ((AuthStateProvider)_authStateProvider).NotifyUserAuthenticationAsync(result.Data.Token);
-                await _appUserService.SetAppUserAsync(result.Data.Username);
             }
 
             return result;
         }
 
+        public async Task<ServiceResponseModel<AuthUserModel>> RegisterAsync(RegisterUserModel registerUser)
+        {
+            string apiEndpoint = _config["apiLocation"] + _config["registerEndpoint"];
+            using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, registerUser);
+            return await response.Content.ReadFromJsonAsync<ServiceResponseModel<AuthUserModel>>(_options);
+        }
+
         public async Task LogoutAsync()
         {
             await ((AuthStateProvider)_authStateProvider).NotifyUserLogoutAsync();
-            await _appUserService.SetAppUserAsync(null);
         }
     }
 }

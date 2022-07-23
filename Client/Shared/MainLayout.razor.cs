@@ -21,7 +21,7 @@ public partial class MainLayout
     [Inject] AuthenticationStateProvider AuthStateProvider { get; set; }
     [Inject] NavigationManager NavManager { get; set; }
     [Inject] IAuthenticationService AuthService { get; set; }
-    [Inject] IAppUserService AppUserService { get; set; }
+    [Inject] IMemberStateService MemberStateService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
     [Inject] ILocalStorageService LocalStorage { get; set; }
 
@@ -39,7 +39,7 @@ public partial class MainLayout
             _currentTheme = lightTheme;
         }
 
-        AppUserService.OnChange += StateHasChanged;
+        MemberStateService.OnChange += StateHasChanged;
         AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
         ClaimsPrincipal user = authState.User;
 
@@ -86,7 +86,7 @@ public partial class MainLayout
 
     public void Dispose()
     {
-        AppUserService.OnChange -= StateHasChanged;
+        MemberStateService.OnChange -= StateHasChanged;
     }
 
     private void ToggleShowPassword()

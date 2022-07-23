@@ -25,7 +25,7 @@ public class SeedData
             List<AppRole> roles = new() 
             {
                 new AppRole {Name = "Member"},
-                new AppRole {Name = "Admin"},
+                new AppRole {Name = "Administrator"},
                 new AppRole {Name = "Moderator"}
             };
 
@@ -57,7 +57,7 @@ public class SeedData
             };
 
             await userManager.CreateAsync(admin, "Passw0rd123!!");
-            await userManager.AddToRolesAsync(admin, new[] { "Admin", "Moderator" });
+            await userManager.AddToRolesAsync(admin, new[] { "Administrator", "Moderator", "Member" });
         }
         catch (Exception ex)
         {

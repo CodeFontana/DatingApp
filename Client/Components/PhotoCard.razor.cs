@@ -15,7 +15,7 @@ public partial class PhotoCard
 
     protected override async Task OnParametersSetAsync()
     {
-        _photoFilename = await MemberService.GetPhotoAsync(AppUserService.AppUser.Username, Photo.Filename);
+        _photoFilename = await MemberService.GetPhotoAsync(MemberStateService.AppUser.Username, Photo.Filename);
     }
 
     private async Task HandleSetMainPhotoAsync()
@@ -25,7 +25,7 @@ public partial class PhotoCard
             return;
         }
 
-        ServiceResponseModel<string> result = await MemberService.SetMainPhotoAsync(AppUserService.AppUser.Username, Photo.Id);
+        ServiceResponseModel<string> result = await MemberService.SetMainPhotoAsync(MemberStateService.AppUser.Username, Photo.Id);
 
         if (result.Success)
         {
@@ -40,7 +40,7 @@ public partial class PhotoCard
 
     private async Task HandleDeletePhotoAsync()
     {
-        ServiceResponseModel<string> result = await MemberService.DeletePhotoAsync(AppUserService.AppUser.Username, Photo);
+        ServiceResponseModel<string> result = await MemberService.DeletePhotoAsync(MemberStateService.AppUser.Username, Photo);
 
         if (result.Success)
         {

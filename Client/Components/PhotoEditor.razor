@@ -1,5 +1,5 @@
 ﻿@inject IMemberService MemberService
-@inject IAppUserService AppUserService
+@inject IMemberStateService MemberStateService
 @inject ISpinnerService SpinnerService
 @inject ISnackbar Snackbar
 
@@ -11,7 +11,7 @@
 
     <MudGrid Justify="Justify.Center">
 
-        @foreach (PhotoModel p in AppUserService.AppUser.Photos)
+        @foreach (PhotoModel p in MemberStateService.AppUser.Photos)
         {
             <PhotoCard Photo="@p" OnImageChanged="HandleImageChangedAsync" />
         }

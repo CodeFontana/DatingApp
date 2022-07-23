@@ -35,11 +35,11 @@
 
                 <MudSpacer />
 
-                @if (AppUserService.AppUser is not null)
+                @if (MemberStateService.AppUser is not null)
                 {
                     <MudMenu AnchorOrigin="Origin.BottomLeft">
                         <ActivatorContent>
-                            <MudAvatar Image="@AppUserService.MainPhoto" />
+                            <MudAvatar Image="@MemberStateService.MainPhoto" />
                         </ActivatorContent>
                         <ChildContent>
                             <MudMenuItem Class="px-0 py-0">

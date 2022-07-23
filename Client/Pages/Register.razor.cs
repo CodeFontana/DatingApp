@@ -13,7 +13,6 @@ public partial class Register
     [Inject] AuthenticationStateProvider AuthStateProvider { get; set; }
     [Inject] NavigationManager NavManager { get; set; }
     [Inject] IMemberService MemberService { get; set; }
-    [Inject] IRegistrationService RegService { get; set; }
     [Inject] IAuthenticationService AuthService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
 
@@ -40,7 +39,7 @@ public partial class Register
         _showError = false;
         _errorText = "";
 
-        ServiceResponseModel<AuthUserModel> regResult = await RegService.RegisterAsync(_registerUser);
+        ServiceResponseModel<AuthUserModel> regResult = await AuthService.RegisterAsync(_registerUser);
 
         if (regResult.Success)
         {

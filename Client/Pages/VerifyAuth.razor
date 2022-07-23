@@ -19,7 +19,7 @@
 
                     <MudItem xs="12" Class="d-flex justify-center">
                         <MudList>
-                            <MudListItem Text="@($"Admin Role: {AuthContext.User.IsInRole("Admin")}")" />
+                            <MudListItem Text="@($"Admin Role: {AuthContext.User.IsInRole("Administrator")}")" />
                             <MudListItem Text="@($"Moderator Role: {AuthContext.User.IsInRole("Moderator")}")" />
                             <MudListItem Text="@($"Member Role: {AuthContext.User.IsInRole("Member")}")" />
                         </MudList>

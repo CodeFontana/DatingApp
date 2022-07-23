@@ -1,6 +1,6 @@
 ﻿namespace DataAccessLibrary.Interfaces;
 
-public interface IUserRepository
+public interface IMemberRepository
 {
     void Update(AppUser user);
     Task<bool> SaveAllAsync();

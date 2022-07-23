@@ -11,10 +11,9 @@ public class UserActivity : IAsyncActionFilter
             return;
         }
 
-        int userId = int.Parse(resultContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-        IUserRepository repo = resultContext.HttpContext.RequestServices.GetService<IUserRepository>();
-        AppUser user = await repo.GetUserByIdAsync(userId);
-        user.LastActive = System.DateTime.Now;
+        IAccountRepository repo = resultContext!.HttpContext.RequestServices.GetService<IAccountRepository>();
+        AppUser user = await repo.GetAccountAsync(resultContext.HttpContext.User.Identity.Name);
+        user.LastActive = DateTime.UtcNow;
         await repo.SaveAllAsync();
     }
 }

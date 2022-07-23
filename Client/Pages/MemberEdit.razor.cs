@@ -10,7 +10,7 @@ namespace Client.Pages;
 public partial class MemberEdit
 {
     [Inject] IMemberService MemberService { get; set; }
-    [Inject] IAppUserService AppUserService { get; set; }
+    [Inject] IMemberStateService MemberStateService { get; set; }
     [Inject] IMapper Mapper { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
 
@@ -26,11 +26,11 @@ public partial class MemberEdit
 
     private async Task LoadMemberAsync()
     {
-        bool result = await AppUserService.ReloadAppUserAsync();
+        bool result = await MemberStateService.ReloadAppUserAsync();
 
         if (result)
         {
-            Mapper.Map(AppUserService.AppUser, _memberUpdate);
+            Mapper.Map(MemberStateService.AppUser, _memberUpdate);
         }
         else
         {

@@ -2,12 +2,12 @@
 
 public class PhotoService : IPhotoService
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IMemberRepository _userRepository;
     private readonly IMapper _mapper;
     private readonly IWebHostEnvironment _appEnv;
     private readonly ILogger<PhotoService> _logger;
 
-    public PhotoService(IUserRepository userRepository,
+    public PhotoService(IMemberRepository userRepository,
                         IMapper mapper,
                         IWebHostEnvironment appEnv,
                         ILogger<PhotoService> logger)
