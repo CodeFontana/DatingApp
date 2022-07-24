@@ -6,6 +6,9 @@ public class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsoleLogger(builder.Configuration);
+
         builder.Services.AddApplicationServices(builder.Configuration);
         builder.Services.AddIdentityServices(builder.Configuration);
         builder.Services.AddResponseCaching();
