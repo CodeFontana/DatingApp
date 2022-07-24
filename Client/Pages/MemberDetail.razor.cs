@@ -1,4 +1,5 @@
-﻿using Client.Interfaces;
+﻿using AutoMapper.Execution;
+using Client.Interfaces;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -31,6 +32,20 @@ public partial class MemberDetail
             _showError = true;
             _errorText = $"Request failed: {result.Message}";
             Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
+        }
+    }
+
+    private async Task HandleLikeToggleAsync()
+    {
+        ServiceResponseModel<string> result = await MemberService.ToggleLikeAsync(_member.Username);
+
+        if (result.Success)
+        {
+            Snackbar.Add($"Liked {_member.Username}", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add(result.Message, Severity.Error);
         }
     }
 }

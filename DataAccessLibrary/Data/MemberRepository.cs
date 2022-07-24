@@ -14,6 +14,7 @@ public class MemberRepository : IMemberRepository
     public async Task<MemberModel> GetMemberAsync(string username)
     {
         return await _db.Users
+            .AsNoTracking()
             .Where(x => x.UserName == username)
             .ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
@@ -22,7 +23,7 @@ public class MemberRepository : IMemberRepository
     public async Task<PaginationList<MemberModel>> GetMembersAsync(UserParameters userParameters)
     {
         IQueryable<AppUser> query = _db.Users.AsQueryable();
-        
+
         query = query.Where(u => u.UserName != userParameters.CurrentUsername);
         query = query.Where(u => u.Gender.ToLower() == userParameters.Gender.ToLower());
 
@@ -45,21 +46,22 @@ public class MemberRepository : IMemberRepository
             userParameters.PageSize);
     }
 
-    public async Task<AppUser> GetUserByIdAsync(int id)
+    public async Task<AppUser> GetMemberByIdAsync(int id)
     {
         return await _db.Users.FindAsync(id);
     }
 
-    public async Task<AppUser> GetUserByUsernameAsync(string username)
+    public async Task<AppUser> GetMemberByUsernameAsync(string username)
     {
         return await _db.Users
             .Include(p => p.Photos)
             .SingleOrDefaultAsync(x => x.UserName == username);
     }
 
-    public async Task<IEnumerable<AppUser>> GetUsersAsync()
+    public async Task<IEnumerable<AppUser>> GetMembersAsync()
     {
         return await _db.Users
+            .AsNoTracking()
             .Include(p => p.Photos)
             .ToListAsync();
     }
@@ -69,7 +71,7 @@ public class MemberRepository : IMemberRepository
         return await _db.SaveChangesAsync() > 0;
     }
 
-    public void Update(AppUser user)
+    public void UpdateMember(AppUser user)
     {
         _db.Entry(user).State = EntityState.Modified;
     }

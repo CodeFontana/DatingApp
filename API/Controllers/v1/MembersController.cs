@@ -4,21 +4,21 @@ namespace API.Controllers.v1;
 [Route("api/v{version:apiVersion}/[controller]")]
 [Authorize]
 [ServiceFilter(typeof(UserActivity))]
-public class UsersController : ControllerBase
+public class MembersController : ControllerBase
 {
-    private readonly IUsersService _usersService;
+    private readonly IMemberService _memberService;
     private readonly IPhotoService _photoService;
 
-    public UsersController(IUsersService usersService, IPhotoService photoService)
+    public MembersController(IMemberService memberService, IPhotoService photoService)
     {
-        _usersService = usersService;
+        _memberService = memberService;
         _photoService = photoService;
     }
 
     [HttpGet("{username}")]
-    public async Task<ActionResult<ServiceResponseModel<MemberModel>>> GetUserAsync(string username)
+    public async Task<ActionResult<ServiceResponseModel<MemberModel>>> GetMemberAsync(string username)
     {
-        ServiceResponseModel<MemberModel> response = await _usersService.GetUserAsync(username, User.Identity.Name);
+        ServiceResponseModel<MemberModel> response = await _memberService.GetMemberAsync(username, User.Identity.Name);
 
         if (response.Success)
         {
@@ -32,9 +32,9 @@ public class UsersController : ControllerBase
 
     [HttpGet]
     [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Any, NoStore = false)]
-    public async Task<ActionResult<PaginationResponseModel<PaginationList<MemberModel>>>> GetUsersAsync([FromQuery] UserParameters userParameters)
+    public async Task<ActionResult<PaginationResponseModel<PaginationList<MemberModel>>>> GetMembersAsync([FromQuery] UserParameters userParameters)
     {
-        PaginationResponseModel<PaginationList<MemberModel>> response = await _usersService.GetUsersAsync(User.Identity.Name, userParameters);
+        PaginationResponseModel<PaginationList<MemberModel>> response = await _memberService.GetMembersAsync(User.Identity.Name, userParameters);
 
         if (response.Success)
         {
@@ -48,7 +48,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("photo/{username}/{filename}")]
-    public async Task<ActionResult<ServiceResponseModel<byte[]>>> GetUserPhotoAsync(string username, string filename)
+    public async Task<ActionResult<ServiceResponseModel<byte[]>>> GetMemberPhotoAsync(string username, string filename)
     {
         ServiceResponseModel<byte[]> response = await _photoService.GetPhotoAsync(username, filename);
 
@@ -63,14 +63,14 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<ActionResult<ServiceResponseModel<string>>> UpdateUserAsync(MemberUpdateModel memberUpdate)
+    public async Task<ActionResult<ServiceResponseModel<string>>> UpdateMemberAsync(MemberUpdateModel memberUpdate)
     {
         if (ModelState.IsValid == false)
         {
             return BadRequest(ModelState);
         }
 
-        ServiceResponseModel<string> response = await _usersService.UpdateUserAsync(User.Identity.Name, memberUpdate);
+        ServiceResponseModel<string> response = await _memberService.UpdateMemberAsync(User.Identity.Name, memberUpdate);
 
         if (response.Success)
         {

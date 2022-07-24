@@ -2,11 +2,11 @@
 
 public interface IMemberRepository
 {
-    void Update(AppUser user);
+    void UpdateMember(AppUser user);
     Task<bool> SaveAllAsync();
-    Task<IEnumerable<AppUser>> GetUsersAsync();
-    Task<AppUser> GetUserByIdAsync(int id);
-    Task<AppUser> GetUserByUsernameAsync(string username);
+    Task<IEnumerable<AppUser>> GetMembersAsync();
+    Task<AppUser> GetMemberByIdAsync(int id);
+    Task<AppUser> GetMemberByUsernameAsync(string username);
     Task<PaginationList<MemberModel>> GetMembersAsync(UserParameters userParameters);
     Task<MemberModel> GetMemberAsync(string username);
 }

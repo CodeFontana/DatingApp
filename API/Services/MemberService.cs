@@ -1,26 +1,26 @@
 ﻿namespace API.Services;
 
-public class UsersService : IUsersService
+public class MemberService : IMemberService
 {
-    private readonly IMemberRepository _userRepository;
+    private readonly IMemberRepository _memberRepository;
     private readonly IMapper _mapper;
-    private readonly ILogger<UsersService> _logger;
+    private readonly ILogger<MemberService> _logger;
 
-    public UsersService(IMemberRepository userRepository, IMapper mapper, ILogger<UsersService> logger)
+    public MemberService(IMemberRepository memberRepository, IMapper mapper, ILogger<MemberService> logger)
     {
-        _userRepository = userRepository;
+        _memberRepository = memberRepository;
         _mapper = mapper;
         _logger = logger;
     }
 
-    public async Task<ServiceResponseModel<MemberModel>> GetUserAsync(string username, string requestor)
+    public async Task<ServiceResponseModel<MemberModel>> GetMemberAsync(string username, string requestor)
     {
         ServiceResponseModel<MemberModel> serviceResponse = new();
 
         try
         {
             serviceResponse.Success = true;
-            serviceResponse.Data = await _userRepository.GetMemberAsync(username);
+            serviceResponse.Data = await _memberRepository.GetMemberAsync(username);
             serviceResponse.Message = $"Successfully retrieved [{username}] for [{requestor}]";
             _logger.LogInformation(serviceResponse.Message);
         }
@@ -35,14 +35,14 @@ public class UsersService : IUsersService
         return serviceResponse;
     }
 
-    public async Task<PaginationResponseModel<PaginationList<MemberModel>>> GetUsersAsync(string requestor, UserParameters userParameters)
+    public async Task<PaginationResponseModel<PaginationList<MemberModel>>> GetMembersAsync(string requestor, UserParameters userParameters)
     {
         PaginationResponseModel<PaginationList<MemberModel>> pagedResponse = new();
 
         try
         {
             userParameters.CurrentUsername = requestor;
-            PaginationList<MemberModel> data = await _userRepository.GetMembersAsync(userParameters);
+            PaginationList<MemberModel> data = await _memberRepository.GetMembersAsync(userParameters);
 
             pagedResponse.Success = true;
             pagedResponse.Data = data;
@@ -61,17 +61,17 @@ public class UsersService : IUsersService
         return pagedResponse;
     }
 
-    public async Task<ServiceResponseModel<string>> UpdateUserAsync(string username, MemberUpdateModel memberUpdate)
+    public async Task<ServiceResponseModel<string>> UpdateMemberAsync(string username, MemberUpdateModel memberUpdate)
     {
         ServiceResponseModel<string> serviceResponse = new();
 
         try
         {
-            AppUser appUser = await _userRepository.GetUserByUsernameAsync(username);
+            AppUser appUser = await _memberRepository.GetMemberByUsernameAsync(username);
             _mapper.Map(memberUpdate, appUser);
-            _userRepository.Update(appUser);
+            _memberRepository.UpdateMember(appUser);
 
-            if (await _userRepository.SaveAllAsync())
+            if (await _memberRepository.SaveAllAsync())
             {
                 serviceResponse.Success = true;
                 serviceResponse.Data = $"Successfully updated user [{username}]";

@@ -63,7 +63,7 @@ namespace Client.Services
 
             Console.WriteLine($"Member not found in cache [{username}]");
 
-            string apiEndpoint = _config["apiLocation"] + _config["usersEndpoint"] + $"/{username}";
+            string apiEndpoint = _config["apiLocation"] + _config["membersEndpoint"] + $"/{username}";
             using HttpResponseMessage response = await _httpClient.GetAsync(apiEndpoint);
             ServiceResponseModel<MemberModel> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<MemberModel>>(_options);
 
@@ -96,7 +96,7 @@ namespace Client.Services
                 Console.WriteLine($"Member list not in cache [{userParameters.Values}]");
             }
 
-            string apiEndpoint = _config["apiLocation"] + _config["usersEndpoint"];
+            string apiEndpoint = _config["apiLocation"] + _config["membersEndpoint"];
 
             Dictionary<string, string> queryStringParam = new()
             {
@@ -133,7 +133,7 @@ namespace Client.Services
 
         public async Task<ServiceResponseModel<string>> UpdateMemberAsync(MemberUpdateModel memberUpdate)
         {
-            string apiEndpoint = _config["apiLocation"] + _config["usersEndpoint"];
+            string apiEndpoint = _config["apiLocation"] + _config["membersEndpoint"];
             using HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiEndpoint, memberUpdate);
             ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>>(_options);
 

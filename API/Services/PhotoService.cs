@@ -26,7 +26,7 @@ public class PhotoService : IPhotoService
         try
         {
             _ = username ?? throw new ArgumentException("Invalid username");
-            AppUser appUser = await _userRepository.GetUserByUsernameAsync(username);
+            AppUser appUser = await _userRepository.GetMemberByUsernameAsync(username);
             IFormFile file = files.FirstOrDefault();
 
             if (appUser == null)
@@ -141,7 +141,7 @@ public class PhotoService : IPhotoService
         {
             _ = username ?? throw new ArgumentException("Invalid username");
 
-            AppUser appUser = await _userRepository.GetUserByUsernameAsync(username);
+            AppUser appUser = await _userRepository.GetMemberByUsernameAsync(username);
             Photo p = appUser.Photos.FirstOrDefault(x => x.Id == photoId);
 
             if (p is not null)
@@ -189,7 +189,7 @@ public class PhotoService : IPhotoService
             _ = username ?? throw new ArgumentException("Invalid username");
             _ = photo ?? throw new ArgumentException("Invalid photo for deletion");
 
-            AppUser appUser = await _userRepository.GetUserByUsernameAsync(username);
+            AppUser appUser = await _userRepository.GetMemberByUsernameAsync(username);
             Photo p = appUser.Photos.FirstOrDefault(x => x.Id == photo.Id);
 
             if (p is not null)

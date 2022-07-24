@@ -33,11 +33,19 @@
                     <MudCardActions>
                         <MudGrid Class="d-flex justify-center">
                             <MudItem xs="6" Class="px-1 pl-3">
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="width: 100%;">Like</MudButton>
+                                <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       OnClick="HandleLikeToggleAsync"
+                                       Style="width: 100%;">
+                                    Like
+                                </MudButton>
                             </MudItem>
-
                             <MudItem xs="6" Class="px-1 pr-3">
-                                <MudButton Variant="Variant.Filled" Color="Color.Secondary" Style="width: 100%">Message</MudButton>
+                                <MudButton Variant="Variant.Filled"
+                                       Color="Color.Secondary"
+                                       Style="width: 100%">
+                                    Message
+                                </MudButton>
                             </MudItem>
                         </MudGrid>
                     </MudCardActions>
@@ -84,45 +92,45 @@
                     <MudExpansionPanel IsInitiallyExpanded="true">
                         <TitleContent>
                             <MudText Typo="Typo.h5">@($"About {_member.KnownAs}")</MudText>
-                        </TitleContent>
-                        <ChildContent>
-                            <MudText Class="pl-2" Typo="Typo.h6" Style="font-weight: 500;">Description</MudText>
-                            <MudText Class="pl-4 mt-2">@_member.Introduction</MudText>
-                            <MudText Class="pl-2 mt-4" Typo="Typo.h6" Style="font-weight: 500;">Looking for</MudText>
-                            <MudText class="pl-4 mt-2">@_member.LookingFor</MudText>
-                        </ChildContent>
-                    </MudExpansionPanel>
+                            </TitleContent>
+                            <ChildContent>
+                                <MudText Class="pl-2" Typo="Typo.h6" Style="font-weight: 500;">Description</MudText>
+                                <MudText Class="pl-4 mt-2">@_member.Introduction</MudText>
+                                <MudText Class="pl-2 mt-4" Typo="Typo.h6" Style="font-weight: 500;">Looking for</MudText>
+                                <MudText class="pl-4 mt-2">@_member.LookingFor</MudText>
+                            </ChildContent>
+                        </MudExpansionPanel>
 
-                    <MudExpansionPanel IsInitiallyExpanded="true">
-                        <TitleContent>
-                            <MudText Typo="Typo.h5">Interests</MudText>
-                        </TitleContent>
-                        <ChildContent>
-                            <MudText class="pl-2 mt-2">@_member.Interests</MudText>
-                        </ChildContent>
-                    </MudExpansionPanel>
+                        <MudExpansionPanel IsInitiallyExpanded="true">
+                            <TitleContent>
+                                <MudText Typo="Typo.h5">Interests</MudText>
+                            </TitleContent>
+                            <ChildContent>
+                                <MudText class="pl-2 mt-2">@_member.Interests</MudText>
+                            </ChildContent>
+                        </MudExpansionPanel>
 
-                    <MudExpansionPanel IsInitiallyExpanded="true">
-                        <TitleContent>
-                            <MudText Typo="Typo.h5">Photos</MudText>
-                        </TitleContent>
-                        <ChildContent>
-                            <PhotoGallery Member="@_member" />
-                        </ChildContent>
-                    </MudExpansionPanel>
+                        <MudExpansionPanel IsInitiallyExpanded="true">
+                            <TitleContent>
+                                <MudText Typo="Typo.h5">Photos</MudText>
+                            </TitleContent>
+                            <ChildContent>
+                                <PhotoGallery Member="@_member" />
+                            </ChildContent>
+                        </MudExpansionPanel>
 
-                    <MudExpansionPanel IsInitiallyExpanded="true">
-                        <TitleContent>
-                            <MudText Typo="Typo.h5">Messages</MudText>
-                        </TitleContent>
-                        <ChildContent>
-                            <MudText>Messages will go here!</MudText>
-                        </ChildContent>
-                    </MudExpansionPanel>
+                        <MudExpansionPanel IsInitiallyExpanded="true">
+                            <TitleContent>
+                                <MudText Typo="Typo.h5">Messages</MudText>
+                            </TitleContent>
+                            <ChildContent>
+                                <MudText>Messages will go here!</MudText>
+                            </ChildContent>
+                        </MudExpansionPanel>
 
-                </MudExpansionPanels>
-            </MudItem>
+                    </MudExpansionPanels>
+                </MudItem>
 
-        </MudGrid>
+            </MudGrid>
     }
 </section>

@@ -5,6 +5,7 @@ global using API.Middleware;
 global using API.Models;
 global using API.Services;
 global using AutoMapper;
+global using ConsoleLoggerLibrary;
 global using DataAccessLibrary.Data;
 global using DataAccessLibrary.Entities;
 global using DataAccessLibrary.Helpers;

@@ -1,14 +1,14 @@
 ﻿namespace API.Services;
 
-public class UserLikeService : IUserLikeService
+public class LikesService : ILikesService
 {
-    private readonly IMemberRepository _userRepository;
+    private readonly IMemberRepository _memberRepository;
     private readonly ILikesRepository _likesRepository;
-    private readonly ILogger<UserLikeService> _logger;
+    private readonly ILogger<LikesService> _logger;
 
-    public UserLikeService(IMemberRepository userRepository, ILikesRepository likesRepository, ILogger<UserLikeService> logger)
+    public LikesService(IMemberRepository memberRepository, ILikesRepository likesRepository, ILogger<LikesService> logger)
     {
-        _userRepository = userRepository;
+        _memberRepository = memberRepository;
         _likesRepository = likesRepository;
         _logger = logger;
     }
@@ -43,7 +43,7 @@ public class UserLikeService : IUserLikeService
 
         try
         {
-            AppUser likedUser = await _userRepository.GetUserByUsernameAsync(username);
+            AppUser likedUser = await _memberRepository.GetMemberByUsernameAsync(username);
             AppUser sourceUser = await _likesRepository.GetUserWithLikesAsync(sourceUserId);
 
             if (likedUser == null)
@@ -53,27 +53,27 @@ public class UserLikeService : IUserLikeService
 
             if (sourceUser.UserName == username)
             {
-                throw new Exception($"You cannot like yourself {username}");
+                throw new Exception($"You cannot like yourself {username}, but we hope you do anyway");
             }
 
             UserLike userLike = await _likesRepository.GetUserLikeAsync(sourceUserId, likedUser.Id);
 
-            // Change this to toggle the like
-
             if (userLike != null)
             {
-                throw new Exception($"You already like {username}");
+                sourceUser.LikedUsers.Remove(userLike);
+            }
+            else
+            {
+                userLike = new()
+                {
+                    SourceUserId = sourceUserId,
+                    LikedUserId = likedUser.Id
+                };
+
+                sourceUser.LikedUsers.Add(userLike);
             }
 
-            userLike = new()
-            {
-                SourceUserId = sourceUserId,
-                LikedUserId = likedUser.Id
-            };
-
-            sourceUser.LikedUsers.Add(userLike);
-
-            if (await _userRepository.SaveAllAsync())
+            if (await _memberRepository.SaveAllAsync())
             {
                 serviceResponse.Success = true;
                 serviceResponse.Data = $"Successfully liked [{username}] on behalf of [{requestor}]";

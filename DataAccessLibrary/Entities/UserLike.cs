@@ -1,5 +1,6 @@
 ﻿namespace DataAccessLibrary.Entities;
 
+[Table("UserLike")]
 public class UserLike
 {
     public AppUser SourceUser { get; set; }

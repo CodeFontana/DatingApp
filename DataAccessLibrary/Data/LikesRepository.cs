@@ -46,6 +46,7 @@ public class LikesRepository : ILikesRepository
     {
         return await _context.Users
             .Include(x => x.LikedUsers)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == userId);
     }
 }

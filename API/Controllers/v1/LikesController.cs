@@ -6,9 +6,9 @@
 [ServiceFilter(typeof(UserActivity))]
 public class LikesController : ControllerBase
 {
-    private readonly IUserLikeService _userLikeService;
+    private readonly ILikesService _userLikeService;
 
-    public LikesController(IUserLikeService userLikeService)
+    public LikesController(ILikesService userLikeService)
     {
         _userLikeService = userLikeService;
     }
@@ -31,8 +31,8 @@ public class LikesController : ControllerBase
         }
     }
 
-    [HttpPost("{username}")]
-    public async Task<ActionResult<ServiceResponseModel<string>>> ToggleLikeAsync(string username)
+    [HttpPost]
+    public async Task<ActionResult<ServiceResponseModel<string>>> ToggleLikeAsync([FromBody] string username)
     {
         int sourceUserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 

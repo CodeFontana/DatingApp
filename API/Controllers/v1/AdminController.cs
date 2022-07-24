@@ -32,7 +32,7 @@ public class AdminController : ControllerBase
     [Authorize(Policy = "RequireAdminRole")]
     public async Task<ActionResult<ServiceResponseModel<IList<string>>>> EditRolesAsync(string username, [FromQuery] string roles)
     {
-        ServiceResponseModel<IList<string>> response = await _adminService.EditRolesAsync(username, roles);
+        ServiceResponseModel<IList<string>> response = await _adminService.EditRolesAsync(User.Identity.Name, username, roles);
 
         if (response.Success)
         {
@@ -48,7 +48,7 @@ public class AdminController : ControllerBase
     [Authorize(Policy = "ModeratePhotoRole")]
     public ActionResult<ServiceResponseModel<string>> GetPhotosForModeration()
     {
-        ServiceResponseModel<string> response = _adminService.GetPhotosForModeration();
+        ServiceResponseModel<string> response = _adminService.GetPhotosForModeration(User.Identity.Name);
 
         if (response.Success)
         {

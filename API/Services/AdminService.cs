@@ -2,45 +2,24 @@
 
 public class AdminService : IAdminService
 {
-    private readonly UserManager<AppUser> _userManager;
     private readonly ILogger<AdminService> _logger;
+    private readonly IAdminRepository _adminRepository;
 
-    public AdminService(UserManager<AppUser> userManager, ILogger<AdminService> logger)
+    public AdminService(ILogger<AdminService> logger,
+                        IAdminRepository adminRepository)
     {
-        _userManager = userManager;
         _logger = logger;
+        _adminRepository = adminRepository;
     }
 
     public async Task<ServiceResponseModel<List<UserWithRolesModel>>> GetUsersWithRolesAsync(string requestor)
     {
+        _logger.LogInformation($"Get users with roles... [{requestor}]");
         ServiceResponseModel<List<UserWithRolesModel>> serviceResponse = new();
 
         try
         {
-            var users = await _userManager.Users
-                .Include(r => r.UserRoles)
-                .ThenInclude(r => r.Role)
-                .OrderBy(u => u.UserName)
-                .Select(u => new
-                {
-                    u.Id,
-                    Username = u.UserName,
-                    Roles = u.UserRoles.Select(r => r.Role.Name).ToList()
-                })
-                .ToListAsync();
-
-            serviceResponse.Data = new List<UserWithRolesModel>();
-
-            foreach (var item in users)
-            {
-                serviceResponse.Data.Add(new UserWithRolesModel
-                {
-                    Id = item.Id,
-                    Username = item.Username,
-                    Roles = item.Roles
-                });
-            }
-
+            serviceResponse.Data = await _adminRepository.GetUsersWithRolesAsync();
             serviceResponse.Success = true;
             serviceResponse.Message = $"Successfully listed User-Role relationships for [{requestor}]";
             _logger.LogInformation(serviceResponse.Message);
@@ -56,38 +35,16 @@ public class AdminService : IAdminService
         return serviceResponse;
     }
 
-    public async Task<ServiceResponseModel<IList<string>>> EditRolesAsync(string username, string roles)
+    public async Task<ServiceResponseModel<IList<string>>> EditRolesAsync(string requestor, string username, string roles)
     {
+        _logger.LogInformation($"Edit roles for {username}... [{requestor}]");
         ServiceResponseModel<IList<string>> serviceResponse = new();
 
         try
         {
-            string[] selectedRoles = roles.Split(",").ToArray();
-            AppUser user = await _userManager.FindByNameAsync(username);
-
-            if (user == null)
-            {
-                throw new ArgumentException($"Could not find user [{username}]");
-            }
-
-            IList<string> userRoles = await _userManager.GetRolesAsync(user);
-            IdentityResult result = await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
-
-            if (result.Succeeded == false)
-            {
-                throw new Exception($"Failed to add user [{username}] to roles [{selectedRoles.Except(userRoles)}]");
-            }
-
-            result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
-
-            if (result.Succeeded == false)
-            {
-                throw new Exception($"Failed to remove user [{username}] from roles [{userRoles.Except(selectedRoles)}]");
-            }
-
+            serviceResponse.Data = await _adminRepository.EditRolesAsync(username, roles);
             serviceResponse.Success = true;
-            serviceResponse.Data = await _userManager.GetRolesAsync(user);
-            serviceResponse.Message = $"Successfully editted roles for user [{username}]";
+            serviceResponse.Message = $"Successfully editted roles for user [{username}], requested by {requestor}";
             _logger.LogInformation(serviceResponse.Message);
         }
         catch (Exception e)
@@ -100,8 +57,9 @@ public class AdminService : IAdminService
         return serviceResponse;
     }
 
-    public ServiceResponseModel<string> GetPhotosForModeration()
+    public ServiceResponseModel<string> GetPhotosForModeration(string requestor)
     {
+        _logger.LogInformation($"Get photos for moderation... [{requestor}]");
         ServiceResponseModel<string> serviceResponse = new();
 
         try
