@@ -2,22 +2,22 @@
 
 public class LikesRepository : ILikesRepository
 {
-    private readonly DataContext _context;
+    private readonly DataContext _db;
 
     public LikesRepository(DataContext context)
     {
-        _context = context;
+        _db = context;
     }
 
     public async Task<UserLike> GetUserLikeAsync(int sourceUserId, int likedUserId)
     {
-        return await _context.Likes.FindAsync(sourceUserId, likedUserId);
+        return await _db.Likes.FindAsync(sourceUserId, likedUserId);
     }
 
     public async Task<IEnumerable<LikeUserModel>> GetUserLikesAsync(string predicate, int userId)
     {
-        IQueryable<AppUser> users = _context.Users.OrderBy(u => u.UserName).AsQueryable();
-        IQueryable<UserLike> likes = _context.Likes.AsQueryable();
+        IQueryable<AppUser> users = _db.Users.OrderBy(u => u.UserName).AsQueryable();
+        IQueryable<UserLike> likes = _db.Likes.AsQueryable();
 
         if (predicate.ToLower().Equals("liked"))
         {
@@ -44,7 +44,7 @@ public class LikesRepository : ILikesRepository
 
     public async Task<AppUser> GetUserWithLikesAsync(int userId)
     {
-        return await _context.Users
+        return await _db.Users
             .Include(x => x.LikedUsers)
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == userId);
