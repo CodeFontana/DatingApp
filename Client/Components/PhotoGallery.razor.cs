@@ -1,12 +1,9 @@
-﻿using DataAccessLibrary.Models;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using System.Threading.Tasks;
-
-namespace Client.Components;
+﻿namespace Client.Components;
 
 public partial class PhotoGallery
 {
+    [Inject] ISpinnerService SpinnerService { get; set; }
+    [Inject] IPhotoService PhotoService { get; set; }
     [Parameter] public MemberModel Member { get; set; }
 
     private MudCarousel<PhotoModel> _carousel;
@@ -18,7 +15,7 @@ public partial class PhotoGallery
 
         foreach (PhotoModel p in Member.Photos)
         {
-            p.Filename = await MemberService.GetPhotoAsync(Member.Username, p.Filename);
+            p.Filename = await PhotoService.GetPhotoAsync(Member.Username, p.Filename);
         }
 
         SpinnerService.HoldSpinner = false;

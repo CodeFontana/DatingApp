@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace Client.Pages;
+﻿namespace Client.Pages;
 
 public partial class Index
 {

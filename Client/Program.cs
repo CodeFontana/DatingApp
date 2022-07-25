@@ -1,17 +1,3 @@
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Components.Authorization;
-using Blazored.LocalStorage;
-using Client.Interfaces;
-using Client.Authentication;
-using Client.Services;
-using Client.Helpers;
-using MudBlazor.Services;
-using MudBlazor;
-
 namespace Client;
 
 public class Program
@@ -36,9 +22,11 @@ public class Program
         builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
         builder.Services.AddAuthorizationCore();
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+        builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
         builder.Services.AddScoped<IMemberService, MemberService>();
         builder.Services.AddScoped<IMemberStateService, MemberStateService>();
-        builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+        builder.Services.AddScoped<IPhotoService, PhotoService>();
+        builder.Services.AddScoped<ILikesService, LikesService>();
         builder.Services.AddScoped<ISpinnerService, SpinnerService>();
         builder.Services.AddScoped<SpinnerHandler>();
         builder.Services.AddScoped(s =>

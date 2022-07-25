@@ -1,13 +1,11 @@
-﻿using DataAccessLibrary.Models;
-using Microsoft.AspNetCore.Components.Authorization;
-using MudBlazor;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-namespace Client.Pages;
+﻿namespace Client.Pages;
 
 public partial class Login
 {
+    [Inject] IAuthenticationService AuthService { get; set; }
+    [Inject] AuthenticationStateProvider AuthStateProvider { get; set; }
+    [Inject] NavigationManager NavManager { get; set; }
+
     private LoginUserModel _loginUser = new();
     private InputType _passwordInput = InputType.Password;
     private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;

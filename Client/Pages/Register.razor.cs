@@ -1,12 +1,4 @@
-﻿using Client.Interfaces;
-using DataAccessLibrary.Models;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using MudBlazor;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-namespace Client.Pages;
+﻿namespace Client.Pages;
 
 public partial class Register
 {

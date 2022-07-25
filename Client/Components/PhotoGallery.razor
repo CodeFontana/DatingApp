@@ -1,7 +1,4 @@
-﻿@inject IMemberService MemberService
-@inject ISpinnerService SpinnerService
-
-@if (Member is not null
+﻿@if (Member is not null
 && Member.Photos.Count > 0
 && SpinnerService.HoldSpinner == false)
 {

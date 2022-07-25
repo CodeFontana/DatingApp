@@ -1,12 +1,10 @@
-﻿using DataAccessLibrary.Models;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using System.Threading.Tasks;
-
-namespace Client.Components;
+﻿namespace Client.Components;
 
 public partial class PhotoCard
 {
+    [Inject] public IMemberStateService MemberStateService { get; set; }
+    [Inject] public IPhotoService PhotoService { get; set; }
+    [Inject] public ISnackbar Snackbar { get; set; }
     [Parameter] public PhotoModel Photo { get; set; }
 
     [Parameter] public EventCallback<string> OnImageChanged { get; set; }
@@ -15,7 +13,7 @@ public partial class PhotoCard
 
     protected override async Task OnParametersSetAsync()
     {
-        _photoFilename = await MemberService.GetPhotoAsync(MemberStateService.AppUser.Username, Photo.Filename);
+        _photoFilename = await PhotoService.GetPhotoAsync(MemberStateService.AppUser.Username, Photo.Filename);
     }
 
     private async Task HandleSetMainPhotoAsync()
@@ -25,7 +23,7 @@ public partial class PhotoCard
             return;
         }
 
-        ServiceResponseModel<string> result = await MemberService.SetMainPhotoAsync(MemberStateService.AppUser.Username, Photo.Id);
+        ServiceResponseModel<string> result = await PhotoService.SetMainPhotoAsync(MemberStateService.AppUser.Username, Photo.Id);
 
         if (result.Success)
         {
@@ -40,7 +38,7 @@ public partial class PhotoCard
 
     private async Task HandleDeletePhotoAsync()
     {
-        ServiceResponseModel<string> result = await MemberService.DeletePhotoAsync(MemberStateService.AppUser.Username, Photo);
+        ServiceResponseModel<string> result = await PhotoService.DeletePhotoAsync(MemberStateService.AppUser.Username, Photo);
 
         if (result.Success)
         {

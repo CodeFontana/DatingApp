@@ -1,8 +1,4 @@
-﻿using DataAccessLibrary.Models;
-using System;
-using System.Threading.Tasks;
-
-namespace Client.Interfaces;
+﻿namespace Client.Interfaces;
 
 public interface IMemberStateService
 {

@@ -1,15 +1,12 @@
-﻿using System;
+﻿namespace Client.Interfaces;
 
-namespace Client.Interfaces
+public interface ISpinnerService
 {
-    public interface ISpinnerService
-    {
-        bool HoldSpinner { get; set; }
+    bool HoldSpinner { get; set; }
 
-        event Action OnHide;
-        event Action OnShow;
+    event Action OnHide;
+    event Action OnShow;
 
-        void Hide();
-        void Show();
-    }
+    void Hide();
+    void Show();
 }

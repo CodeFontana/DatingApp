@@ -1,14 +1,8 @@
-﻿using DataAccessLibrary.Interfaces;
-using DataAccessLibrary.Models;
-using System;
-using System.Threading.Tasks;
+﻿namespace Client.Interfaces;
 
-namespace Client.Interfaces
+public interface IAuthenticationService
 {
-    public interface IAuthenticationService
-    {
-        Task<ServiceResponseModel<AuthUserModel>> LoginAsync(LoginUserModel loginUser);
-        Task LogoutAsync();
-        Task<ServiceResponseModel<AuthUserModel>> RegisterAsync(RegisterUserModel registerUser);
-    }
+    Task<ServiceResponseModel<AuthUserModel>> LoginAsync(LoginUserModel loginUser);
+    Task LogoutAsync();
+    Task<ServiceResponseModel<AuthUserModel>> RegisterAsync(RegisterUserModel registerUser);
 }

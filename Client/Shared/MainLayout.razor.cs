@@ -1,13 +1,4 @@
-﻿using Blazored.LocalStorage;
-using Client.Interfaces;
-using DataAccessLibrary.Models;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using MudBlazor;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-namespace Client.Shared;
+﻿namespace Client.Shared;
 
 public partial class MainLayout
 {
@@ -24,6 +15,7 @@ public partial class MainLayout
     [Inject] IMemberStateService MemberStateService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
     [Inject] ILocalStorageService LocalStorage { get; set; }
+    [Inject] IWebAssemblyHostEnvironment HostEnv { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

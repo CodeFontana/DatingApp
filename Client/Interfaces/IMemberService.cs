@@ -1,25 +1,11 @@
-﻿using DataAccessLibrary.Models;
-using DataAccessLibrary.Pagination;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿namespace Client.Interfaces;
 
-namespace Client.Interfaces
+public interface IMemberService
 {
-    public interface IMemberService
-    {
-        List<MemberModel> MemberCache { get; set; }
-        Dictionary<string, MemberCacheModel> MemberListCache { get; set; }
-        UserParameters MembersFilter { get; set; }
-
-        Task<ServiceResponseModel<string>> ToggleLikeAsync(string username);
-        Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string username, MultipartFormDataContent content);
-        Task<ServiceResponseModel<string>> DeletePhotoAsync(string username, PhotoModel photo);
-        Task<ServiceResponseModel<IEnumerable<LikeUserModel>>> GetLikesAsync(string predicate);
-        Task<ServiceResponseModel<MemberModel>> GetMemberAsync(string username);
-        Task<PaginationResponseModel<IEnumerable<MemberModel>>> GetMembersAsync(UserParameters userParameters);
-        Task<string> GetPhotoAsync(string username, string filename);
-        Task<ServiceResponseModel<string>> SetMainPhotoAsync(string username, int photoId);
-        Task<ServiceResponseModel<string>> UpdateMemberAsync(MemberUpdateModel memberUpdate);
-    }
+    List<MemberModel> MemberCache { get; set; }
+    Dictionary<string, MemberCacheModel> MemberListCache { get; set; }
+    UserParameters MembersFilter { get; set; }
+    Task<ServiceResponseModel<MemberModel>> GetMemberAsync(string username);
+    Task<PaginationResponseModel<IEnumerable<MemberModel>>> GetMembersAsync(UserParameters userParameters);
+    Task<ServiceResponseModel<string>> UpdateMemberAsync(MemberUpdateModel memberUpdate);
 }

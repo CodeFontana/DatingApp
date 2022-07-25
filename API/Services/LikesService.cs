@@ -61,6 +61,8 @@ public class LikesService : ILikesService
             if (userLike != null)
             {
                 sourceUser.LikedUsers.Remove(userLike);
+                serviceResponse.Data = $"Unliked {username}";
+                serviceResponse.Message = $"Successfully unliked [{username}] on behalf of [{requestor}]";
             }
             else
             {
@@ -71,18 +73,18 @@ public class LikesService : ILikesService
                 };
 
                 sourceUser.LikedUsers.Add(userLike);
+                serviceResponse.Data = $"Liked {username}";
+                serviceResponse.Message = $"Successfully liked [{username}] on behalf of [{requestor}]";
             }
 
             if (await _memberRepository.SaveAllAsync())
             {
                 serviceResponse.Success = true;
-                serviceResponse.Data = $"Successfully liked [{username}] on behalf of [{requestor}]";
-                serviceResponse.Message = $"Successfully liked [{username}] on behalf of [{requestor}]";
                 _logger.LogInformation(serviceResponse.Message);
             }
             else
             {
-                throw new Exception($"Failed to like {username}");
+                throw new Exception($"Failed to toggle like status for {username}");
             }
         }
         catch (Exception e)

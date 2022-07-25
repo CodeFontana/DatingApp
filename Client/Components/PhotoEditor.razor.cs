@@ -1,15 +1,10 @@
-﻿using DataAccessLibrary.Models;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using MudBlazor;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace Client.Components;
+﻿namespace Client.Components;
 
 public partial class PhotoEditor
 {
+    [Inject] IPhotoService PhotoService { get; set; }
+    [Inject] IMemberStateService MemberStateService { get; set; }
+    [Inject] ISnackbar Snackbar { get; set; }
     [Parameter] public EventCallback<string> OnImageChanged { get; set; }
 
     private long _maxFileSize = 1024 * 1024 * 10;
@@ -55,7 +50,7 @@ public partial class PhotoEditor
                 name: "\"files\"",
                 fileName: imageFile.Name);
 
-            ServiceResponseModel<PhotoModel> result = await MemberService.AddPhotoAsync(MemberStateService.AppUser.Username, content);
+            ServiceResponseModel<PhotoModel> result = await PhotoService.AddPhotoAsync(MemberStateService.AppUser.Username, content);
 
             if (result.Success)
             {

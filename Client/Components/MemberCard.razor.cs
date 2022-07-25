@@ -1,15 +1,10 @@
-﻿using Client.Interfaces;
-using DataAccessLibrary.Models;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using System.Threading.Tasks;
-
-namespace Client.Components;
+﻿namespace Client.Components;
 
 public partial class MemberCard
 {
     [Inject] NavigationManager NavManager { get; set; }
-    [Inject] IMemberService MemberService { get; set; }
+    [Inject] IPhotoService PhotoService { get; set; }
+    [Inject] ILikesService LikesService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
     [Parameter] public MemberModel Member { get; set; }
 
@@ -17,7 +12,7 @@ public partial class MemberCard
 
     protected override async Task OnParametersSetAsync()
     {
-        _photoFilename = await MemberService.GetPhotoAsync(Member.Username, Member.MainPhotoFilename);
+        _photoFilename = await PhotoService.GetPhotoAsync(Member.Username, Member.MainPhotoFilename);
         Member.MainPhotoFilename = _photoFilename;
     }
 
@@ -28,11 +23,11 @@ public partial class MemberCard
 
     private async Task HandleLikeToggleAsync()
     {
-        ServiceResponseModel<string> result = await MemberService.ToggleLikeAsync(Member.Username);
+        ServiceResponseModel<string> result = await LikesService.ToggleLikeAsync(Member.Username);
 
         if (result.Success)
         {
-            Snackbar.Add($"Liked {Member.Username}", Severity.Success);
+            Snackbar.Add(result.Data, Severity.Success);
         }
         else
         {

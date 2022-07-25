@@ -1,9 +1,4 @@
-﻿@inject IMemberService MemberService
-@inject IMemberStateService MemberStateService
-@inject ISpinnerService SpinnerService
-@inject ISnackbar Snackbar
-
-<section>
+﻿<section>
     @if (_showError)
     {
         <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
