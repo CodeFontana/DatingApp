@@ -14,24 +14,24 @@ public class LikesRepository : ILikesRepository
         return await _db.Likes.FindAsync(sourceUserId, likedUserId);
     }
 
-    public async Task<IEnumerable<LikeUserModel>> GetUserLikesAsync(string predicate, int userId)
+    public async Task<PaginationList<LikeUserModel>> GetUserLikesAsync(LikesParameters likesParameters)
     {
         IQueryable<AppUser> users = _db.Users.OrderBy(u => u.UserName).AsQueryable();
         IQueryable<UserLike> likes = _db.Likes.AsQueryable();
 
-        if (predicate.ToLower().Equals("liked"))
+        if (likesParameters.Predicate.ToLower().Equals("liked"))
         {
-            likes = likes.Where(like => like.SourceUserId == userId);
+            likes = likes.Where(like => like.SourceUserId == likesParameters.UserId);
             users = likes.Select(like => like.LikedUser);
         }
 
-        if (predicate.ToLower().Equals("likedby"))
+        if (likesParameters.Predicate.ToLower().Equals("likedby"))
         {
-            likes = likes.Where(like => like.LikedUserId == userId);
+            likes = likes.Where(like => like.LikedUserId == likesParameters.UserId);
             users = likes.Select(like => like.SourceUser);
         }
 
-        return await users.Select(user => new LikeUserModel
+        IQueryable<LikeUserModel> result = users.Select(user => new LikeUserModel
         {
             Username = user.UserName,
             KnownAs = user.KnownAs,
@@ -39,7 +39,12 @@ public class LikesRepository : ILikesRepository
             MainPhoto = user.Photos.FirstOrDefault(p => p.IsMain).Filename,
             City = user.City,
             Id = user.Id
-        }).ToListAsync();
+        });
+
+        return await PaginationList<LikeUserModel>.CreateAsync(
+            result, 
+            likesParameters.PageNumber, 
+            likesParameters.PageSize);
     }
 
     public async Task<AppUser> GetUserWithLikesAsync(int userId)

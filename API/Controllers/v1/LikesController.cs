@@ -15,14 +15,14 @@ public class LikesController : ControllerBase
 
     [HttpGet]
     [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Any, NoStore = false)]
-    public async Task<ActionResult<ServiceResponseModel<IEnumerable<LikeUserModel>>>> GetUserLikesAsync([FromQuery] string predicate)
+    public async Task<ActionResult<PaginationResponseModel<PaginationList<LikeUserModel>>>> GetUserLikesAsync([FromQuery] LikesParameters likesParameters)
     {
-        int sourceUserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-
-        ServiceResponseModel<IEnumerable<LikeUserModel>> response = await _userLikeService.GetUserLikesAsync(User.Identity.Name, predicate, sourceUserId);
+        likesParameters.UserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        PaginationResponseModel<PaginationList<LikeUserModel>> response = await _userLikeService.GetUserLikesAsync(User.Identity.Name, likesParameters);
 
         if (response.Success)
         {
+            Response.AddPaginationHeader(response.MetaData);
             return Ok(response);
         }
         else

@@ -39,9 +39,9 @@ public class MemberRepository : IMemberRepository
         };
 
         return await PaginationList<MemberModel>
-            .CreateAsync(query
-                .ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
-                .AsNoTracking(),
+            .CreateAsync(
+                query.ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
+                     .AsNoTracking(),
             userParameters.PageNumber,
             userParameters.PageSize);
     }

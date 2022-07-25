@@ -13,28 +13,29 @@ public class LikesService : ILikesService
         _logger = logger;
     }
 
-    public async Task<ServiceResponseModel<IEnumerable<LikeUserModel>>> GetUserLikesAsync(string requestor, string predicate, int sourceUserId)
+    public async Task<PaginationResponseModel<PaginationList<LikeUserModel>>> GetUserLikesAsync(string requestor, LikesParameters likesParameters)
     {
-        ServiceResponseModel<IEnumerable<LikeUserModel>> serviceResponse = new();
+        PaginationResponseModel<PaginationList<LikeUserModel>> pagedResponse = new();
 
         try
         {
-            IEnumerable<LikeUserModel> users = await _likesRepository.GetUserLikesAsync(predicate, sourceUserId);
+            PaginationList<LikeUserModel> data = await _likesRepository.GetUserLikesAsync(likesParameters);
 
-            serviceResponse.Success = true;
-            serviceResponse.Data = users;
-            serviceResponse.Message = $"Successfully listed likes for [{requestor}]";
-            _logger.LogInformation(serviceResponse.Message);
+            pagedResponse.Success = true;
+            pagedResponse.Data = data;
+            pagedResponse.MetaData = data.MetaData;
+            pagedResponse.Message = $"Successfully listed likes for [{requestor}]";
+            _logger.LogInformation(pagedResponse.Message);
         }
         catch (Exception e)
         {
-            serviceResponse.Success = false;
-            serviceResponse.Message = $"Failed to list user likes for [{requestor}]";
-            _logger.LogError(serviceResponse.Message);
+            pagedResponse.Success = false;
+            pagedResponse.Message = $"Failed to list user likes for [{requestor}]";
+            _logger.LogError(pagedResponse.Message);
             _logger.LogError(e.Message);
         }
 
-        return serviceResponse;
+        return pagedResponse;
     }
 
     public async Task<ServiceResponseModel<string>> ToggleLikeAsync(string requestor, string username, int sourceUserId)
