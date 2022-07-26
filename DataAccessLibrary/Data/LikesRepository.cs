@@ -3,10 +3,12 @@
 public class LikesRepository : ILikesRepository
 {
     private readonly DataContext _db;
+    private readonly IMapper _mapper;
 
-    public LikesRepository(DataContext context)
+    public LikesRepository(DataContext context, IMapper mapper)
     {
         _db = context;
+        _mapper = mapper;
     }
 
     public async Task<UserLike> GetUserLikeAsync(int sourceUserId, int likedUserId)
@@ -14,7 +16,7 @@ public class LikesRepository : ILikesRepository
         return await _db.Likes.FindAsync(sourceUserId, likedUserId);
     }
 
-    public async Task<PaginationList<LikeUserModel>> GetUserLikesAsync(LikesParameters likesParameters)
+    public async Task<PaginationList<MemberModel>> GetUserLikesAsync(LikesParameters likesParameters)
     {
         IQueryable<AppUser> users = _db.Users.OrderBy(u => u.UserName).AsQueryable();
         IQueryable<UserLike> likes = _db.Likes.AsQueryable();
@@ -30,19 +32,10 @@ public class LikesRepository : ILikesRepository
             likes = likes.Where(like => like.LikedUserId == likesParameters.UserId);
             users = likes.Select(like => like.SourceUser);
         }
-
-        IQueryable<LikeUserModel> result = users.Select(user => new LikeUserModel
-        {
-            Username = user.UserName,
-            KnownAs = user.KnownAs,
-            Age = user.DateOfBirth.CalculateAge(),
-            MainPhoto = user.Photos.FirstOrDefault(p => p.IsMain).Filename,
-            City = user.City,
-            Id = user.Id
-        });
-
-        return await PaginationList<LikeUserModel>.CreateAsync(
-            result, 
+        
+        return await PaginationList<MemberModel>.CreateAsync(
+            users.ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
+                     .AsNoTracking(),
             likesParameters.PageNumber, 
             likesParameters.PageSize);
     }

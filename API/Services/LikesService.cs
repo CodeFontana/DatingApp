@@ -13,13 +13,13 @@ public class LikesService : ILikesService
         _logger = logger;
     }
 
-    public async Task<PaginationResponseModel<PaginationList<LikeUserModel>>> GetUserLikesAsync(string requestor, LikesParameters likesParameters)
+    public async Task<PaginationResponseModel<PaginationList<MemberModel>>> GetUserLikesAsync(string requestor, LikesParameters likesParameters)
     {
-        PaginationResponseModel<PaginationList<LikeUserModel>> pagedResponse = new();
+        PaginationResponseModel<PaginationList<MemberModel>> pagedResponse = new();
 
         try
         {
-            PaginationList<LikeUserModel> data = await _likesRepository.GetUserLikesAsync(likesParameters);
+            PaginationList<MemberModel> data = await _likesRepository.GetUserLikesAsync(likesParameters);
 
             pagedResponse.Success = true;
             pagedResponse.Data = data;
