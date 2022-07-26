@@ -2,6 +2,8 @@
 
 public interface ILikesService
 {
-    Task<ServiceResponseModel<IEnumerable<LikeUserModel>>> GetLikesAsync(string predicate);
+    Dictionary<string, MemberCacheModel> LikeListCache { get; set; }
+    LikesParameters LikesFilter { get; set; }
+    Task<PaginationResponseModel<IEnumerable<MemberModel>>> GetLikesAsync(LikesParameters likesParameters);
     Task<ServiceResponseModel<string>> ToggleLikeAsync(string username);
 }

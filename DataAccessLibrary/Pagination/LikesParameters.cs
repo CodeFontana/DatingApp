@@ -1,7 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-using System.Reflection;
-
-namespace DataAccessLibrary.Pagination;
+﻿namespace DataAccessLibrary.Pagination;
 
 public class LikesParameters : PaginationParameters
 {

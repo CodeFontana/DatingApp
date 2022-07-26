@@ -2,5 +2,47 @@
 @attribute [Authorize]
 
 <section>
-    <MudText Align="Align.Center" Typo="Typo.h3">Lists</MudText>
+    <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-5">@_pageTitle</MudText>
+
+    <MudCard Elevation="20">
+        <MudCardHeader Class="d-flex justify-center">
+            <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                <MudButton OnClick="@(() => HandlePredicateChange("liked"))">Members I Like</MudButton>
+                <MudButton OnClick="@(() => HandlePredicateChange("likedby"))">Members Who Like Me</MudButton>
+            </MudButtonGroup>
+        </MudCardHeader>
+
+        <MudCardContent>
+            @if (_showError)
+            {
+                <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+            }
+            else if (_members?.Count > 0)
+            {
+                <MudGrid Class="d-flex">
+                    @foreach (MemberModel m in _members)
+                    {
+                        <MudItem xs="12" sm="4" md="3" lg="3" xl="2">
+                            <MemberCard Member="m" />
+                        </MudItem>
+                    }
+                </MudGrid>
+            }
+        </MudCardContent>
+
+        <MudCardActions Class="d-flex justify-center">
+            @if (_members?.Count > 0)
+            {
+                <MudPagination Class="mb-2"
+                           Rectangular="true"
+                           Color="Color.Primary"
+                           Count="@_metaData.TotalPages"
+                           Selected="@_metaData.CurrentPage"
+                           SelectedChanged="HandlePageChangedAsync" />
+            }
+        </MudCardActions>
+
+    </MudCard>
+
+
 </section>
