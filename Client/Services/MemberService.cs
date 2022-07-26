@@ -19,7 +19,7 @@ public class MemberService : IMemberService
 
     public List<MemberModel> MemberCache { get; set; } = new();
     public Dictionary<string, MemberCacheModel> MemberListCache { get; set; } = new();
-    public UserParameters MembersFilter { get; set; } = new();
+    public MemberParameters MembersFilter { get; set; } = new();
 
     public async Task<ServiceResponseModel<MemberModel>> GetMemberAsync(string username)
     {
@@ -63,7 +63,7 @@ public class MemberService : IMemberService
         return result;
     }
 
-    public async Task<PaginationResponseModel<IEnumerable<MemberModel>>> GetMembersAsync(UserParameters userParameters)
+    public async Task<PaginationResponseModel<IEnumerable<MemberModel>>> GetMembersAsync(MemberParameters userParameters)
     {
         MemberCacheModel cachedData = MemberListCache.GetValueOrDefault(userParameters.Values);
 

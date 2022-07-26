@@ -32,7 +32,7 @@ public class MembersController : ControllerBase
 
     [HttpGet]
     [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Any, NoStore = false)]
-    public async Task<ActionResult<PaginationResponseModel<PaginationList<MemberModel>>>> GetMembersAsync([FromQuery] UserParameters userParameters)
+    public async Task<ActionResult<PaginationResponseModel<PaginationList<MemberModel>>>> GetMembersAsync([FromQuery] MemberParameters userParameters)
     {
         PaginationResponseModel<PaginationList<MemberModel>> response = await _memberService.GetMembersAsync(User.Identity.Name, userParameters);
 

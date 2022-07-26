@@ -1,6 +1,6 @@
 ﻿namespace DataAccessLibrary.Pagination;
 
-public class UserParameters : PaginationParameters
+public class MemberParameters : PaginationParameters
 {
     public string CurrentUsername { get; set; }
 

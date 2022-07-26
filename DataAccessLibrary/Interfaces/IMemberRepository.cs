@@ -7,6 +7,6 @@ public interface IMemberRepository
     Task<IEnumerable<AppUser>> GetMembersAsync();
     Task<AppUser> GetMemberByIdAsync(int id);
     Task<AppUser> GetMemberByUsernameAsync(string username);
-    Task<PaginationList<MemberModel>> GetMembersAsync(UserParameters userParameters);
+    Task<PaginationList<MemberModel>> GetMembersAsync(MemberParameters userParameters);
     Task<MemberModel> GetMemberAsync(string username);
 }

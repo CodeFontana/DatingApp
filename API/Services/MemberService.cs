@@ -35,7 +35,7 @@ public class MemberService : IMemberService
         return serviceResponse;
     }
 
-    public async Task<PaginationResponseModel<PaginationList<MemberModel>>> GetMembersAsync(string requestor, UserParameters userParameters)
+    public async Task<PaginationResponseModel<PaginationList<MemberModel>>> GetMembersAsync(string requestor, MemberParameters userParameters)
     {
         PaginationResponseModel<PaginationList<MemberModel>> pagedResponse = new();
 

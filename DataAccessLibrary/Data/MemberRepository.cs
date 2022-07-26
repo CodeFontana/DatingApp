@@ -20,27 +20,27 @@ public class MemberRepository : IMemberRepository
             .SingleOrDefaultAsync();
     }
 
-    public async Task<PaginationList<MemberModel>> GetMembersAsync(UserParameters userParameters)
+    public async Task<PaginationList<MemberModel>> GetMembersAsync(MemberParameters userParameters)
     {
-        IQueryable<AppUser> query = _db.Users.AsQueryable();
+        IQueryable<AppUser> users = _db.Users.AsQueryable();
 
-        query = query.Where(u => u.UserName != userParameters.CurrentUsername);
-        query = query.Where(u => u.Gender.ToLower() == userParameters.Gender.ToLower());
+        users = users.Where(u => u.UserName != userParameters.CurrentUsername);
+        users = users.Where(u => u.Gender.ToLower() == userParameters.Gender.ToLower());
 
         DateTime minDob = DateTime.Today.AddYears(-userParameters.MaxAge - 1);
         DateTime maxDob = DateTime.Today.AddYears(-userParameters.MinAge);
 
-        query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
+        users = users.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
 
-        query = userParameters.OrderBy.ToLower() switch
+        users = userParameters.OrderBy.ToLower() switch
         {
-            "created" => query.OrderByDescending(u => u.Created),
-            _ => query.OrderByDescending(u => u.LastActive)
+            "created" => users.OrderByDescending(u => u.Created),
+            _ => users.OrderByDescending(u => u.LastActive)
         };
 
         return await PaginationList<MemberModel>
             .CreateAsync(
-                query.ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
+                users.ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
                      .AsNoTracking(),
             userParameters.PageNumber,
             userParameters.PageSize);
