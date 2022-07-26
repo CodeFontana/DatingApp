@@ -44,6 +44,14 @@
 ::deep .member-info {
     overflow: hidden;
     text-overflow: ellipsis;
-    word-wrap: break-word;
+    white-space: nowrap;
     font-weight: 500;
+}
+
+
+::deep .member-location {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #868E96;
 }
