@@ -1,5 +1,6 @@
 ﻿global using AutoMapper;
 global using AutoMapper.QueryableExtensions;
+global using DataAccessLibrary.Data;
 global using DataAccessLibrary.Entities;
 global using DataAccessLibrary.Extensions;
 global using DataAccessLibrary.Interfaces;

@@ -167,6 +167,39 @@ namespace DataAccessLibrary.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SenderId = table.Column<int>(type: "int", nullable: false),
+                    SenderUsername = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    RecipientId = table.Column<int>(type: "int", nullable: false),
+                    RecipientUsername = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Content = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    DateRead = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    MessageSent = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SenderDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    RecipientDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Messages_AspNetUsers_RecipientId",
+                        column: x => x.RecipientId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Messages_AspNetUsers_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Photos",
                 columns: table => new
                 {
@@ -185,6 +218,29 @@ namespace DataAccessLibrary.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserLike",
+                columns: table => new
+                {
+                    SourceUserId = table.Column<int>(type: "int", nullable: false),
+                    LikedUserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserLike", x => new { x.SourceUserId, x.LikedUserId });
+                    table.ForeignKey(
+                        name: "FK_UserLike_AspNetUsers_LikedUserId",
+                        column: x => x.LikedUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserLike_AspNetUsers_SourceUserId",
+                        column: x => x.SourceUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -227,9 +283,24 @@ namespace DataAccessLibrary.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Messages_RecipientId",
+                table: "Messages",
+                column: "RecipientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_SenderId",
+                table: "Messages",
+                column: "SenderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Photos_AppUserId",
                 table: "Photos",
                 column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserLike_LikedUserId",
+                table: "UserLike",
+                column: "LikedUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -250,7 +321,13 @@ namespace DataAccessLibrary.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Messages");
+
+            migrationBuilder.DropTable(
                 name: "Photos");
+
+            migrationBuilder.DropTable(
+                name: "UserLike");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

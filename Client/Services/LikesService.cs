@@ -73,7 +73,7 @@ public class LikesService : ILikesService
     {
         if (string.IsNullOrWhiteSpace(username))
         {
-            throw new ArgumentNullException("Invalid username");
+            throw new ArgumentNullException(nameof(username), "Invalid username");
         }
 
         string apiEndpoint = _config["apiLocation"] + _config["likesEndpoint"];
