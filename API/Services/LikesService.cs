@@ -15,6 +15,7 @@ public class LikesService : ILikesService
 
     public async Task<PaginationResponseModel<PaginationList<MemberModel>>> GetUserLikesAsync(string requestor, LikesParameters likesParameters)
     {
+        _logger.LogInformation($"Get likes... [{requestor}]");
         PaginationResponseModel<PaginationList<MemberModel>> pagedResponse = new();
 
         try
@@ -40,6 +41,7 @@ public class LikesService : ILikesService
 
     public async Task<ServiceResponseModel<string>> ToggleLikeAsync(string requestor, string username, int sourceUserId)
     {
+        _logger.LogInformation($"Toggle like for {username}... [{requestor}]");
         ServiceResponseModel<string> serviceResponse = new();
 
         try

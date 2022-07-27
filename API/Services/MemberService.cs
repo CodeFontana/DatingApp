@@ -15,6 +15,7 @@ public class MemberService : IMemberService
 
     public async Task<ServiceResponseModel<MemberModel>> GetMemberAsync(string username, string requestor)
     {
+        _logger.LogInformation($"Get member {username}... [{requestor}]");
         ServiceResponseModel<MemberModel> serviceResponse = new();
 
         try
@@ -37,6 +38,7 @@ public class MemberService : IMemberService
 
     public async Task<PaginationResponseModel<PaginationList<MemberModel>>> GetMembersAsync(string requestor, MemberParameters userParameters)
     {
+        _logger.LogInformation($"Get members... [{requestor}]");
         PaginationResponseModel<PaginationList<MemberModel>> pagedResponse = new();
 
         try
@@ -63,6 +65,7 @@ public class MemberService : IMemberService
 
     public async Task<ServiceResponseModel<string>> UpdateMemberAsync(string username, MemberUpdateModel memberUpdate)
     {
+        _logger.LogInformation($"Update member... [{username}]");
         ServiceResponseModel<string> serviceResponse = new();
 
         try

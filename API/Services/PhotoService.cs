@@ -1,4 +1,6 @@
-﻿namespace API.Services;
+﻿using DataAccessLibrary.Models;
+
+namespace API.Services;
 
 public class PhotoService : IPhotoService
 {
@@ -20,6 +22,7 @@ public class PhotoService : IPhotoService
 
     public async Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string username, IEnumerable<IFormFile> files)
     {
+        _logger.LogInformation($"Add photo for {username}...");
         ServiceResponseModel<PhotoModel> serviceResponse = new();
         long maxFileSize = 1024 * 1024 * 5;
 
@@ -102,6 +105,7 @@ public class PhotoService : IPhotoService
 
     public async Task<ServiceResponseModel<byte[]>> GetPhotoAsync(string username, string filename)
     {
+        _logger.LogInformation($"Get photo for {username}...");
         ServiceResponseModel<byte[]> serviceResponse = new();
 
         try
@@ -135,6 +139,7 @@ public class PhotoService : IPhotoService
 
     public async Task<ServiceResponseModel<string>> SetMainPhotoAsync(string username, int photoId)
     {
+        _logger.LogInformation($"Set main photo for {username}...");
         ServiceResponseModel<string> serviceResponse = new();
 
         try
@@ -182,6 +187,7 @@ public class PhotoService : IPhotoService
 
     public async Task<ServiceResponseModel<string>> DeletePhotoAsync(string username, PhotoModel photo)
     {
+        _logger.LogInformation($"Delete photo for {username}...");
         ServiceResponseModel<string> serviceResponse = new();
 
         try
