@@ -2,10 +2,10 @@
 
 public interface IMessageRepository
 {
-    void AddMessage(Message message);
+    Task CreateMessageAsync(Message message);
     void DeleteMessage(Message message);
     Task<Message> GetMessageAsync(int id);
-    Task<PaginationResponseModel<PaginationList<MessageModel>>> GetMessagesForMember();
-    Task<PaginationResponseModel<PaginationList<MessageModel>>> GetMessageThread();
+    Task<PaginationList<MessageModel>> GetMessagesForMemberAsync(MessageParameters messageParameters);
+    Task<IEnumerable<MessageModel>> GetMessageThreadAsync(string currentUsername, string recipientUsername);
     Task<bool> SaveAllAsync();
 }
