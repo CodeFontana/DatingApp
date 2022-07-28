@@ -2,5 +2,42 @@
 @attribute [Authorize]
 
 <section>
-    <MudText Align="Align.Center" Typo="Typo.h3">Messages</MudText>
+    <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-5">@_pageTitle</MudText>
+
+    <MudCard Elevation="20">
+        <MudCardHeader Class="d-flex justify-center">
+            <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                <MudButton OnClick="@(() => HandlePredicateChange("inbox"))">Inbox</MudButton>
+                <MudButton OnClick="@(() => HandlePredicateChange("sent"))">Sent</MudButton>
+            </MudButtonGroup>
+        </MudCardHeader>
+
+        <MudCardContent>
+            @if (_showError)
+            {
+                <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+            }
+            else if (_messages?.Count > 0)
+            {
+                @foreach (MessageModel m in _messages)
+                {
+                    <MudText Inline="false">@m.SenderUsername - @m.Content</MudText>
+                }
+            }
+        </MudCardContent>
+
+        <MudCardActions Class="d-flex justify-center">
+            @if (_messages?.Count > 0)
+            {
+                <MudPagination Class="mb-2"
+                           Rectangular="true"
+                           Color="Color.Primary"
+                           Count="@_metaData.TotalPages"
+                           Selected="@_metaData.CurrentPage"
+                           SelectedChanged="HandlePageChangedAsync" />
+            }
+        </MudCardActions>
+
+    </MudCard>
+
 </section>
