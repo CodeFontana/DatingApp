@@ -16,6 +16,7 @@ public class MessagesController : ControllerBase
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 10, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<ActionResult<PaginationResponseModel<PaginationList<MessageModel>>>> GetMessagesForMemberAsync([FromQuery] MessageParameters messageParameters)
     {
         messageParameters.Username = User.Identity.Name;
@@ -33,6 +34,7 @@ public class MessagesController : ControllerBase
     }
 
     [HttpGet("thread/{username}")]
+    [ResponseCache(Duration = 10, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<ActionResult<ServiceResponseModel<IEnumerable<MessageModel>>>> GetMessageThreadAsync(string username)
     {
         ServiceResponseModel<IEnumerable<MessageModel>> response = await _messageService.GetMessageThreadAsync(User.Identity.Name, username);
