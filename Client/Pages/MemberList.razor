@@ -4,7 +4,7 @@
 <section>
     <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-5">Your matches - @_metaData?.TotalCount found</MudText>
 
-    <EditForm Model="@MemberService.MembersFilter" OnValidSubmit="HandleFilterSubmitAsync">
+    <EditForm Model="@_membersFilter" OnValidSubmit="HandleFilterSubmitAsync">
         <DataAnnotationsValidator />
 
         <MudCard Elevation="20">
@@ -17,8 +17,8 @@
                                          Max="85"
                                          MaxLength="2"
                                          Label="Age from"
-                                         @bind-Value="@MemberService.MembersFilter.MinAge"
-                                         For="@(() => MemberService.MembersFilter.MinAge)" />
+                                         @bind-Value="@_membersFilter.MinAge"
+                                         For="@(() => _membersFilter.MinAge)" />
                     </MudItem>
 
                     <MudItem xs="6" sm="4" md="2" lg="1">
@@ -27,16 +27,16 @@
                                          Max="85"
                                          MaxLength="2"
                                          Label="Age to"
-                                         @bind-Value="@MemberService.MembersFilter.MaxAge"
-                                         For="@(() => MemberService.MembersFilter.MaxAge)" />
+                                         @bind-Value="@_membersFilter.MaxAge"
+                                         For="@(() => _membersFilter.MaxAge)" />
                     </MudItem>
 
                     <MudItem xs="12" sm="4" md="2" lg="2">
                         <MudSelect T="string"
                                    Label="Biology"
                                    Variant="Variant.Filled"
-                                   @bind-Value="@MemberService.MembersFilter.Gender"
-                                   For="@(() => MemberService.MembersFilter.Gender)">
+                                   @bind-Value="@_membersFilter.Gender"
+                                   For="@(() => _membersFilter.Gender)">
                             <MudSelectItem Value=@("female")>Female</MudSelectItem>
                             <MudSelectItem Value=@("male")>Male</MudSelectItem>
                         </MudSelect>

@@ -15,7 +15,6 @@ public class LikesService : ILikesService
     }
 
     public Dictionary<string, MemberCacheModel> LikeListCache { get; set; } = new();
-    public LikesParameters LikesFilter { get; set; } = new();
 
     public async Task<PaginationResponseModel<IEnumerable<MemberModel>>> GetLikesAsync(LikesParameters likesParameters)
     {

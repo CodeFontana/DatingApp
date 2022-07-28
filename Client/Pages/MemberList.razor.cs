@@ -3,6 +3,7 @@
 public partial class MemberList
 {
     private List<MemberModel> _members = new();
+    private MemberParameters _membersFilter = new();
     private PaginationModel _metaData;
     private bool _showError = false;
     private string _errorText;
@@ -13,15 +14,15 @@ public partial class MemberList
 
     protected override async Task OnInitializedAsync()
     {
-        if (string.IsNullOrWhiteSpace(MemberService.MembersFilter.Gender))
+        if (string.IsNullOrWhiteSpace(_membersFilter.Gender))
         {
             if (MemberStateService.AppUser.Gender.ToLower().Equals("female"))
             {
-                MemberService.MembersFilter.Gender = "male";
+                _membersFilter.Gender = "male";
             }
             else
             {
-                MemberService.MembersFilter.Gender = "female";
+                _membersFilter.Gender = "female";
             }
         }
 
@@ -30,7 +31,7 @@ public partial class MemberList
 
     private async Task LoadMembersAsync()
     {
-        PaginationResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync(MemberService.MembersFilter);
+        PaginationResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync(_membersFilter);
 
         if (result.Success)
         {
@@ -48,7 +49,7 @@ public partial class MemberList
 
     private async Task HandleFilterSubmitAsync()
     {
-        if (MemberService.MembersFilter.MinAge > MemberService.MembersFilter.MaxAge)
+        if (_membersFilter.MinAge > _membersFilter.MaxAge)
         {
             _showError = true;
             _errorText = "Please validate age filters";
@@ -62,19 +63,19 @@ public partial class MemberList
 
     private async Task HandleFilterResetAsync()
     {
-        MemberService.MembersFilter.PageNumber = 1;
-        MemberService.MembersFilter.PageSize = 10;
-        MemberService.MembersFilter.MinAge = 18;
-        MemberService.MembersFilter.MaxAge = 45;
-        MemberService.MembersFilter.OrderBy = "LastActive";
+        _membersFilter.PageNumber = 1;
+        _membersFilter.PageSize = 10;
+        _membersFilter.MinAge = 18;
+        _membersFilter.MaxAge = 45;
+        _membersFilter.OrderBy = "LastActive";
 
         if (MemberStateService.AppUser.Gender.ToLower().Equals("female"))
         {
-            MemberService.MembersFilter.Gender = "male";
+            _membersFilter.Gender = "male";
         }
         else
         {
-            MemberService.MembersFilter.Gender = "female";
+            _membersFilter.Gender = "female";
         }
 
         await LoadMembersAsync();
@@ -82,13 +83,13 @@ public partial class MemberList
 
     private async Task HandleSortSubmitAsync(string sortValue)
     {
-        MemberService.MembersFilter.OrderBy = sortValue.ToLower();
+        _membersFilter.OrderBy = sortValue.ToLower();
         await HandleFilterSubmitAsync();
     }
 
     private async Task HandlePageChangedAsync(int page)
     {
-        MemberService.MembersFilter.PageNumber = page;
+        _membersFilter.PageNumber = page;
         _members = null;
         await LoadMembersAsync();
     }

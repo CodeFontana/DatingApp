@@ -3,6 +3,7 @@
 public partial class Lists
 {
     private List<MemberModel> _members = new();
+    private LikesParameters _likesFilter = new();
     private PaginationModel _metaData;
     private string _pageTitle;
     private bool _showError = false;
@@ -13,12 +14,12 @@ public partial class Lists
 
     protected override async Task OnInitializedAsync()
     {
-        if (string.IsNullOrWhiteSpace(LikesService.LikesFilter.Predicate))
+        if (string.IsNullOrWhiteSpace(_likesFilter.Predicate))
         {
-            LikesService.LikesFilter.Predicate = "LikedBy";
+            _likesFilter.Predicate = "LikedBy";
         }
 
-        if (LikesService.LikesFilter.Predicate == "LikedBy")
+        if (_likesFilter.Predicate == "LikedBy")
         {
             _pageTitle = "Members who like me";
         }
@@ -32,7 +33,7 @@ public partial class Lists
 
     private async Task LoadLikesAsync()
     {
-        PaginationResponseModel<IEnumerable<MemberModel>> result = await LikesService.GetLikesAsync(LikesService.LikesFilter);
+        PaginationResponseModel<IEnumerable<MemberModel>> result = await LikesService.GetLikesAsync(_likesFilter);
 
         if (result.Success)
         {
@@ -52,12 +53,12 @@ public partial class Lists
     {
         if (predicate.ToLower() == "likedby")
         {
-            LikesService.LikesFilter.Predicate = "likedby";
+            _likesFilter.Predicate = "likedby";
             _pageTitle = "Members who like me";
         }
         else
         {
-            LikesService.LikesFilter.Predicate = "liked";
+            _likesFilter.Predicate = "liked";
             _pageTitle = "Members who I like";
         }
 
@@ -67,7 +68,7 @@ public partial class Lists
 
     private async Task HandlePageChangedAsync(int page)
     {
-        LikesService.LikesFilter.PageNumber = page;
+        _likesFilter.PageNumber = page;
         _members = null;
         await LoadLikesAsync();
     }
