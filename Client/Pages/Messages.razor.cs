@@ -6,6 +6,7 @@ public partial class Messages
     private MessageParameters _messageFilter = new();
     private PaginationModel _metaData;
     private string _pageTitle;
+    private bool _loadingMessages = false;
     private bool _showError = false;
     private string _errorText;
 
@@ -16,6 +17,7 @@ public partial class Messages
     {
         if (string.IsNullOrWhiteSpace(_messageFilter.Container))
         {
+            _pageTitle = "Messages - Inbox";
             _messageFilter.Container = "Inbox";
         }
 
@@ -24,6 +26,7 @@ public partial class Messages
 
     private async Task LoadMessagesAsync()
     {
+        _loadingMessages = true;
         PaginationResponseModel<IEnumerable<MessageModel>> result = await MessageService.GetMessagesForMemberAsync(_messageFilter);
 
         if (result.Success)
@@ -38,6 +41,8 @@ public partial class Messages
             _errorText = $"Request failed: {result.Message}";
             Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
         }
+
+        _loadingMessages = false;
     }
 
     private async Task HandlePredicateChange(string predicate)
@@ -47,10 +52,15 @@ public partial class Messages
             _messageFilter.Container = "Inbox";
             _pageTitle = "Messages - Inbox";
         }
-        else
+        else if (predicate.ToLower() == "sent")
         {
             _messageFilter.Container = "Sent";
             _pageTitle = "Messages - Sent";
+        }
+        else
+        {
+            _messageFilter.Container = "Unread";
+            _pageTitle = "Messages - Unread";
         }
 
         _messages = null;

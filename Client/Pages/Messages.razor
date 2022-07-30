@@ -4,40 +4,72 @@
 <section>
     <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-5">@_pageTitle</MudText>
 
-    <MudCard Elevation="20">
-        <MudCardHeader Class="d-flex justify-center">
-            <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
-                <MudButton OnClick="@(() => HandlePredicateChange("inbox"))">Inbox</MudButton>
-                <MudButton OnClick="@(() => HandlePredicateChange("sent"))">Sent</MudButton>
-            </MudButtonGroup>
-        </MudCardHeader>
+    <MudButtonGroup Class="d-flex justify-center mb-5" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Large" DisableElevation="true">
+        <MudButton StartIcon="@Icons.Material.Filled.Mail" OnClick="@(() => HandlePredicateChange("unread"))">Unread</MudButton>
+        <MudButton StartIcon="@Icons.Material.Filled.Inbox" OnClick="@(() => HandlePredicateChange("inbox"))">Inbox</MudButton>
+        <MudButton StartIcon="@Icons.Material.Filled.Outbound" OnClick="@(() => HandlePredicateChange("sent"))">Sent</MudButton>
+    </MudButtonGroup>
 
-        <MudCardContent>
-            @if (_showError)
-            {
-                <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
-            }
-            else if (_messages?.Count > 0)
-            {
-                @foreach (MessageModel m in _messages)
-                {
-                    <MudText Inline="false">@m.SenderUsername - @m.Content</MudText>
-                }
-            }
-        </MudCardContent>
+    @if (_showError)
+    {
+        <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+    }
+    else if (_messages?.Count > 0)
+    {
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="12" xl="8">
+                <MudTable Items="@_messages" 
+                    Dense="false" 
+                    Hover="true" 
+                    Bordered="true" 
+                    Striped="true" 
+                    Loading="@_loadingMessages" 
+                    LoadingProgressColor="Color.Info"
+                    Breakpoint="Breakpoint.None"
+                    HorizontalScrollbar="true"
+                    Elevation="20">
+                    <HeaderContent>
+                        @if (_messageFilter.Container == "Inbox" || _messageFilter.Container == "Unread")
+                        {
+                            <MudTh><MudText Typo="Typo.h5">From</MudText></MudTh>
+                            <MudTh><MudText Typo="Typo.h5">Received</MudText></MudTh>
+                        }
+                        else
+                        {
+                            <MudTh><MudText Typo="Typo.h5">To</MudText></MudTh>
+                            <MudTh><MudText Typo="Typo.h5">Sent</MudText></MudTh>
+                        }
+                        <MudTh><MudText Typo="Typo.h5">Message</MudText></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        @if (_messageFilter.Container == "Inbox" || _messageFilter.Container == "Unread")
+                        {
+                            <MudTd>
+                                <MudText Typo="Typo.h6">@context.SenderUsername</MudText>
+                            </MudTd>
+                        }
+                        else
+                        {
+                            <MudTd>
+                                <MudText Typo="Typo.h6">@context.RecipientUsername</MudText>
+                            </MudTd>
+                        }
+                        <MudTd><MudText Typo="Typo.h6">@DateTime.Now.Subtract(context.MessageSent).Humanize()</MudText></MudTd>
+                        <MudTd><MudText Typo="Typo.body1">@context.Content</MudText></MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager />
+                    </PagerContent>
+                </MudTable>
+            </MudItem>
+        </MudGrid>
 
-        <MudCardActions Class="d-flex justify-center">
-            @if (_messages?.Count > 0)
-            {
-                <MudPagination Class="mb-2"
-                           Rectangular="true"
-                           Color="Color.Primary"
-                           Count="@_metaData.TotalPages"
-                           Selected="@_metaData.CurrentPage"
-                           SelectedChanged="HandlePageChangedAsync" />
-            }
-        </MudCardActions>
-
-    </MudCard>
-
+        <MudPagination Class="d-flex justify-center my-5"
+                   Rectangular="true"
+                   Color="Color.Primary"
+                   Count="@_metaData.TotalPages"
+                   Size="Size.Large"
+                   Selected="@_metaData.CurrentPage"
+                   SelectedChanged="HandlePageChangedAsync" />
+    }
 </section>
