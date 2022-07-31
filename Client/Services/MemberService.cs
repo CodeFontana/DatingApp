@@ -62,35 +62,35 @@ public class MemberService : IMemberService
         return result;
     }
 
-    public async Task<PaginationResponseModel<IEnumerable<MemberModel>>> GetMembersAsync(MemberParameters userParameters)
+    public async Task<PaginationResponseModel<IEnumerable<MemberModel>>> GetMembersAsync(MemberParameters memberParameters)
     {
-        MemberCacheModel cachedData = MemberListCache.GetValueOrDefault(userParameters.Values);
+        MemberCacheModel cachedData = MemberListCache.GetValueOrDefault(memberParameters.Values);
 
         if (cachedData?.CacheTime.AddMinutes(5) > DateTime.Now)
         {
-            Console.WriteLine($"Found member list in cache [{userParameters.Values}]");
+            Console.WriteLine($"Found member list in cache [{memberParameters.Values}]");
             return cachedData.PaginatedResponse;
         }
         else if (cachedData != null)
         {
-            Console.WriteLine($"Member list cache outdated {userParameters.Values}]");
-            MemberListCache.Remove(userParameters.Values);
+            Console.WriteLine($"Member list cache outdated {memberParameters.Values}]");
+            MemberListCache.Remove(memberParameters.Values);
         }
         else
         {
-            Console.WriteLine($"Member list not in cache [{userParameters.Values}]");
+            Console.WriteLine($"Member list not in cache [{memberParameters.Values}]");
         }
 
         string apiEndpoint = _config["apiLocation"] + _config["membersEndpoint"];
 
         Dictionary<string, string> queryStringParam = new()
         {
-            [nameof(userParameters.PageNumber)] = userParameters.PageNumber.ToString(),
-            [nameof(userParameters.PageSize)] = userParameters.PageSize.ToString(),
-            [nameof(userParameters.MinAge)] = userParameters.MinAge.ToString(),
-            [nameof(userParameters.MaxAge)] = userParameters.MaxAge.ToString(),
-            [nameof(userParameters.Gender)] = userParameters.Gender,
-            [nameof(userParameters.OrderBy)] = userParameters.OrderBy
+            [nameof(memberParameters.PageNumber)] = memberParameters.PageNumber.ToString(),
+            [nameof(memberParameters.PageSize)] = memberParameters.PageSize.ToString(),
+            [nameof(memberParameters.MinAge)] = memberParameters.MinAge.ToString(),
+            [nameof(memberParameters.MaxAge)] = memberParameters.MaxAge.ToString(),
+            [nameof(memberParameters.Gender)] = memberParameters.Gender,
+            [nameof(memberParameters.OrderBy)] = memberParameters.OrderBy
         };
 
         using HttpResponseMessage response = await _httpClient.GetAsync(QueryHelpers.AddQueryString(apiEndpoint, queryStringParam));
@@ -106,11 +106,11 @@ public class MemberService : IMemberService
             MemberCacheModel cacheResponse = new MemberCacheModel
             {
                 CacheTime = DateTime.Now,
-                SearchKey = userParameters.Values,
+                SearchKey = memberParameters.Values,
                 PaginatedResponse = result
             };
 
-            MemberListCache.Add(userParameters.Values, cacheResponse);
+            MemberListCache.TryAdd(memberParameters.Values, cacheResponse);
         }
 
         return result;

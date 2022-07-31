@@ -7,121 +7,110 @@
     <EditForm Model="@_membersFilter" OnValidSubmit="HandleFilterSubmitAsync">
         <DataAnnotationsValidator />
 
-        <MudCard Elevation="20">
-            <MudCardHeader>
-                <MudGrid Class="d-flex align-end justify-center flex-wrap">
+        <MudGrid Class="d-flex align-end justify-center flex-wrap mb-5">
 
-                    <MudItem xs="6" sm="4" md="2" lg="1">
-                        <MudNumericField T="int"
-                                         Min="18"
-                                         Max="85"
-                                         MaxLength="2"
-                                         Label="Age from"
-                                         @bind-Value="@_membersFilter.MinAge"
-                                         For="@(() => _membersFilter.MinAge)" />
-                    </MudItem>
+            <MudItem xs="6" sm="4" md="2" lg="1">
+                <MudNumericField T="int"
+                                 Min="18"
+                                 Max="85"
+                                 MaxLength="2"
+                                 Label="Age from"
+                                 @bind-Value="@_membersFilter.MinAge"
+                                 For="@(() => _membersFilter.MinAge)" />
+            </MudItem>
 
-                    <MudItem xs="6" sm="4" md="2" lg="1">
-                        <MudNumericField T="int"
-                                         Min="18"
-                                         Max="85"
-                                         MaxLength="2"
-                                         Label="Age to"
-                                         @bind-Value="@_membersFilter.MaxAge"
-                                         For="@(() => _membersFilter.MaxAge)" />
-                    </MudItem>
+            <MudItem xs="6" sm="4" md="2" lg="1">
+                <MudNumericField T="int"
+                                 Min="18"
+                                 Max="85"
+                                 MaxLength="2"
+                                 Label="Age to"
+                                 @bind-Value="@_membersFilter.MaxAge"
+                                 For="@(() => _membersFilter.MaxAge)" />
+            </MudItem>
 
-                    <MudItem xs="12" sm="4" md="2" lg="2">
-                        <MudSelect T="string"
-                                   Label="Biology"
+            <MudItem xs="12" sm="4" md="2" lg="2">
+                <MudSelect T="string"
+                           Label="Biology"
+                           Variant="Variant.Filled"
+                           @bind-Value="@_membersFilter.Gender"
+                           For="@(() => _membersFilter.Gender)">
+                    <MudSelectItem Value=@("female")>Female</MudSelectItem>
+                    <MudSelectItem Value=@("male")>Male</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+
+            <MudItem xs="12" sm="12" md="6" lg="4">
+                <MudGrid>
+                    <MudItem Class="d-flex flex-grow-1" xs="12" sm="6">
+                        <MudButton Class="flex-grow-1"
+                                   Color="Color.Primary"
                                    Variant="Variant.Filled"
-                                   @bind-Value="@_membersFilter.Gender"
-                                   For="@(() => _membersFilter.Gender)">
-                            <MudSelectItem Value=@("female")>Female</MudSelectItem>
-                            <MudSelectItem Value=@("male")>Male</MudSelectItem>
-                        </MudSelect>
+                                   ButtonType="ButtonType.Submit"
+                                   Style="white-space: nowrap">
+                            Apply Filters
+                        </MudButton>
                     </MudItem>
-
-                    <MudItem xs="12" sm="12" md="6" lg="4">
-                        <MudGrid>
-                            <MudItem Class="d-flex flex-grow-1" xs="12" sm="6">
-                                <MudButton Class="flex-grow-1"
-                                           Color="Color.Primary"
-                                           Variant="Variant.Filled"
-                                           ButtonType="ButtonType.Submit"
-                                           Style="white-space: nowrap">
-                                    Apply Filters
-                                </MudButton>
-                            </MudItem>
-                            <MudItem Class="d-flex flex-grow-1" xs="12" sm="6">
-                                <MudButton Class="flex-grow-1"
-                                           Color="Color.Info"
-                                           Variant="Variant.Filled"
-                                           OnClick="HandleFilterResetAsync"
-                                           Style="white-space: nowrap">
-                                    Reset Filters
-                                </MudButton>
-                            </MudItem>
-                        </MudGrid>
+                    <MudItem Class="d-flex flex-grow-1" xs="12" sm="6">
+                        <MudButton Class="flex-grow-1"
+                                   Color="Color.Info"
+                                   Variant="Variant.Filled"
+                                   OnClick="HandleFilterResetAsync"
+                                   Style="white-space: nowrap">
+                            Reset Filters
+                        </MudButton>
                     </MudItem>
-
-                    <MudItem xs="12" sm="12" md="6" lg="4">
-                        <MudGrid>
-                            <MudItem Class="d-flex flex-grow-1" xs="12" sm="6">
-                                <MudButton Class="flex-grow-1"
-                                           Color="Color.Dark"
-                                           Variant="Variant.Filled"
-                                           OnClick="@(x => HandleSortSubmitAsync("LastActive"))"
-                                           Style="white-space: nowrap">
-                                    Last Active
-                                </MudButton>
-                            </MudItem>
-                            <MudItem Class="d-flex flex-grow-1" xs="12" sm="6">
-                                <MudButton Class="flex-grow-1"
-                                           Color="Color.Dark"
-                                           Variant="Variant.Filled"
-                                           OnClick="@(x => HandleSortSubmitAsync("Created"))"
-                                           Style="white-space: nowrap">
-                                    Newest Members
-                                </MudButton>
-                            </MudItem>
-                        </MudGrid>
-                    </MudItem>
-
                 </MudGrid>
-            </MudCardHeader>
+            </MudItem>
 
-            <MudCardContent>
-                @if (_showError)
-                {
-                    <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
-                }
-                else if (_members?.Count > 0)
-                {
-                    <MudGrid Class="d-flex">
-                        @foreach (MemberModel m in _members)
-                        {
-                            <MudItem xs="12" sm="4" md="3" lg="3" xl="2">
-                                <MemberCard Member="m" />
-                            </MudItem>
-                        }
-                    </MudGrid>
-                }
-            </MudCardContent>
+            <MudItem xs="12" sm="12" md="6" lg="4">
+                <MudGrid>
+                    <MudItem Class="d-flex flex-grow-1" xs="12" sm="6">
+                        <MudButton Class="flex-grow-1"
+                                   Color="Color.Dark"
+                                   Variant="Variant.Filled"
+                                   OnClick="@(x => HandleSortSubmitAsync("LastActive"))"
+                                   Style="white-space: nowrap">
+                            Last Active
+                        </MudButton>
+                    </MudItem>
+                    <MudItem Class="d-flex flex-grow-1" xs="12" sm="6">
+                        <MudButton Class="flex-grow-1"
+                                   Color="Color.Dark"
+                                   Variant="Variant.Filled"
+                                   OnClick="@(x => HandleSortSubmitAsync("Created"))"
+                                   Style="white-space: nowrap">
+                            Newest Members
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
 
-            <MudCardActions Class="d-flex justify-center">
-                @if (_members?.Count > 0)
-                {
-                    <MudPagination Class="mb-2"
-                               Rectangular="true"
-                               Color="Color.Primary"
-                               Count="@_metaData.TotalPages"
-                               Selected="@_metaData.CurrentPage"
-                               SelectedChanged="HandlePageChangedAsync" />
-                }
-            </MudCardActions>
+        </MudGrid>
 
-        </MudCard>
+        @if (_showError)
+        {
+            <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+        }
+        else if (_members?.Count > 0)
+        {
+            <MudGrid Class="d-flex mb-2">
+                @foreach (MemberModel m in _members)
+                {
+                    <MudItem Class="px-lg-12 px-xl-6" xs="12" sm="4" md="3" lg="3" xl="2">
+                        <MemberCard Member="m" />
+                    </MudItem>
+                }
+            </MudGrid>
+
+            <MudPagination Class="d-flex justify-center my-5"
+                       Rectangular="true"
+                       Color="Color.Primary"
+                       Count="@_metaData.TotalPages"
+                       Size="Size.Large"
+                       Selected="@_metaData.CurrentPage"
+                       SelectedChanged="HandlePageChangedAsync" />
+        }
 
         <ValidationSummary />
     </EditForm>

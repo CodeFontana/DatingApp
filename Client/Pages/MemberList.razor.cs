@@ -1,16 +1,20 @@
-﻿namespace Client.Pages;
+﻿using MudBlazor;
 
-public partial class MemberList
+namespace Client.Pages;
+
+public partial class MemberList : IAsyncDisposable
 {
     private List<MemberModel> _members = new();
     private MemberParameters _membersFilter = new();
     private PaginationModel _metaData;
     private bool _showError = false;
     private string _errorText;
+    private Guid _subscriptionId;
 
     [Inject] IMemberStateService MemberStateService { get; set; }
     [Inject] IMemberService MemberService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
+    [Inject] IBreakpointService BreakpointListener { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -27,6 +31,56 @@ public partial class MemberList
         }
 
         await LoadMembersAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            BreakpointServiceSubscribeResult subscriptionResult = await BreakpointListener.Subscribe(async (breakpoint) =>
+            {
+                Console.WriteLine($"Current Breakpoint: {breakpoint}");
+
+                if (breakpoint == Breakpoint.Xxl)
+                {
+                    _membersFilter.PageSize = 12;
+                }
+                else if (breakpoint == Breakpoint.Xl)
+                {
+                    _membersFilter.PageSize = 12;
+                }
+                else if (breakpoint == Breakpoint.Lg)
+                {
+                    _membersFilter.PageSize = 8;
+                }
+                else if (breakpoint == Breakpoint.Md)
+                {
+                    _membersFilter.PageSize = 8;
+                }
+                else if (breakpoint == Breakpoint.Sm)
+                {
+                    _membersFilter.PageSize = 6;
+                }
+                else if (breakpoint == Breakpoint.Xs)
+                {
+                    _membersFilter.PageSize = 10;
+                }
+
+                await LoadMembersAsync();
+                await InvokeAsync(StateHasChanged);
+            }, new ResizeOptions
+            {
+                ReportRate = 250,
+                NotifyOnBreakpointOnly = true,
+            });
+
+            
+
+            _subscriptionId = subscriptionResult.SubscriptionId;
+            StateHasChanged();
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     private async Task LoadMembersAsync()
@@ -93,4 +147,6 @@ public partial class MemberList
         _members = null;
         await LoadMembersAsync();
     }
+
+    public async ValueTask DisposeAsync() => await BreakpointListener.Unsubscribe(_subscriptionId);
 }

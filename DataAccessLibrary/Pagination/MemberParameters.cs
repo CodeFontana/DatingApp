@@ -19,7 +19,7 @@ public class MemberParameters : PaginationParameters
     {
         get 
         { 
-            return $"{MinAge}-{MaxAge}-{Gender.ToLower()}-{OrderBy.ToLower()}-{PageNumber}";
+            return $"{MinAge}-{MaxAge}-{Gender.ToLower()}-{OrderBy.ToLower()}-{PageSize}-{PageNumber}";
         }
     }
 }
