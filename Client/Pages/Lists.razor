@@ -4,44 +4,32 @@
 <section>
     <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-5">@_pageTitle</MudText>
 
-    <MudCard Elevation="20">
-        <MudCardHeader Class="d-flex justify-center">
-            <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
-                <MudButton OnClick="@(() => HandlePredicateChange("liked"))">Members I Like</MudButton>
-                <MudButton OnClick="@(() => HandlePredicateChange("likedby"))">Members Who Like Me</MudButton>
-            </MudButtonGroup>
-        </MudCardHeader>
+    <MudButtonGroup Class="d-flex justify-center mb-5" Color="Color.Primary" Variant="Variant.Filled" DisableElevation="true">
+        <MudButton OnClick="@(() => HandlePredicateChange("liked"))" Style="white-space: nowrap;">Members I Like</MudButton>
+        <MudButton OnClick="@(() => HandlePredicateChange("likedby"))" Style="white-space: nowrap;">Members Who Like Me</MudButton>
+    </MudButtonGroup>
 
-        <MudCardContent>
-            @if (_showError)
+    @if (_showError)
+    {
+        <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+    }
+    else if (_members?.Count > 0)
+    {
+        <MudGrid Class="d-flex mb-2">
+            @foreach (MemberModel m in _members)
             {
-                <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+                <MudItem Class="px-lg-12 px-xl-6" xs="12" sm="4" md="3" lg="3" xl="2">
+                    <MemberCard Member="m" />
+                </MudItem>
             }
-            else if (_members?.Count > 0)
-            {
-                <MudGrid Class="d-flex">
-                    @foreach (MemberModel m in _members)
-                    {
-                        <MudItem xs="12" sm="4" md="3" lg="3" xl="2">
-                            <MemberCard Member="m" />
-                        </MudItem>
-                    }
-                </MudGrid>
-            }
-        </MudCardContent>
+        </MudGrid>
 
-        <MudCardActions Class="d-flex justify-center">
-            @if (_members?.Count > 0)
-            {
-                <MudPagination Class="mb-2"
-                           Rectangular="true"
-                           Color="Color.Primary"
-                           Count="@_metaData.TotalPages"
-                           Selected="@_metaData.CurrentPage"
-                           SelectedChanged="HandlePageChangedAsync" />
-            }
-        </MudCardActions>
-
-    </MudCard>
-
+        <MudPagination Class="d-flex justify-center my-5"
+                   Rectangular="true"
+                   Color="Color.Primary"
+                   Size="Size.Large"
+                   Count="@_metaData.TotalPages"
+                   Selected="@_metaData.CurrentPage"
+                   SelectedChanged="HandlePageChangedAsync" />
+    }
 </section>

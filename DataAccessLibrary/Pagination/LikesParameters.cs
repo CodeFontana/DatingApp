@@ -9,7 +9,7 @@ public class LikesParameters : PaginationParameters
     {
         get
         {
-            return $"{UserId}-{Predicate}-{PageNumber}";
+            return $"User({UserId})-Predicate({Predicate})-PageSize({PageSize})-PageNumber({PageNumber})";
         }
     }
 }
