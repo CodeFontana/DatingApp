@@ -27,10 +27,14 @@
         <MudItem xs="12" md="4" lg="3">
             <MudCard Elevation="6" Style="border: 1px solid rgba(0,0,0,.125);">
                 <MudCardHeader>
-                    <MudImage Class="img-thumbnail mx-auto"
-                              Src="@MemberStateService.MainPhoto"
-                              Alt="@MemberStateService.AppUser.KnownAs"
-                              Style="border: 4px solid var(--mud-palette-surface);" />
+                    <div class='img-blur-wrap'>
+                        <div class='img-blur-bg' style="background-image: linear-gradient(rgba(0, 0, 0, 0.3),rgba(0, 0, 0, 0.3) ), url('@MemberStateService.MainPhoto');"></div>
+                        <div class='img-blur' style="background-image: url('@MemberStateService.MainPhoto')"></div>
+                    </div>
+                    @*<MudImage Class="img-thumbnail mx-auto"
+                    Src="@MemberStateService.MainPhoto"
+                    Alt="@MemberStateService.AppUser.KnownAs"
+                    Style="border: 4px solid var(--mud-palette-surface);" />*@
                 </MudCardHeader>
                 <MudCardContent Class="mx-auto" Style="width: 90%; height: 90%; max-width: 100%;">
                     <MudText Style="font-weight: bolder;">Location:</MudText>

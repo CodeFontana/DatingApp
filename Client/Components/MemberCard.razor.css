@@ -1,26 +1,58 @@
-﻿::deep .mud-card-header {
-    padding: 0px;
-    overflow: hidden;
+﻿::deep .img-blur-wrap {
     position: relative;
+    overflow: hidden;
+    min-width: 250px;
+    width: 100%;
+    min-height: 250px;
+    max-height: 250px;
+    height: 100%;
 }
 
-::deep .mud-card-header img {
+::deep .img-blur {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    filter: none;
+    z-index: 2;
+    position: relative;
+    max-width: 100%;
+    height: 250px;
+    margin: 0 auto;
+    box-shadow: 0px 20px 40px #000;
     transform: scale(1.0, 1.0);
     transition-duration: 500ms;
     transition-timing-function: ease-out;
 }
 
-    ::deep .mud-card-header img:hover {
+    ::deep .img-blur:hover {
         transform: scale(1.2, 1.2);
         transition-duration: 500ms;
         transition-timing-function: ease-out;
         opacity: 0.7;
     }
 
-        ::deep .mud-card-header:hover .mud-paper {
-            bottom: 0;
-            opacity: 1;
-        }
+
+::deep .img-blur-bg {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: blur(5px);
+    width: 100%;
+    height: 250px;
+    position: absolute;
+    z-index: 1;
+}
+
+::deep .mud-card-header {
+    padding: 0px;
+    overflow: hidden;
+    position: relative;
+}
+
+    ::deep .mud-card-header:hover .mud-paper {
+        bottom: 0;
+        opacity: 1;
+    }
 
 ::deep .member-icons {
     position: absolute;
@@ -31,6 +63,7 @@
     margin-left: auto;
     margin-bottom: 1rem;
     opacity: 0;
+    z-index: 3;
 }
 
 ::deep .mud-paper {
