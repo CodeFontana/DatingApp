@@ -10,7 +10,7 @@
 ::deep .img-blur {
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: contain;
     filter: none;
     z-index: 2;
     position: relative;
