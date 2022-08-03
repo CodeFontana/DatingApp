@@ -1,0 +1,17 @@
+﻿@page "/sessionexpired"
+@inject NavigationManager Nav
+
+<PageTitle>DatingApp - Session Expired</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+    <MudText Align="Align.Center" Typo="Typo.h3">Your session has expired, please login again.</MudText>
+    <MudDivider DividerType="DividerType.Middle" Class="my-5"/>
+    <MudButton Class="d-flex mx-auto" Variant="Variant.Filled" Color="Color.Primary" @onclick="HandleClick">Go Home</MudButton>
+</MudContainer>
+
+@code {
+    private void HandleClick()
+    {
+        Nav.NavigateTo("/");
+    }
+}
