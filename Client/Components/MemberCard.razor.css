@@ -84,7 +84,6 @@
     font-weight: 500;
 }
 
-
 ::deep .member-location {
     overflow: hidden;
     text-overflow: ellipsis;
