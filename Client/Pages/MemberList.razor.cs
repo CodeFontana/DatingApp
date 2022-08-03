@@ -1,6 +1,4 @@
-﻿using MudBlazor;
-
-namespace Client.Pages;
+﻿namespace Client.Pages;
 
 public partial class MemberList : IAsyncDisposable
 {
