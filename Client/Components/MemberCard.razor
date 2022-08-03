@@ -1,13 +1,6 @@
-﻿<div style="width: 100%;">
+﻿<div style="width: 100%; max-width: 250px;">
     <MudCard Elevation="6" Style="border: 1px solid var(--mud-palette-surface);">
         <MudCardHeader>
-            @*<MudImage Src="@_photoFilename"
-                      Alt="@("Photo of @Member.KnownAs")"
-                      Fluid="true"
-                      Width="250"
-                      Height="250"
-                      ObjectFit="ObjectFit.Fill"
-                      Style="min-width: 250px; width: 100%; min-height: 250px; max-height: 250px; height: 100%;" />*@
             <div class='img-blur-wrap'>
                 <div class='img-blur-bg' style="background-image: linear-gradient(rgba(0, 0, 0, 0.3),rgba(0, 0, 0, 0.3) ), url('@_photoFilename');"></div>
                 <div class='img-blur' style="background-image: url('@_photoFilename')"></div>
