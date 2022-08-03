@@ -117,7 +117,7 @@ public partial class MainLayout
         {
             Default = new()
             {
-                //FontFamily = new[] { "Lato", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" }
+                FontFamily = new[] { "system-ui", "-apple-system","Segoe UI", "Roboto", "Helvetica Neue", "Noto Sans", "Liberation Sans", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" }
             }
         },
         Palette = new()
@@ -214,7 +214,7 @@ public partial class MainLayout
         {
             Default = new()
             {
-                //FontFamily = new[] { "Lato", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" }
+                FontFamily = new[] { "system-ui", "-apple-system", "Segoe UI", "Roboto", "Helvetica Neue", "Noto Sans", "Liberation Sans", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" }
             }
         },
         Palette = new()
