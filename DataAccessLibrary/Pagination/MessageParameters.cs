@@ -3,5 +3,5 @@
 public class MessageParameters : PaginationParameters
 {
     public string Username { get; set; }
-    public string Container { get; set; } = "Unread";
+    public string Container { get; set; }
 }
