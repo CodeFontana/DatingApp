@@ -19,13 +19,23 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<ServiceResponseModel<AuthUserModel>> LoginAsync(LoginUserModel loginUser)
     {
-        string apiEndpoint = _config["apiLocation"] + _config["loginEndpoint"];
-        using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, loginUser);
-        ServiceResponseModel<AuthUserModel> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<AuthUserModel>>(_options);
+        ServiceResponseModel<AuthUserModel> result = new();
 
-        if (result.Success)
+        try
         {
-            await ((AuthStateProvider)_authStateProvider).NotifyUserAuthenticationAsync(result.Data.Token);
+            string apiEndpoint = _config["apiLocation"] + _config["loginEndpoint"];
+            using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, loginUser);
+            result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<AuthUserModel>>(_options);
+
+            if (result.Success)
+            {
+                await ((JwtAuthenticationStateProvider)_authStateProvider).NotifyUserAuthenticationAsync(result.Data.Token);
+            }
+        }
+        catch (Exception e)
+        {
+            result.Success = false;
+            result.Message = e.Message;
         }
 
         return result;
@@ -33,13 +43,30 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<ServiceResponseModel<AuthUserModel>> RegisterAsync(RegisterUserModel registerUser)
     {
-        string apiEndpoint = _config["apiLocation"] + _config["registerEndpoint"];
-        using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, registerUser);
-        return await response.Content.ReadFromJsonAsync<ServiceResponseModel<AuthUserModel>>(_options);
+        ServiceResponseModel<AuthUserModel> result = new();
+
+        try
+        {
+            string apiEndpoint = _config["apiLocation"] + _config["registerEndpoint"];
+            using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, registerUser);
+            result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<AuthUserModel>>(_options);
+
+            if (result.Success)
+            {
+                await ((JwtAuthenticationStateProvider)_authStateProvider).NotifyUserAuthenticationAsync(result.Data.Token);
+            }
+        }
+        catch (Exception e)
+        {
+            result.Success = false;
+            result.Message = e.Message;
+        }
+
+        return result;
     }
 
     public async Task LogoutAsync()
     {
-        await ((AuthStateProvider)_authStateProvider).NotifyUserLogoutAsync();
+        await ((JwtAuthenticationStateProvider)_authStateProvider).NotifyUserLogoutAsync();
     }
 }

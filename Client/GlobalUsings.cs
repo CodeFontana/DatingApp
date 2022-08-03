@@ -9,6 +9,7 @@ global using DataAccessLibrary.Pagination;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Authorization;
 global using Microsoft.AspNetCore.Components.Forms;
+global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 global using Microsoft.AspNetCore.WebUtilities;
 global using Microsoft.Extensions.Configuration;
