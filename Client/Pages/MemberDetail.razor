@@ -1,6 +1,8 @@
 ﻿@page "/member/{username}"
 @attribute [Authorize]
 
+<PageTitle>DatingApp - @_member?.KnownAs</PageTitle>
+
 <section>
     <MudText Class="ml-2 mb-2" Typo="Typo.h3">@Username</MudText>
 
