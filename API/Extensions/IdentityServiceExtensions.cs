@@ -29,6 +29,7 @@ public static class IdentityServiceExtensions
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.ASCII.GetBytes(
                             config.GetValue<string>("Authentication:JwtSecurityKey"))),
+                    ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromMinutes(10)
                 };
             });
