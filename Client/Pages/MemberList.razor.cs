@@ -1,4 +1,6 @@
-﻿namespace Client.Pages;
+﻿using MudBlazor;
+
+namespace Client.Pages;
 
 public partial class MemberList : IAsyncDisposable
 {
@@ -14,7 +16,7 @@ public partial class MemberList : IAsyncDisposable
     [Inject] ISnackbar Snackbar { get; set; }
     [Inject] IBreakpointService BreakpointListener { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         if (string.IsNullOrWhiteSpace(_membersFilter.Gender))
         {
@@ -27,8 +29,6 @@ public partial class MemberList : IAsyncDisposable
                 _membersFilter.Gender = "female";
             }
         }
-
-        await LoadMembersAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -37,48 +37,54 @@ public partial class MemberList : IAsyncDisposable
         {
             BreakpointServiceSubscribeResult subscriptionResult = await BreakpointListener.Subscribe(async (breakpoint) =>
             {
-                Console.WriteLine($"Current Breakpoint: {breakpoint}");
-
-                if (breakpoint == Breakpoint.Xxl)
-                {
-                    _membersFilter.PageSize = 12;
-                }
-                else if (breakpoint == Breakpoint.Xl)
-                {
-                    _membersFilter.PageSize = 12;
-                }
-                else if (breakpoint == Breakpoint.Lg)
-                {
-                    _membersFilter.PageSize = 8;
-                }
-                else if (breakpoint == Breakpoint.Md)
-                {
-                    _membersFilter.PageSize = 8;
-                }
-                else if (breakpoint == Breakpoint.Sm)
-                {
-                    _membersFilter.PageSize = 6;
-                }
-                else if (breakpoint == Breakpoint.Xs)
-                {
-                    _membersFilter.PageSize = 10;
-                }
-
-                await LoadMembersAsync();
-                await InvokeAsync(StateHasChanged);
+                await ScalePageSize(breakpoint);
             }, new ResizeOptions
             {
                 ReportRate = 250,
                 NotifyOnBreakpointOnly = true,
             });
 
-            
 
+            Breakpoint start = subscriptionResult.Breakpoint;
+            await ScalePageSize(start);
             _subscriptionId = subscriptionResult.SubscriptionId;
             StateHasChanged();
         }
 
         await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task ScalePageSize(Breakpoint breakpoint)
+    {
+        Console.WriteLine($"Current Breakpoint: {breakpoint}");
+
+        if (breakpoint == Breakpoint.Xxl)
+        {
+            _membersFilter.PageSize = 12;
+        }
+        else if (breakpoint == Breakpoint.Xl)
+        {
+            _membersFilter.PageSize = 12;
+        }
+        else if (breakpoint == Breakpoint.Lg)
+        {
+            _membersFilter.PageSize = 8;
+        }
+        else if (breakpoint == Breakpoint.Md)
+        {
+            _membersFilter.PageSize = 8;
+        }
+        else if (breakpoint == Breakpoint.Sm)
+        {
+            _membersFilter.PageSize = 6;
+        }
+        else if (breakpoint == Breakpoint.Xs)
+        {
+            _membersFilter.PageSize = 10;
+        }
+
+        await LoadMembersAsync();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task LoadMembersAsync()
