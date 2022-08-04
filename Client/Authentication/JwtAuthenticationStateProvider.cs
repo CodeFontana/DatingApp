@@ -106,6 +106,7 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
 
             authState = Task.FromResult(new AuthenticationState(authenticatedUser));
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+
             await _memberStateService.SetAppUserAsync(authenticatedUser.Identity.Name);
 
             string authTokenStorageKey = _config["authTokenStorageKey"];
