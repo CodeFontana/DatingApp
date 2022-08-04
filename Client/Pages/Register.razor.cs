@@ -35,18 +35,7 @@ public partial class Register
 
         if (regResult.Success)
         {
-            ServiceResponseModel<AuthUserModel> authResult = await AuthService.LoginAsync(new() { Username = _registerUser.Username, Password = _registerUser.Password });
-
-            if (authResult.Success)
-            {
-                NavManager.NavigateTo("/members");
-            }
-            else
-            {
-                _showError = true;
-                _errorText = $"Login failed: {authResult.Message}";
-                Snackbar.Add($"Login failed: {authResult.Message}", Severity.Error);
-            }
+            NavManager.NavigateTo("/members");
         }
         else
         {
