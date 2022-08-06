@@ -120,7 +120,6 @@ public partial class MemberList : IAsyncDisposable
     private async Task HandleFilterResetAsync()
     {
         _membersFilter.PageNumber = 1;
-        _membersFilter.PageSize = 10;
         _membersFilter.MinAge = 18;
         _membersFilter.MaxAge = 45;
         _membersFilter.OrderBy = "LastActive";
