@@ -6,11 +6,81 @@ public class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddDbContext<DataContext>(options =>
+        {
+            options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+        });
+
+        builder.Services.AddIdentityCore<AppUser>(opt =>
+            {
+                opt.Password.RequireNonAlphanumeric = false;
+            })
+            .AddRoles<AppRole>()
+            .AddRoleManager<RoleManager<AppRole>>()
+            .AddSignInManager<SignInManager<AppUser>>()
+            .AddRoleValidator<RoleValidator<AppRole>>()
+            .AddEntityFrameworkStores<DataContext>();
+
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                        .AddJwtBearer(options =>
+                        {
+                            options.TokenValidationParameters = new()
+                            {
+                                ValidateIssuer = true,
+                                ValidIssuer = builder.Configuration.GetValue<string>("Authentication:JwtIssuer"),
+                                ValidateAudience = true,
+                                ValidAudience = builder.Configuration.GetValue<string>("Authentication:JwtAudience"),
+                                ValidateIssuerSigningKey = true,
+                                IssuerSigningKey = new SymmetricSecurityKey(
+                                    Encoding.ASCII.GetBytes(
+                                        builder.Configuration.GetValue<string>("Authentication:JwtSecurityKey"))),
+                                ValidateLifetime = true,
+                                ClockSkew = TimeSpan.FromMinutes(10)
+                            };
+                        });
+
+        builder.Services.AddAuthorization(config =>
+        {
+            config.AddPolicy("RequireAdminRole", policy =>
+            {
+                policy.RequireRole("Administrator");
+            });
+
+            config.AddPolicy("ModeratePhotoRole", policy =>
+            {
+                policy.RequireRole("Moderator");
+            });
+
+            config.FallbackPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+        });
+
         builder.Logging.ClearProviders();
         builder.Logging.AddConsoleLogger(builder.Configuration);
 
-        builder.Services.AddApplicationServices(builder.Configuration);
-        builder.Services.AddIdentityServices(builder.Configuration);
+        builder.Services.AddScoped<ITokenService, TokenService>();
+        builder.Services.AddScoped<IAccountService, AccountService>();
+        builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+
+        builder.Services.AddScoped<IAdminService, AdminService>();
+        builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+
+        builder.Services.AddScoped<IMemberService, MemberService>();
+        builder.Services.AddScoped<IPhotoService, PhotoService>();
+        builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+
+        builder.Services.AddScoped<ILikesService, LikesService>();
+        builder.Services.AddScoped<ILikesRepository, LikesRepository>();
+
+        builder.Services.AddScoped<IMessageService, MessageService>();
+        builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+
+        builder.Services.AddScoped<UserActivity>();
+
+        builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
+
+        builder.Services.AddMemoryCache();
         builder.Services.AddResponseCaching();
         builder.Services.AddControllers().AddJsonOptions(config =>
         {
