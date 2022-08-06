@@ -62,6 +62,7 @@ public class LikesService : ILikesService
                 PaginatedResponse = result
             };
 
+            LikeListCache.Remove(likesParameters.Values);
             LikeListCache.TryAdd(likesParameters.Values, cacheResponse);
         }
 

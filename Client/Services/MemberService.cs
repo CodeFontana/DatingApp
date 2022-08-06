@@ -110,6 +110,7 @@ public class MemberService : IMemberService
                 PaginatedResponse = result
             };
 
+            MemberListCache.Remove(memberParameters.Values);
             MemberListCache.TryAdd(memberParameters.Values, cacheResponse);
         }
 
