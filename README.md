@@ -25,7 +25,7 @@ This project is all about learning ASP.NET Core Web API, ASP.NET Core Blazor Web
   * Exception Handling Middleware
   * User activity monitoring with Service Filters
   * IP Rate Limiting (https://github.com/stefanprodan/AspNetCoreRateLimit)
-  * Logging with ConsoleLogger project (github.com/CodeFontana/ConsoleLogger)
+  * Logging with ConsoleLogger project (https://github.com/CodeFontana/ConsoleLogger)
   * Automated Database Migration with Seeding of demo data to get started
 * Client features
   * Reactive and Responsive Client UI using MudBlazor (https://www.mudblazor.com | https://github.com/MudBlazor/MudBlazor)
