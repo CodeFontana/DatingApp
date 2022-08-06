@@ -61,7 +61,58 @@ public class SeedData
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occured during database seeding.");
+            logger.LogError(ex, "An error occured during database user seeding.");
+        }
+    }
+
+    public static async Task SeedUserLikesAndMessages(ILogger logger, DataContext db)
+    {
+        try
+        {
+            List<AppUser> users = await db.Users.ToListAsync();
+
+            foreach (AppUser user in users)
+            {
+                Random random = new();
+                int numLikes = random.Next(0, users.Count);
+
+                for (int i = 0; i < numLikes; i++)
+                {
+                    int skipUsers = random.Next(0, users.Count);
+                    AppUser userToLike = db.Users.OrderBy(r => Guid.NewGuid()).Skip(skipUsers).Take(1).FirstOrDefault();
+
+                    if (userToLike is not null 
+                        && userToLike.Id != user.Id
+                        && userToLike.Gender != user.Gender
+                        && db.Likes.Any(l => l.SourceUserId == user.Id && l.LikedUserId == userToLike.Id) == false)
+                    {
+                        db.Likes.Add(new UserLike 
+                        { 
+                            LikedUser = userToLike, 
+                            LikedUserId = userToLike.Id, 
+                            SourceUser = user, 
+                            SourceUserId = user.Id 
+                        });
+
+                        db.Messages.Add(new Message
+                        {
+                            SenderId = user.Id,
+                            SenderUsername = user.UserName,
+                            Sender = user,
+                            RecipientId = userToLike.Id,
+                            RecipientUsername = userToLike.UserName,
+                            Recipient = userToLike,
+                            Content = "Hey gorgeous..."
+                        });
+
+                        await db.SaveChangesAsync();
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occured during database like seeding.");
         }
     }
 }
