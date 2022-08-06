@@ -1,11 +1,7 @@
 # Dating App
 Based on Udemy course, "*Build an app with ASPNET Core and ~~Angular~~ from scratch*" by Neil Cummings, with a ***Major Twist*** -- the client-side application is built entirely using ASP.NET Core ***Blazor WebAssembly***.  
   
-This project is all about learning C# Web API, ASP.NET Core Blazor WebAssembly, Entity Framework and MudBlazor.  It is an undertaking to determine whether or not ASP.NET Core Blazor WebAssembly is feature-complete for production, as well as superlative choice for C# developers to make thoughtful, rich and reactive Web Applications.
-
-My conclusion -- Blazor is AWESOME. There are no serious feature gaps, the project type is well-structured, making it simple and productive to build rich, thoughtful and reactive Web Applications. Typically in technology, if you're not FIRST at something, then you've missed the boat. In my opinion, Microsoft just drafted passed all these complex and cumbersome Javascript frameworks and redefined what the FINISH-LINE really looks like.
-
-Given the breadth of the C# developer base, and a ton of Javascript competition that has had years of a headstart, it will take a while, but Microsoft and the ASP.NET Core team will win the marketshare through attrition. There's just no way Web Development can be this easy, this fun and ignored.
+This project is all about learning ASP.NET Core Web API, ASP.NET Core Blazor WebAssembly, Entity Framework and MudBlazor.  It is an undertaking for both learning, personal growth, and evaluation of this technology stack for real-world uses.
 
 ## Project Features
 * Common features
