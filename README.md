@@ -43,6 +43,12 @@ Given the breadth of the C# developer base, and a ton of Javascript competition 
   * Data Annotations and Custom Attributes for Entity Models for avoiding common EF Core pitfalls in database design
   * Employment of Split Queryies to eliminate cartesian explosion problem and allowing the app to scale with production data
 
+## Roadmap
+* Finish client implementation of Messaging feature
+* Add Chat feature based on SignalR
+* Implement Unit-of-Work pattern for EF
+* Implement Public vs Private User Interests
+
 ## Great Articles
 https://dev.to/dotnet/why-build-single-page-apps-in-blazor-103m
 
