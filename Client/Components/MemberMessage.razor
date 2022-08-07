@@ -4,12 +4,27 @@
         <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
     }
 
-    @if (_messages.Count > 0)
+    @if (_messages?.Count > 0)
     {
-        @foreach (MessageModel m in _messages)
-        {
-            <MudText>@m.Content</MudText>
-        }
+        <MudContainer MaxWidth="MaxWidth.False">
+            <MudGrid>
+                @foreach (MessageModel m in _messages)
+                {
+                    <MudItem xs="11" Class="pt-1 pb-0 px-0">
+                        <MudText Typo="Typo.caption">@m.MessageSent.Humanize() ago</MudText>
+                        <MudText Typo="Typo.body1">@m.Content</MudText>
+                    </MudItem>
+
+                    <MudItem xs="1" Class="pt-1 pb-0 px-0">
+                        <MudAvatar Image="@m.SenderPhotoUrl" Size="Size.Large" />
+                    </MudItem>
+
+                    <MudItem xs="12" Class="pa-0">
+                        <MudDivider DividerType="DividerType.FullWidth" />
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudContainer>
     }
     else
     {
