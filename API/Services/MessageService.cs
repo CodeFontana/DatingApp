@@ -103,6 +103,7 @@ public class MessageService : IMessageService
     {
         _logger.LogInformation($"Get message thread between sender {currentUsername} and {recipientUsername}...");
         ServiceResponseModel<IEnumerable<MessageModel>> serviceResponse = new();
+
 		try
 		{
 			serviceResponse.Success = true;
