@@ -57,7 +57,7 @@ public class PhotoService : IPhotoService
                 // Resize the image to 500x500
                 using MemoryStream memoryStream = new();
                 await file.CopyToAsync(memoryStream);
-                Image resizedFile = ResizeImage(Image.FromStream(memoryStream), new RectangleF(0, 0, 500, 500));
+                //Image resizedFile = ResizeImage(Image.FromStream(memoryStream), new RectangleF(0, 0, 500, 500));
 
                 // Build wwwroot/MemberData save path and filename
                 string trustedName = Guid.NewGuid().ToString() + ".jpg";
@@ -65,7 +65,8 @@ public class PhotoService : IPhotoService
                 string fileName = Path.Combine(uploadPath, trustedName);
 
                 Directory.CreateDirectory(uploadPath);
-                resizedFile.Save(fileName);
+                //resizedFile.Save(fileName);
+                Image.FromStream(memoryStream).Save(fileName);
 
                 Photo newPhoto = new()
                 {
