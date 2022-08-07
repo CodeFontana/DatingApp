@@ -74,11 +74,11 @@ public class SeedData
             foreach (AppUser user in users)
             {
                 Random random = new();
-                int numLikes = random.Next(0, users.Count);
+                int numLikes = random.Next(0, users.Count - 1);
 
                 for (int i = 0; i < numLikes; i++)
                 {
-                    int skipUsers = random.Next(0, users.Count);
+                    int skipUsers = random.Next(0, users.Count - 1);
                     AppUser userToLike = db.Users.OrderBy(r => Guid.NewGuid()).Skip(skipUsers).Take(1).FirstOrDefault();
 
                     if (userToLike is not null 
