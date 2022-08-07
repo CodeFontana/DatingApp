@@ -67,6 +67,11 @@ public class SeedData
 
     public static async Task SeedUserLikesAndMessages(ILogger logger, DataContext db)
     {
+        if (await db.Likes.AnyAsync())
+        {
+            return;
+        }
+
         try
         {
             List<AppUser> users = await db.Users.ToListAsync();
