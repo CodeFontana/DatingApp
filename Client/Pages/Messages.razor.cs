@@ -2,6 +2,7 @@
 
 public partial class Messages
 {
+    private MudTable<MessageModel> _messageTable;
 	private List<MessageModel> _messages = new();
     private MessageParameters _messageFilter = new();
     private PaginationModel _metaData;
@@ -12,6 +13,7 @@ public partial class Messages
 
     [Inject] IMessageService MessageService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
+    [Inject] NavigationManager NavManager { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,6 +45,11 @@ public partial class Messages
         }
 
         _loadingMessages = false;
+    }
+
+    private void HandleRowClickEvent(TableRowClickEventArgs<MessageModel> tableRowClickEventArgs)
+    {
+        NavManager.NavigateTo($"/member/{tableRowClickEventArgs.Item.SenderUsername}");
     }
 
     private async Task HandlePredicateChange(string predicate)

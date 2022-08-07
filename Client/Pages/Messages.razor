@@ -20,16 +20,19 @@
     {
         <MudGrid Class="mb-2" Justify="Justify.Center">
             <MudItem xs="12" xl="8">
-                <MudTable Items="@_messages" 
-                    Dense="true" 
-                    Hover="true" 
-                    Bordered="true" 
-                    Striped="true" 
-                    Loading="@_loadingMessages" 
-                    LoadingProgressColor="Color.Info"
-                    Breakpoint="Breakpoint.None"
-                    HorizontalScrollbar="true"
-                    Elevation="20">
+                <MudTable T="MessageModel"
+                      @ref="_messageTable"
+                      Items="@_messages"
+                      OnRowClick="HandleRowClickEvent"
+                      Dense="true"
+                      Hover="true"
+                      Bordered="true"
+                      Striped="true"
+                      Loading="@_loadingMessages"
+                      LoadingProgressColor="Color.Info"
+                      Breakpoint="Breakpoint.None"
+                      HorizontalScrollbar="true"
+                      Elevation="20">
                     <HeaderContent>
                         @if (_messageFilter.Container == "Inbox" || _messageFilter.Container == "Unread")
                         {
