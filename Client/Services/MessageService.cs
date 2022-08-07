@@ -43,7 +43,7 @@ public class MessageService : IMessageService
             throw new ArgumentNullException(nameof(username), "Invalid username");
         }
 
-        string apiEndpoint = _config["apiLocation"] + _config["messagesEndpoint"] + $"/{username}"; ;
+        string apiEndpoint = _config["apiLocation"] + _config["messagesEndpoint"] + $"/thread/{username}"; ;
         using HttpResponseMessage response = await _httpClient.GetAsync(apiEndpoint);
         ServiceResponseModel<IEnumerable<MessageModel>> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<IEnumerable<MessageModel>>>(_options);
         return result;
