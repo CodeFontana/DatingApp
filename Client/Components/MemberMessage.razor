@@ -1,0 +1,19 @@
+﻿<section>
+    @if (_showError)
+    {
+        <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+    }
+
+    @if (_messages.Count > 0)
+    {
+        @foreach (MessageModel m in _messages)
+        {
+            <MudText>@m.Content</MudText>
+        }
+    }
+    else
+    {
+        <MudText>No messages!</MudText>
+    }
+
+</section>
