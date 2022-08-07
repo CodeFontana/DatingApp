@@ -28,7 +28,7 @@ public class MessageRepository : IMessageRepository
 
     public async Task<PaginationList<MessageModel>> GetMessagesForMemberAsync(MessageParameters messageParameters)
     {
-        var query = _db.Messages
+        IQueryable<Message> query = _db.Messages
             .OrderByDescending(m => m.MessageSent)
             .AsQueryable();
 
@@ -60,11 +60,12 @@ public class MessageRepository : IMessageRepository
             .AsSplitQuery()
             .ToListAsync();
 
-        List<Message> unreadMessages = messages.Where(m => m.DateRead == null && m.Recipient.UserName == currentUsername).ToList();
+        List<Message> unreadMessages = messages
+            .Where(m => m.DateRead == null && m.Recipient.UserName == currentUsername).ToList();
 
         if (unreadMessages.Any())
         {
-            foreach (var message in unreadMessages)
+            foreach (Message message in unreadMessages)
             {
                 message.DateRead = DateTime.Now;
             }
