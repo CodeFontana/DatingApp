@@ -56,8 +56,9 @@
                         }
                         else
                         {
-                            <MudTd>
-                                <MudText Typo="Typo.h6">@context.RecipientUsername</MudText>
+                            <MudTd Class="d-flex align-center">
+                                <MudAvatar Image="@context.RecipientPhotoUrl" />
+                                <MudText Class="ml-2" Typo="Typo.h6" Inline="true">@context.RecipientUsername</MudText>
                             </MudTd>
                         }
                         <MudTd><MudText Typo="Typo.h6">@DateTime.Now.Subtract(context.MessageSent).Humanize() ago</MudText></MudTd>
