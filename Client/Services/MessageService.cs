@@ -4,13 +4,16 @@ public class MessageService : IMessageService
 {
     private readonly IConfiguration _config;
     private readonly HttpClient _httpClient;
+    private readonly IPhotoService _photoService;
     private readonly JsonSerializerOptions _options;
 
     public MessageService(IConfiguration config,
-                          HttpClient httpClient)
+                          HttpClient httpClient,
+                          IPhotoService photoService)
     {
         _config = config;
         _httpClient = httpClient;
+        _photoService = photoService;
         _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
 
@@ -33,6 +36,15 @@ public class MessageService : IMessageService
             result.MetaData = JsonSerializer.Deserialize<PaginationModel>(response.Headers.GetValues("Pagination").First(), _options);
         }
 
+        if (result.Success)
+        {
+            Parallel.ForEach(result.Data, async msg =>
+            {
+                msg.RecipientPhotoUrl = await _photoService.GetPhotoAsync(msg.RecipientUsername, msg.RecipientPhotoUrl);
+                msg.SenderPhotoUrl = await _photoService.GetPhotoAsync(msg.SenderUsername, msg.SenderPhotoUrl);
+            });
+        }
+
         return result;
     }
 
@@ -46,6 +58,22 @@ public class MessageService : IMessageService
         string apiEndpoint = _config["apiLocation"] + _config["messagesEndpoint"] + $"/thread/{username}"; ;
         using HttpResponseMessage response = await _httpClient.GetAsync(apiEndpoint);
         ServiceResponseModel<IEnumerable<MessageModel>> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<IEnumerable<MessageModel>>>(_options);
+
+        if (result.Success)
+        {
+            foreach (MessageModel msg in result.Data)
+            {
+                msg.RecipientPhotoUrl = await _photoService.GetPhotoAsync(msg.RecipientUsername, msg.RecipientPhotoUrl);
+                msg.SenderPhotoUrl = await _photoService.GetPhotoAsync(msg.SenderUsername, msg.SenderPhotoUrl);
+            }
+
+            Parallel.ForEach(result.Data, async (msg) =>
+            {
+                msg.RecipientPhotoUrl = await _photoService.GetPhotoAsync(msg.RecipientUsername, msg.RecipientPhotoUrl);
+                msg.SenderPhotoUrl = await _photoService.GetPhotoAsync(msg.SenderUsername, msg.SenderPhotoUrl);
+            });
+        }
+
         return result;
     }
 
