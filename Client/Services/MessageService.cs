@@ -38,11 +38,11 @@ public class MessageService : IMessageService
 
         if (result.Success)
         {
-            Parallel.ForEach(result.Data, async msg =>
+            foreach (MessageModel msg in result.Data)
             {
                 msg.RecipientPhotoUrl = await _photoService.GetPhotoAsync(msg.RecipientUsername, msg.RecipientPhotoUrl);
                 msg.SenderPhotoUrl = await _photoService.GetPhotoAsync(msg.SenderUsername, msg.SenderPhotoUrl);
-            });
+            }
         }
 
         return result;
