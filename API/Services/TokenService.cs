@@ -27,8 +27,8 @@ public class TokenService : ITokenService
             new Claim(JwtRegisteredClaimNames.UniqueName, appUser.UserName),
             new Claim(JwtRegisteredClaimNames.Iss, _jwtIssuer),
             new Claim(JwtRegisteredClaimNames.Aud, _jwtAudience),
-            new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
-            new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddMinutes(_jwtLifetimeMinutes)).ToUnixTimeSeconds().ToString())
+            new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString()),
+            new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.UtcNow.AddMinutes(_jwtLifetimeMinutes)).ToUnixTimeSeconds().ToString())
         };
 
         claims.AddRange(await _userManager.GetClaimsAsync(appUser));
