@@ -66,12 +66,6 @@ public class MessageService : IMessageService
                 msg.RecipientPhotoUrl = await _photoService.GetPhotoAsync(msg.RecipientUsername, msg.RecipientPhotoUrl);
                 msg.SenderPhotoUrl = await _photoService.GetPhotoAsync(msg.SenderUsername, msg.SenderPhotoUrl);
             }
-
-            Parallel.ForEach(result.Data, async (msg) =>
-            {
-                msg.RecipientPhotoUrl = await _photoService.GetPhotoAsync(msg.RecipientUsername, msg.RecipientPhotoUrl);
-                msg.SenderPhotoUrl = await _photoService.GetPhotoAsync(msg.SenderUsername, msg.SenderPhotoUrl);
-            });
         }
 
         return result;
