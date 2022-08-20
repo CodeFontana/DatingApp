@@ -1,4 +1,5 @@
 ﻿using DataAccessLibrary.Entities;
+using static MudBlazor.CategoryTypes;
 
 namespace Client.Pages;
 
@@ -37,6 +38,16 @@ public partial class MemberDetail
             _errorText = $"Request failed: {result.Message}";
             Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
         }
+    }
+
+    private async Task ActivateTab(MudTabPanel panel)
+    {
+        if (panel == _messagesTab)
+        {
+            await LoadMessages();
+        }
+        
+        _memberDetailTabs.ActivatePanel(panel);
     }
 
     private async Task HandleLikeToggleAsync()
