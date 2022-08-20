@@ -49,7 +49,7 @@ public partial class Messages
 
     private void HandleRowClickEvent(TableRowClickEventArgs<MessageModel> tableRowClickEventArgs)
     {
-        NavManager.NavigateTo($"/member/{tableRowClickEventArgs.Item.SenderUsername}");
+        NavManager.NavigateTo($"/member/{tableRowClickEventArgs.Item.SenderUsername}/3");
     }
 
     private async Task HandlePredicateChange(string predicate)
