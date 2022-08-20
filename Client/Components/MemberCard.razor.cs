@@ -34,4 +34,9 @@ public partial class MemberCard
             Snackbar.Add(result.Message, Severity.Error);
         }
     }
+
+    private void HandleMessageClick()
+    {
+        NavManager.NavigateTo($"/member/{Member.Username}/3");
+    }
 }

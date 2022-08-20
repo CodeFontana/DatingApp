@@ -1,7 +1,4 @@
-﻿using DataAccessLibrary.Entities;
-using static MudBlazor.CategoryTypes;
-
-namespace Client.Pages;
+﻿namespace Client.Pages;
 
 public partial class MemberDetail
 {
@@ -11,6 +8,7 @@ public partial class MemberDetail
     [Inject] IMessageService MessageService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
     [Parameter] public string Username { get; set; }
+    [Parameter] public int? StartTab { get; set; }
 
     private MudTabs _memberDetailTabs;
     private MudTabPanel _aboutTab;
@@ -27,6 +25,7 @@ public partial class MemberDetail
     private List<MessageModel> _messages = new();
     private bool _showError = false;
     private string _errorText;
+
 
     protected override async Task OnParametersSetAsync()
     {
@@ -45,9 +44,42 @@ public partial class MemberDetail
         }
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        switch (StartTab)
+        {
+            case 0:
+                await ActivateTab(_aboutTab);
+                await ActivatePanel(_aboutPanel);
+                break;
+
+            case 1:
+                await ActivateTab(_interestsTab);
+                await ActivatePanel(_interestsPanel);
+                break;
+
+            case 2:
+                await ActivateTab(_photosTab);
+                await ActivatePanel(_photosPanel);
+                break;
+
+            case 3:
+                await ActivateTab(_messagesTab);
+                await ActivatePanel(_messagesPanel);
+                break;
+
+            default:
+                break;
+        }
+    }
+
     private async Task ActivateTab(MudTabPanel panel)
     {
-        if (panel == _messagesTab)
+        if (panel == null)
+        {
+            return;
+        }
+        else if (panel == _messagesTab)
         {
             await LoadMessages();
         }
@@ -57,7 +89,11 @@ public partial class MemberDetail
 
     private async Task ActivatePanel(MudExpansionPanel panel)
     {
-        if (panel == _messagesPanel)
+        if (panel == null)
+        {
+            return;
+        }
+        else if (panel == _messagesPanel)
         {
             await LoadMessages();
         }

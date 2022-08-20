@@ -1,4 +1,5 @@
 ﻿@page "/member/{username}"
+@page "/member/{username}/{StartTab:int}"
 @attribute [Authorize]
 
 <PageTitle>DatingApp - @_member?.KnownAs</PageTitle>
@@ -45,7 +46,7 @@
                             <MudItem xs="6" Class="px-1 pr-3">
                                 <MudButton Variant="Variant.Filled"
                                        Color="Color.Secondary"
-                                       OnClick="async () => {await ActivateTab(_messagesTab); await ActivatePanel(_messagesPanel);}"
+                                       OnClick="async () => { await ActivateTab(_messagesTab); await ActivatePanel(_messagesPanel); }"
                                        Style="width: 100%">
                                     Message
                                 </MudButton>
