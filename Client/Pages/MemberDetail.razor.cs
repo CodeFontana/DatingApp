@@ -17,6 +17,11 @@ public partial class MemberDetail
     private MudTabPanel _interestsTab;
     private MudTabPanel _photosTab;
     private MudTabPanel _messagesTab;
+    private MudExpansionPanels _memberDetailExpPanel;
+    private MudExpansionPanel _aboutPanel;
+    private MudExpansionPanel _interestsPanel;
+    private MudExpansionPanel _photosPanel;
+    private MudExpansionPanel _messagesPanel;
     private MemberModel _member;
     private string _photoFilename = "./assets/user.png";
     private List<MessageModel> _messages = new();
@@ -48,6 +53,16 @@ public partial class MemberDetail
         }
         
         _memberDetailTabs.ActivatePanel(panel);
+    }
+
+    private async Task ActivatePanel(MudExpansionPanel panel)
+    {
+        if (panel == _messagesPanel)
+        {
+            await LoadMessages();
+        }
+
+        panel.Expand();
     }
 
     private async Task HandleLikeToggleAsync()
