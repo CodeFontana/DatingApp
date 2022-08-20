@@ -1,7 +1,4 @@
-﻿using DataAccessLibrary.Entities;
-using System.Reflection;
-
-namespace API.Services;
+﻿namespace API.Services;
 
 public class MessageService : IMessageService
 {
@@ -115,6 +112,31 @@ public class MessageService : IMessageService
         {
             serviceResponse.Success = false;
             serviceResponse.Message = e.Message;
+            _logger.LogError(e.Message);
+        }
+
+        return serviceResponse;
+    }
+
+	public async Task<ServiceResponseModel<string>> DeleteMessageAsync(string requestor, int messageId)
+	{
+        _logger.LogInformation($"Delete message with id={messageId}... [{requestor}]");
+        ServiceResponseModel<string> serviceResponse = new();
+
+        try
+        {
+            await _messageRepository.DeleteMessageAsync(requestor, messageId);
+
+            serviceResponse.Success = true;
+			serviceResponse.Data = $"Successfully deleted message with id={messageId} for user {requestor}";
+            serviceResponse.Message = $"Successfully deleted message with id={messageId} for user {requestor}";
+            _logger.LogInformation(serviceResponse.Message);
+        }
+        catch (Exception e)
+        {
+            serviceResponse.Success = false;
+            serviceResponse.Message = e.Message;
+			serviceResponse.Exception = e;
             _logger.LogError(e.Message);
         }
 

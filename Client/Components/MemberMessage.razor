@@ -18,6 +18,10 @@
                             {
                                 <MudText Class="ml-2" Typo="Typo.caption" Color="Color.Error">(unread)</MudText>
                             }
+                            else if (m.SenderUsername != Username && m.RecipientDeleted)
+                            {
+                                <MudText Class="ml-2" Typo="Typo.caption" Color="Color.Error">(deleted)</MudText>
+                            }
                             else if (m.SenderUsername != Username && m.DateRead != null)
                             {
                                 <MudText Class="ml-2" Typo="Typo.caption" Color="Color.Success">(read @m.DateRead?.ToLocalTime().Humanize())</MudText>

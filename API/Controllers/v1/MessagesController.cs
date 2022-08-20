@@ -11,12 +11,12 @@ public class MessagesController : ControllerBase
     private readonly IMessageService _messageService;
 
     public MessagesController(IMessageService messageService)
-	{
+    {
         _messageService = messageService;
     }
 
     [HttpGet]
-    [ResponseCache(Duration = 10, Location = ResponseCacheLocation.Any, NoStore = false)]
+    [ResponseCache(Duration = 2, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<ActionResult<PaginationResponseModel<PaginationList<MessageModel>>>> GetMessagesForMemberAsync([FromQuery] MessageParameters messageParameters)
     {
         messageParameters.Username = User.Identity.Name;
@@ -51,13 +51,32 @@ public class MessagesController : ControllerBase
 
 
     [HttpPost]
-	public async Task<ActionResult<ServiceResponseModel<MessageModel>>> CreateMessageAsync(MessageCreateModel messageCreateModel)
-	{
+    public async Task<ActionResult<ServiceResponseModel<MessageModel>>> CreateMessageAsync(MessageCreateModel messageCreateModel)
+    {
         ServiceResponseModel<MessageModel> response = await _messageService.CreateMessageAsync(User.Identity.Name, messageCreateModel);
 
         if (response.Success)
         {
             return Ok(response);
+        }
+        else
+        {
+            return BadRequest(response);
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<ServiceResponseModel<string>>> DeleteMessageAsync(int id)
+    {
+        ServiceResponseModel<string> response = await _messageService.DeleteMessageAsync(User.Identity.Name, id);
+
+        if (response.Success)
+        {
+            return Ok(response);
+        }
+        else if (response.Exception.InnerException is UnauthorizedAccessException)
+        {
+            return Unauthorized(response);
         }
         else
         {

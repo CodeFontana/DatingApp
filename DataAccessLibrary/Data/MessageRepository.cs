@@ -16,11 +16,6 @@ public class MessageRepository : IMessageRepository
         await _db.Messages.AddAsync(message);
     }
 
-    public void DeleteMessage(Message message)
-    {
-        _db.Messages.Remove(message);
-    }
-
     public async Task<Message> GetMessageAsync(int id)
     {
         return await _db.Messages.FindAsync(id);
@@ -34,9 +29,9 @@ public class MessageRepository : IMessageRepository
 
         query = messageParameters.Container switch
         {
-            "Inbox" => query.Where(u => u.Recipient.UserName == messageParameters.Username),
-            "Sent" => query.Where(u => u.Sender.UserName == messageParameters.Username),
-            _ => query.Where(u => u.Recipient.UserName == messageParameters.Username && u.DateRead == null)
+            "Inbox" => query.Where(u => u.Recipient.UserName == messageParameters.Username && u.RecipientDeleted == false),
+            "Sent" => query.Where(u => u.Sender.UserName == messageParameters.Username && u.SenderDeleted == false),
+            _ => query.Where(u => u.Recipient.UserName == messageParameters.Username && u.DateRead == null && u.RecipientDeleted == false)
         };
 
         IQueryable<MessageModel> messages = query.ProjectTo<MessageModel>(_mapper.ConfigurationProvider);
@@ -74,6 +69,39 @@ public class MessageRepository : IMessageRepository
         }
         
         return _mapper.Map<IEnumerable<MessageModel>>(messages);
+    }
+
+    public async Task DeleteMessageAsync(string requestUser, int id)
+    {
+        Message message = _db.Messages.FirstOrDefault(m => m.Id == id);
+
+        if (message is null)
+        {
+            throw new ArgumentException($"Message with id={id} was not found");
+        }
+
+        if (message.SenderUsername != requestUser 
+            && message.RecipientUsername != requestUser)
+        {
+            throw new UnauthorizedAccessException($"Request user [{requestUser}] is not authorized to delete this message");
+        }
+
+        if (message.SenderUsername == requestUser)
+        {
+            message.SenderDeleted = true;
+        }
+
+        if (message.RecipientUsername == requestUser)
+        {
+            message.RecipientDeleted = true;
+        }
+
+        if (message.SenderDeleted && message.RecipientDeleted)
+        {
+            _db.Messages.Remove(message);
+        }
+
+        await _db.SaveChangesAsync();
     }
 
     public async Task<bool> SaveAllAsync()

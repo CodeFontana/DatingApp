@@ -80,4 +80,22 @@ public partial class Messages
         _messages = null;
         await LoadMessagesAsync();
     }
+
+    private async Task HandleMessageDeleteAsync(int id)
+    {
+        ServiceResponseModel<string> result = await MessageService.DeleteMessageAsync(id);
+
+        if (result.Success)
+        {
+            _showError = false;
+            Snackbar.Add(result.Data, Severity.Success);
+            await LoadMessagesAsync();
+        }
+        else
+        {
+            _showError = true;
+            _errorText = $"Request failed: {result.Message}";
+            Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
+        }
+    }
 }

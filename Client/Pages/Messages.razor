@@ -45,6 +45,7 @@
                             <MudTh><MudText Typo="Typo.h5">Sent</MudText></MudTh>
                         }
                         <MudTh><MudText Typo="Typo.h5">Message</MudText></MudTh>
+                        <MudTh><MudText Typo="Typo.h5">Action</MudText></MudTh>
                     </HeaderContent>
                     <RowTemplate>
                         @if (_messageFilter.Container == "Inbox" || _messageFilter.Container == "Unread")
@@ -63,6 +64,7 @@
                         }
                         <MudTd><MudText Typo="Typo.h6">@DateTime.Now.Subtract(context.MessageSent.ToLocalTime()).Humanize() ago</MudText></MudTd>
                         <MudTd><MudText Typo="Typo.body1">@context.Content</MudText></MudTd>
+                        <MudTd><MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="() => HandleMessageDeleteAsync(context.Id)">Delete</MudButton></MudTd>
                     </RowTemplate>
                 </MudTable>
             </MudItem>

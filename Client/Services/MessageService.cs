@@ -1,4 +1,6 @@
-﻿namespace Client.Services;
+﻿using DataAccessLibrary.Models;
+
+namespace Client.Services;
 
 public class MessageService : IMessageService
 {
@@ -18,6 +20,14 @@ public class MessageService : IMessageService
         _photoService = photoService;
         _memberStateService = memberStateService;
         _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+    }
+
+    public async Task<ServiceResponseModel<MessageModel>> CreateMessageAsync(MessageCreateModel messageCreateModel)
+    {
+        string apiEndpoint = _config["apiLocation"] + _config["messagesEndpoint"];
+        using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, messageCreateModel);
+        ServiceResponseModel<MessageModel> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<MessageModel>>(_options);
+        return result;
     }
 
     public async Task<PaginationResponseModel<IEnumerable<MessageModel>>> GetMessagesForMemberAsync(MessageParameters messageParameters)
@@ -104,11 +114,11 @@ public class MessageService : IMessageService
         return result;
     }
 
-    public async Task<ServiceResponseModel<MessageModel>> CreateMessageAsync(MessageCreateModel messageCreateModel)
+    public async Task<ServiceResponseModel<string>> DeleteMessageAsync(int id)
     {
-        string apiEndpoint = _config["apiLocation"] + _config["messagesEndpoint"];
-        using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, messageCreateModel);
-        ServiceResponseModel<MessageModel> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<MessageModel>>(_options);
+        string apiEndpoint = _config["apiLocation"] + _config["messagesEndpoint"] + $"/{id}";
+        using HttpResponseMessage response = await _httpClient.DeleteAsync(apiEndpoint);
+        ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>>(_options);
         return result;
     }
 }
