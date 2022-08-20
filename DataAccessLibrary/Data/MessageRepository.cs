@@ -67,7 +67,7 @@ public class MessageRepository : IMessageRepository
         {
             foreach (Message message in unreadMessages)
             {
-                message.DateRead = DateTime.Now;
+                message.DateRead = DateTime.UtcNow;
             }
 
             await _db.SaveChangesAsync();
