@@ -61,7 +61,7 @@
                                 <MudText Class="ml-2" Typo="Typo.h6" Inline="true">@context.RecipientUsername</MudText>
                             </MudTd>
                         }
-                        <MudTd><MudText Typo="Typo.h6">@DateTime.Now.Subtract(context.MessageSent).Humanize() ago</MudText></MudTd>
+                        <MudTd><MudText Typo="Typo.h6">@DateTime.Now.Subtract(context.MessageSent.ToLocalTime()).Humanize() ago</MudText></MudTd>
                         <MudTd><MudText Typo="Typo.body1">@context.Content</MudText></MudTd>
                     </RowTemplate>
                 </MudTable>
