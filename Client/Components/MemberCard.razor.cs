@@ -37,6 +37,6 @@ public partial class MemberCard
 
     private void HandleMessageClick()
     {
-        NavManager.NavigateTo($"/member/{Member.Username}/3");
+        NavManager.NavigateTo($"/member/{Member.Username}/messages");
     }
 }

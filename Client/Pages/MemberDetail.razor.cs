@@ -8,7 +8,7 @@ public partial class MemberDetail
     [Inject] IMessageService MessageService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
     [Parameter] public string Username { get; set; }
-    [Parameter] public int? StartTab { get; set; }
+    [Parameter] public string StartTab { get; set; }
 
     private MudTabs _memberDetailTabs;
     private MudTabPanel _aboutTab;
@@ -48,22 +48,22 @@ public partial class MemberDetail
     {
         switch (StartTab)
         {
-            case 0:
+            case "about":
                 await ActivateTab(_aboutTab);
                 await ActivatePanel(_aboutPanel);
                 break;
 
-            case 1:
+            case "interests":
                 await ActivateTab(_interestsTab);
                 await ActivatePanel(_interestsPanel);
                 break;
 
-            case 2:
+            case "photos":
                 await ActivateTab(_photosTab);
                 await ActivatePanel(_photosPanel);
                 break;
 
-            case 3:
+            case "messages":
                 await ActivateTab(_messagesTab);
                 await ActivatePanel(_messagesPanel);
                 break;
