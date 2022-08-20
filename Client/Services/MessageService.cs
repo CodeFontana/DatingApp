@@ -5,15 +5,18 @@ public class MessageService : IMessageService
     private readonly IConfiguration _config;
     private readonly HttpClient _httpClient;
     private readonly IPhotoService _photoService;
+    private readonly IMemberStateService _memberStateService;
     private readonly JsonSerializerOptions _options;
 
     public MessageService(IConfiguration config,
                           HttpClient httpClient,
-                          IPhotoService photoService)
+                          IPhotoService photoService,
+                          IMemberStateService memberStateService)
     {
         _config = config;
         _httpClient = httpClient;
         _photoService = photoService;
+        _memberStateService = memberStateService;
         _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
 
@@ -40,8 +43,23 @@ public class MessageService : IMessageService
         {
             foreach (MessageModel msg in result.Data)
             {
-                msg.RecipientPhotoUrl = await _photoService.GetPhotoAsync(msg.RecipientUsername, msg.RecipientPhotoUrl);
-                msg.SenderPhotoUrl = await _photoService.GetPhotoAsync(msg.SenderUsername, msg.SenderPhotoUrl);
+                if (msg.RecipientUsername == _memberStateService.AppUser.Username)
+                {
+                    msg.RecipientPhotoUrl = _memberStateService.MainPhoto;
+                }
+                else
+                {
+                    msg.RecipientPhotoUrl = await _photoService.GetPhotoAsync(msg.RecipientUsername, msg.RecipientPhotoUrl);
+                }
+
+                if (msg.SenderUsername == _memberStateService.AppUser.Username)
+                {
+                    msg.SenderPhotoUrl = _memberStateService.MainPhoto;
+                }
+                else
+                {
+                    msg.SenderPhotoUrl = await _photoService.GetPhotoAsync(msg.SenderUsername, msg.SenderPhotoUrl);
+                }
             }
         }
 
@@ -63,8 +81,23 @@ public class MessageService : IMessageService
         {
             foreach (MessageModel msg in result.Data)
             {
-                msg.RecipientPhotoUrl = await _photoService.GetPhotoAsync(msg.RecipientUsername, msg.RecipientPhotoUrl);
-                msg.SenderPhotoUrl = await _photoService.GetPhotoAsync(msg.SenderUsername, msg.SenderPhotoUrl);
+                if (msg.RecipientUsername == _memberStateService.AppUser.Username)
+                {
+                    msg.RecipientPhotoUrl = _memberStateService.MainPhoto;
+                }
+                else
+                {
+                    msg.RecipientPhotoUrl = await _photoService.GetPhotoAsync(msg.RecipientUsername, msg.RecipientPhotoUrl);
+                }
+
+                if (msg.SenderUsername == _memberStateService.AppUser.Username)
+                {
+                    msg.SenderPhotoUrl = _memberStateService.MainPhoto;
+                }
+                else
+                {
+                    msg.SenderPhotoUrl = await _photoService.GetPhotoAsync(msg.SenderUsername, msg.SenderPhotoUrl);
+                }
             }
         }
 
