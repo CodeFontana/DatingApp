@@ -74,7 +74,7 @@ public class MessageService : IMessageService
     public async Task<ServiceResponseModel<MessageModel>> CreateMessageAsync(MessageCreateModel messageCreateModel)
     {
         string apiEndpoint = _config["apiLocation"] + _config["messagesEndpoint"];
-        using HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiEndpoint, messageCreateModel);
+        using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, messageCreateModel);
         ServiceResponseModel<MessageModel> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<MessageModel>>(_options);
         return result;
     }
