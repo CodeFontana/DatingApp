@@ -98,7 +98,7 @@ public class MembersController : ControllerBase
     }
 
     [HttpPut("photo/set-main")]
-    public async Task<ActionResult> SetMainPhotoAsync([FromBody] int photoId)
+    public async Task<ActionResult<ServiceResponseModel<string>>> SetMainPhotoAsync([FromBody] int photoId)
     {
         ServiceResponseModel<string> response = await _photoService.SetMainPhotoAsync(User.Identity.Name, photoId);
 
@@ -112,8 +112,8 @@ public class MembersController : ControllerBase
         }
     }
 
-    [HttpPut("photo/delete")]
-    public async Task<ActionResult> DeletePhotoAsync([FromBody] PhotoModel photo)
+    [HttpPost("photo/delete")]
+    public async Task<ActionResult<ServiceResponseModel<string>>> DeletePhotoAsync([FromBody] PhotoModel photo)
     {
         ServiceResponseModel<string> response = await _photoService.DeletePhotoAsync(User.Identity.Name, photo);
 
