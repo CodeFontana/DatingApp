@@ -55,9 +55,9 @@
             </MudItem>
 
             <MudItem xs="12" md="8" lg="9" Class="d-none d-md-block" Style="position: relative; top: -60px;">
-                <MudTabs Elevation="6" Centered="true" Rounded="true" Color="Color.Primary">
+                <MudTabs Elevation="6" Centered="true" Rounded="true" Color="Color.Primary" @ref="_memberDetailTabs">
 
-                    <MudTabPanel Text="@($"About {_member.KnownAs}")">
+                    <MudTabPanel Text="@($"About {_member.KnownAs}")" @ref="_aboutTab">
                         <MudContainer Class="mt-5 px-0">
                             <MudText Typo="Typo.h5" Style="font-weight: 500;">Description</MudText>
                             <MudText Class="pl-2 mt-2">@_member.Introduction</MudText>
@@ -66,20 +66,20 @@
                         </MudContainer>
                     </MudTabPanel>
 
-                    <MudTabPanel Text="Interests">
+                    <MudTabPanel Text="Interests" @ref="_interestsTab">
                         <MudContainer Class="mt-5 px-0">
                             <MudText Typo="Typo.h5" Style="font-weight: 500;">Interests</MudText>
                             <MudText class="pl-2 mt-2">@_member.Interests</MudText>
                         </MudContainer>
                     </MudTabPanel>
 
-                    <MudTabPanel Text="Photos">
+                    <MudTabPanel Text="Photos" @ref="_photosTab">
                         <MudContainer Class="mt-5 px-0">
                             <PhotoGallery Member="@_member" />
                         </MudContainer>
                     </MudTabPanel>
 
-                    <MudTabPanel Text="Messages" OnClick="HandleMessagesTabClick">
+                    <MudTabPanel Text="Messages" OnClick="HandleMessagesTabClick" @ref="_messagesTab">
                         <MudContainer Class="mt-5 px-0">
                             <MemberMessage Username="@_member.Username" Messages="@_messages" />
                         </MudContainer>

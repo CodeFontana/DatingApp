@@ -11,6 +11,11 @@ public partial class MemberDetail
     [Inject] ISnackbar Snackbar { get; set; }
     [Parameter] public string Username { get; set; }
 
+    private MudTabs _memberDetailTabs;
+    private MudTabPanel _aboutTab;
+    private MudTabPanel _interestsTab;
+    private MudTabPanel _photosTab;
+    private MudTabPanel _messagesTab;
     private MemberModel _member;
     private string _photoFilename = "./assets/user.png";
     private List<MessageModel> _messages = new();
