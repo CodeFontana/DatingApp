@@ -20,7 +20,7 @@
                             }
                             else if (m.SenderUsername != Username && m.DateRead != null)
                             {
-                                <MudText Class="ml-2" Typo="Typo.caption" Color="Color.Success">(read)</MudText>
+                                <MudText Class="ml-2" Typo="Typo.caption" Color="Color.Success">(read @m.DateRead?.ToLocalTime().Humanize())</MudText>
                             }
                         </MudItem>
                         <MudText Typo="Typo.body1">@m.Content</MudText>
