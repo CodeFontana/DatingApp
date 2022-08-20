@@ -79,9 +79,9 @@
                         </MudContainer>
                     </MudTabPanel>
 
-                    <MudTabPanel Text="Messages">
+                    <MudTabPanel Text="Messages" OnClick="HandleMessagesTabClick">
                         <MudContainer Class="mt-5 px-0">
-                            <MemberMessage Username="@_member.Username" />
+                            <MemberMessage Username="@_member.Username" Messages="@_messages" />
                         </MudContainer>
                     </MudTabPanel>
 

@@ -6,32 +6,11 @@ public partial class MemberMessage
     [Inject] IMessageService MessageService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
     [Parameter] public string Username { get; set; }
+    [Parameter] public List<MessageModel> Messages { get; set; }
 
-    private List<MessageModel> _messages = new();
     private MessageCreateModel _newMessage = new();
     private bool _showError = false;
     private string _errorText;
-
-    protected override async Task OnParametersSetAsync()
-    {
-        await LoadMessages();
-    }
-
-    private async Task LoadMessages()
-    {
-        ServiceResponseModel<IEnumerable<MessageModel>> result = await MessageService.GetMessageThreadAsync(Username);
-
-        if (result.Success)
-        {
-            _messages = result.Data.ToList();
-        }
-        else
-        {
-            _showError = true;
-            _errorText = $"Request failed: {result.Message}";
-            Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
-        }
-    }
 
     private async Task HandleSendMessage()
     {
@@ -41,7 +20,7 @@ public partial class MemberMessage
         if (result.Success)
         {
             result.Data.SenderPhotoUrl = MemberStateService.MainPhoto;
-            _messages.Add(result.Data);
+            Messages.Add(result.Data);
             _newMessage = new();
         }
         else

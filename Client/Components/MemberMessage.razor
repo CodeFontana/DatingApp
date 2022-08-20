@@ -6,9 +6,9 @@
 
     <MudContainer MaxWidth="MaxWidth.False">
         <MudGrid>
-            @if (_messages?.Count > 0)
+            @if (Messages?.Count > 0)
             {
-                @foreach (MessageModel m in _messages)
+                @foreach (MessageModel m in Messages)
                 {
                     <MudItem xs="11" Class="pt-1 pb-0 px-0">
                         <MudItem Class="d-flex">

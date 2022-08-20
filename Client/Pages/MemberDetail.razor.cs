@@ -1,15 +1,19 @@
-﻿namespace Client.Pages;
+﻿using DataAccessLibrary.Entities;
+
+namespace Client.Pages;
 
 public partial class MemberDetail
 {
     [Inject] IMemberService MemberService { get; set; }
     [Inject] IPhotoService PhotoService { get; set; }
     [Inject] ILikesService LikesService { get; set; }
+    [Inject] IMessageService MessageService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
     [Parameter] public string Username { get; set; }
 
     private MemberModel _member;
     private string _photoFilename = "./assets/user.png";
+    private List<MessageModel> _messages = new();
     private bool _showError = false;
     private string _errorText;
 
@@ -41,6 +45,27 @@ public partial class MemberDetail
         else
         {
             Snackbar.Add(result.Message, Severity.Error);
+        }
+    }
+
+    private async Task HandleMessagesTabClick()
+    {
+        await LoadMessages();
+    }
+
+    private async Task LoadMessages()
+    {
+        ServiceResponseModel<IEnumerable<MessageModel>> result = await MessageService.GetMessageThreadAsync(Username);
+
+        if (result.Success)
+        {
+            _messages = result.Data.ToList();
+        }
+        else
+        {
+            _showError = true;
+            _errorText = $"Request failed: {result.Message}";
+            Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
         }
     }
 }
