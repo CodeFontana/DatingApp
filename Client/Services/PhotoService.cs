@@ -106,7 +106,7 @@ public class PhotoService : IPhotoService
         _ = photo ?? throw new ArgumentNullException("Invalid photo");
 
         string apiEndpoint = _config["apiLocation"] + _config["deletePhotoEndpoint"];
-        using HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiEndpoint, photo);
+        using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, photo);
         ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>>(_options);
 
         if (result.Success)
