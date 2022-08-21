@@ -3,10 +3,21 @@
 public class AdminRepository : IAdminRepository
 {
     private readonly UserManager<AppUser> _userManager;
+    private readonly RoleManager<AppRole> _roleManager;
 
-    public AdminRepository(UserManager<AppUser> userManager)
+    public AdminRepository(UserManager<AppUser> userManager,
+                           RoleManager<AppRole> roleManager)
     {
         _userManager = userManager;
+        _roleManager = roleManager;
+    }
+
+    public async Task<List<string>> GetRolesAsync()
+    {
+        return await _roleManager.Roles
+            .Select(x => x.Name)
+            .OrderBy(x => x)
+            .ToListAsync();
     }
 
     public async Task<List<UserWithRolesModel>> GetUsersWithRolesAsync()

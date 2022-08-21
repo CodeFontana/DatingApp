@@ -12,6 +12,22 @@ public class AdminController : ControllerBase
         _adminService = adminService;
     }
 
+    [HttpGet("roles")]
+    [Authorize(Policy = "RequireAdminRole")]
+    public async Task<ActionResult<ServiceResponseModel<List<string>>>> GetRolesAsync()
+    {
+        ServiceResponseModel<List<string>> response = await _adminService.GetRolesAsync(User.Identity.Name);
+
+        if (response.Success)
+        {
+            return Ok(response);
+        }
+        else
+        {
+            return BadRequest(response);
+        }
+    }
+
     [HttpGet("users-with-roles")]
     [Authorize(Policy = "RequireAdminRole")]
     public async Task<ActionResult<ServiceResponseModel<List<UserWithRolesModel>>>> GetUsersWithRolesAsync()

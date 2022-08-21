@@ -12,6 +12,29 @@ public class AdminService : IAdminService
         _adminRepository = adminRepository;
     }
 
+    public async Task<ServiceResponseModel<List<string>>> GetRolesAsync(string requestor)
+    {
+        _logger.LogInformation($"Get roles... [{requestor}]");
+        ServiceResponseModel<List<string>> serviceResponse = new();
+
+        try
+        {
+            serviceResponse.Success = true;
+            serviceResponse.Data = await _adminRepository.GetRolesAsync();
+            serviceResponse.Message = $"Successfully listed User Roles [{requestor}]";
+            _logger.LogInformation(serviceResponse.Message);
+        }
+        catch (Exception e)
+        {
+            serviceResponse.Success = false;
+            serviceResponse.Message = $"Failed to get list of User Roles [{requestor}]";
+            _logger.LogError(serviceResponse.Message);
+            _logger.LogError(e.Message);
+        }
+
+        return serviceResponse;
+    }
+
     public async Task<ServiceResponseModel<List<UserWithRolesModel>>> GetUsersWithRolesAsync(string requestor)
     {
         _logger.LogInformation($"Get users with roles... [{requestor}]");
