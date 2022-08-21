@@ -29,6 +29,11 @@ public class AdminRepository : IAdminRepository
 
     public async Task<IList<string>> EditRolesAsync(string username, string roles)
     {
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            throw new ArgumentException("Invalid user for role modification");
+        }
+        
         string[] selectedRoles = roles.Split(",").ToArray();
         AppUser user = await _userManager.FindByNameAsync(username);
 

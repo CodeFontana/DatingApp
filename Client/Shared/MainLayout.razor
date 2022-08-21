@@ -17,18 +17,26 @@
         <AuthorizeView Context="AppBarContext">
             <Authorized>
 
-                <MudContainer Class="d-none d-sm-flex" MaxWidth="MaxWidth.ExtraSmall">
+                <MudContainer Class="d-none d-sm-flex justify-start" MaxWidth="MaxWidth.Small">
+
                     <MudNavLink Href="/members" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.People" Style="width: unset;">
                         <MudText Typo="Typo.body1">Members</MudText>
                     </MudNavLink>
 
-                    <MudNavLink Class="mx-auto" Href="/lists" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.List" Style="width: unset;">
+                    <MudNavLink Href="/lists" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.List" Style="width: unset;">
                         <MudText Typo="Typo.body1">Lists</MudText>
                     </MudNavLink>
 
                     <MudNavLink Href="/messages" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Message" Style="width: unset;">
                         <MudText Typo="Typo.body1">Messages</MudText>
                     </MudNavLink>
+
+                    <AuthorizeView Context="AdminContext" Roles="Administrator,Moderator">
+                        <MudNavLink Href="/admin" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Shield" Style="width: unset;">
+                            <MudText Typo="Typo.body1">Admin</MudText>
+                        </MudNavLink>
+                    </AuthorizeView>
+
                 </MudContainer>
 
                 <MudSpacer />
@@ -131,6 +139,12 @@
                     <MudNavLink Href="/messages" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Message">
                         <MudText Typo="Typo.body1">Messages</MudText>
                     </MudNavLink>
+
+                    <AuthorizeView Context="AdminContext" Roles="Administrator,Moderator">
+                        <MudNavLink Href="/admin" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Shield">
+                            <MudText Typo="Typo.body1">Admin</MudText>
+                        </MudNavLink>
+                    </AuthorizeView>
 
                 </Authorized>
 
