@@ -16,7 +16,7 @@
         <AuthorizeView Roles="Administrator" Context="UserManagement">
             <Authorized>
                 <MudTabPanel Text="User management">
-                    <MudContainer Class="mt-5 px-0">
+                    <MudContainer Class="mt-5 px-0" MaxWidth="MaxWidth.False">
                         @if (_users?.Count > 0)
                         {
                             <MudGrid Class="mb-2" Justify="Justify.Center">
