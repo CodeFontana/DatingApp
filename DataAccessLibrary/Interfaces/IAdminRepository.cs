@@ -2,6 +2,6 @@
 
 public interface IAdminRepository
 {
+    Task<List<UserWithRolesModel>> GetUsersWithRolesAsync();
     Task EditRolesAsync(UserWithRolesModel userWithRoles);
-    Task<PaginationList<UserWithRolesModel>> GetUsersWithRolesAsync(PaginationParameters pageParameters);
 }

@@ -9,10 +9,9 @@ public class AdminRepository : IAdminRepository
         _userManager = userManager;
     }
 
-    public async Task<PaginationList<UserWithRolesModel>> GetUsersWithRolesAsync(PaginationParameters pageParameters)
+    public async Task<List<UserWithRolesModel>> GetUsersWithRolesAsync()
     {
-        return await PaginationList<UserWithRolesModel>.CreateAsync(
-            _userManager.Users
+        return await _userManager.Users
             .Include(r => r.UserRoles)
             .ThenInclude(r => r.Role)
             .OrderBy(u => u.UserName)
@@ -22,9 +21,8 @@ public class AdminRepository : IAdminRepository
                 Id = u.Id,
                 Username = u.UserName,
                 Roles = u.UserRoles.Select(r => r.Role.Name).ToList()
-            }), 
-            pageParameters.PageNumber,
-            pageParameters.PageSize);
+            })
+            .ToListAsync();
     }
 
     public async Task EditRolesAsync(UserWithRolesModel userWithRoles)

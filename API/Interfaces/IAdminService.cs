@@ -2,7 +2,7 @@
 
 public interface IAdminService
 {
-    Task<PaginationResponseModel<PaginationList<UserWithRolesModel>>> GetUsersWithRolesAsync(string requestor, PaginationParameters pageParameters);
+    Task<ServiceResponseModel<List<UserWithRolesModel>>> GetUsersWithRolesAsync(string requestor);
     Task<ServiceResponseModel<string>> EditRolesAsync(string requestor, UserWithRolesModel userWithRoles);
     ServiceResponseModel<string> GetPhotosForModeration(string requestor);
 }

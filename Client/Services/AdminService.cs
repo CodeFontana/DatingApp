@@ -1,7 +1,4 @@
-﻿using System.Net.Http.Json;
-using System.Security.Cryptography;
-
-namespace Client.Services;
+﻿namespace Client.Services;
 
 public class AdminService : IAdminService
 {
@@ -17,24 +14,11 @@ public class AdminService : IAdminService
         _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
 
-    public async Task<PaginationResponseModel<IEnumerable<UserWithRolesModel>>> GetUsersWithRolesAsync(PaginationParameters pageParameters)
+    public async Task<ServiceResponseModel<IEnumerable<UserWithRolesModel>>> GetUsersWithRolesAsync()
     {
         string apiEndpoint = _config["apiLocation"] + _config["adminEndpoint"] + "/users-with-roles";
-
-        Dictionary<string, string> queryStringParam = new()
-        {
-            [nameof(pageParameters.PageNumber)] = pageParameters.PageNumber.ToString(),
-            [nameof(pageParameters.PageSize)] = pageParameters.PageSize.ToString()
-        };
-
-        using HttpResponseMessage response = await _httpClient.GetAsync(QueryHelpers.AddQueryString(apiEndpoint, queryStringParam));
-        PaginationResponseModel<IEnumerable<UserWithRolesModel>> result = await response.Content.ReadFromJsonAsync<PaginationResponseModel<IEnumerable<UserWithRolesModel>>>(_options);
-
-        if (response.Headers != null && response.Headers.Contains("Pagination"))
-        {
-            result.MetaData = JsonSerializer.Deserialize<PaginationModel>(response.Headers.GetValues("Pagination").First(), _options);
-        }
-
+        using HttpResponseMessage response = await _httpClient.GetAsync(apiEndpoint);
+        ServiceResponseModel<IEnumerable<UserWithRolesModel>> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<IEnumerable<UserWithRolesModel>>>(_options);
         return result;
     }
 

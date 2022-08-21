@@ -12,28 +12,27 @@ public class AdminService : IAdminService
         _adminRepository = adminRepository;
     }
 
-    public async Task<PaginationResponseModel<PaginationList<UserWithRolesModel>>> GetUsersWithRolesAsync(string requestor, PaginationParameters pageParameters)
+    public async Task<ServiceResponseModel<List<UserWithRolesModel>>> GetUsersWithRolesAsync(string requestor)
     {
         _logger.LogInformation($"Get users with roles... [{requestor}]");
-        PaginationResponseModel<PaginationList<UserWithRolesModel>> pagedResponse = new();
+        ServiceResponseModel<List<UserWithRolesModel>> serviceResponse = new();
 
         try
         {
-            pagedResponse.Data = await _adminRepository.GetUsersWithRolesAsync(pageParameters);
-            pagedResponse.Success = true;
-            pagedResponse.MetaData = pagedResponse.Data.MetaData;
-            pagedResponse.Message = $"Successfully listed User-Role relationships for [{requestor}]";
-            _logger.LogInformation(pagedResponse.Message);
+            serviceResponse.Success = true;
+            serviceResponse.Data = await _adminRepository.GetUsersWithRolesAsync();
+            serviceResponse.Message = $"Successfully listed User-Role relationships for [{requestor}]";
+            _logger.LogInformation(serviceResponse.Message);
         }
         catch (Exception e)
         {
-            pagedResponse.Success = false;
-            pagedResponse.Message = $"Failed to get list of User-Role relationship for [{requestor}]";
-            _logger.LogError(pagedResponse.Message);
+            serviceResponse.Success = false;
+            serviceResponse.Message = $"Failed to get list of User-Role relationship for [{requestor}]";
+            _logger.LogError(serviceResponse.Message);
             _logger.LogError(e.Message);
         }
 
-        return pagedResponse;
+        return serviceResponse;
     }
 
     public async Task<ServiceResponseModel<string>> EditRolesAsync(string requestor, UserWithRolesModel userWithRoles)

@@ -1,11 +1,12 @@
-﻿namespace Client.Pages;
+﻿using static MudBlazor.CategoryTypes;
+
+namespace Client.Pages;
 
 public partial class Admin
 {
     private List<UserWithRolesModel> _users = new();
-    private PaginationParameters _pageParameters = new();
-    private PaginationModel _metaData;
     private bool _loadingUsers = false;
+    private string _searchString = "";
     private bool _showError = false;
     private string _errorText = "";
 
@@ -20,13 +21,12 @@ public partial class Admin
     private async Task LoadUsersWithRolesAsync()
     {
         _loadingUsers = true;
-        PaginationResponseModel<IEnumerable<UserWithRolesModel>> result = await AdminService.GetUsersWithRolesAsync(_pageParameters);
+        ServiceResponseModel<IEnumerable<UserWithRolesModel>> result = await AdminService.GetUsersWithRolesAsync();
 
         if (result.Success)
         {
             _showError = false;
             _users = result.Data.ToList();
-            _metaData = result.MetaData;
         }
         else
         {
@@ -38,10 +38,21 @@ public partial class Admin
         _loadingUsers = false;
     }
 
-    private async Task HandlePageChangedAsync(int page)
+    private bool UserFilterFunc(UserWithRolesModel user)
     {
-        _pageParameters.PageNumber = page;
-        _users = null;
-        await LoadUsersWithRolesAsync();
+        return UserFilter(user, _searchString);
     }
+
+    private bool UserFilter(UserWithRolesModel user, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(user.Username) == false && user.Username.Equals(searchString.Trim('\"'), StringComparison.OrdinalIgnoreCase)) return true;
+        if (user.Roles is not null && user.Roles.Any(r => r.Equals(searchString.Trim('\"'), StringComparison.OrdinalIgnoreCase))) return true;
+        return false;
+    }
+
 }

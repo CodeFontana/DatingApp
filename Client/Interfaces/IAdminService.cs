@@ -2,5 +2,6 @@
 
 public interface IAdminService
 {
-    Task<PaginationResponseModel<IEnumerable<UserWithRolesModel>>> GetUsersWithRolesAsync(PaginationParameters pageParameters);
+    Task<ServiceResponseModel<string>> EditRolesAsync(UserWithRolesModel userWithRoles);
+    Task<ServiceResponseModel<IEnumerable<UserWithRolesModel>>> GetUsersWithRolesAsync();
 }
