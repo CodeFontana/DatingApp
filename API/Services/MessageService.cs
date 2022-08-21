@@ -136,7 +136,6 @@ public class MessageService : IMessageService
         {
             serviceResponse.Success = false;
             serviceResponse.Message = e.Message;
-			serviceResponse.Exception = e;
             _logger.LogError(e.Message);
         }
 

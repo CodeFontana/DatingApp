@@ -74,7 +74,7 @@ public class MessagesController : ControllerBase
         {
             return Ok(response);
         }
-        else if (response.Exception.InnerException is UnauthorizedAccessException)
+        else if (response.Message.ToLower().Contains("unauthorized"))
         {
             return Unauthorized(response);
         }
