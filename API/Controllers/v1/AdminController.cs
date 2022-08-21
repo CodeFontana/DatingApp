@@ -14,12 +14,13 @@ public class AdminController : ControllerBase
 
     [HttpGet("users-with-roles")]
     [Authorize(Policy = "RequireAdminRole")]
-    public async Task<ActionResult<ServiceResponseModel<List<UserWithRolesModel>>>> GetUsersWithRolesAsync()
+    public async Task<ActionResult<PaginationResponseModel<PaginationList<UserWithRolesModel>>>> GetUsersWithRolesAsync([FromQuery] PaginationParameters pageParameters)
     {
-        ServiceResponseModel<List<UserWithRolesModel>> response = await _adminService.GetUsersWithRolesAsync(User.Identity.Name);
+        PaginationResponseModel<PaginationList<UserWithRolesModel>> response = await _adminService.GetUsersWithRolesAsync(User.Identity.Name, pageParameters);
 
         if (response.Success)
         {
+            Response.AddPaginationHeader(response.MetaData);
             return Ok(response);
         }
         else

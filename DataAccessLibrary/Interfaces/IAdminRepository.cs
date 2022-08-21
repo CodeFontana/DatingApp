@@ -3,5 +3,5 @@
 public interface IAdminRepository
 {
     Task<IList<string>> EditRolesAsync(string username, string roles);
-    Task<List<UserWithRolesModel>> GetUsersWithRolesAsync();
+    Task<PaginationList<UserWithRolesModel>> GetUsersWithRolesAsync(PaginationParameters pageParameters);
 }

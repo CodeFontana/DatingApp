@@ -51,7 +51,7 @@ public class SeedData
                 LastActive = DateTime.Now,
                 Introduction = "Leave me alone, please.",
                 LookingFor = "Judy, Piper and Horsie.",
-                Interests = "C# + ASP.NET Core Blazor",
+                Interests = "C#, ASP.NET Core, Blazor",
                 City = "Center Moriches",
                 State = "New York"
             };

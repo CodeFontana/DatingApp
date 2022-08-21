@@ -12,27 +12,28 @@ public class AdminService : IAdminService
         _adminRepository = adminRepository;
     }
 
-    public async Task<ServiceResponseModel<List<UserWithRolesModel>>> GetUsersWithRolesAsync(string requestor)
+    public async Task<PaginationResponseModel<PaginationList<UserWithRolesModel>>> GetUsersWithRolesAsync(string requestor, PaginationParameters pageParameters)
     {
         _logger.LogInformation($"Get users with roles... [{requestor}]");
-        ServiceResponseModel<List<UserWithRolesModel>> serviceResponse = new();
+        PaginationResponseModel<PaginationList<UserWithRolesModel>> pagedResponse = new();
 
         try
         {
-            serviceResponse.Data = await _adminRepository.GetUsersWithRolesAsync();
-            serviceResponse.Success = true;
-            serviceResponse.Message = $"Successfully listed User-Role relationships for [{requestor}]";
-            _logger.LogInformation(serviceResponse.Message);
+            pagedResponse.Data = await _adminRepository.GetUsersWithRolesAsync(pageParameters);
+            pagedResponse.Success = true;
+            pagedResponse.MetaData = pagedResponse.Data.MetaData;
+            pagedResponse.Message = $"Successfully listed User-Role relationships for [{requestor}]";
+            _logger.LogInformation(pagedResponse.Message);
         }
         catch (Exception e)
         {
-            serviceResponse.Success = false;
-            serviceResponse.Message = $"Failed to get list of User-Role relationship for [{requestor}]";
-            _logger.LogError(serviceResponse.Message);
+            pagedResponse.Success = false;
+            pagedResponse.Message = $"Failed to get list of User-Role relationship for [{requestor}]";
+            _logger.LogError(pagedResponse.Message);
             _logger.LogError(e.Message);
         }
 
-        return serviceResponse;
+        return pagedResponse;
     }
 
     public async Task<ServiceResponseModel<IList<string>>> EditRolesAsync(string requestor, string username, string roles)
