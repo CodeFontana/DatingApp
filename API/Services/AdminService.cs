@@ -36,16 +36,18 @@ public class AdminService : IAdminService
         return pagedResponse;
     }
 
-    public async Task<ServiceResponseModel<IList<string>>> EditRolesAsync(string requestor, string username, string roles)
+    public async Task<ServiceResponseModel<string>> EditRolesAsync(string requestor, UserWithRolesModel userWithRoles)
     {
-        _logger.LogInformation($"Edit roles for {username}... [{requestor}]");
-        ServiceResponseModel<IList<string>> serviceResponse = new();
+        _logger.LogInformation($"Edit roles for {userWithRoles.Username}... [{requestor}]");
+        ServiceResponseModel<string> serviceResponse = new();
 
         try
         {
-            serviceResponse.Data = await _adminRepository.EditRolesAsync(username, roles);
+            await _adminRepository.EditRolesAsync(userWithRoles);
+
             serviceResponse.Success = true;
-            serviceResponse.Message = $"Successfully editted roles for user [{username}], requested by {requestor}";
+            serviceResponse.Data = $"Successfully edited roles for user [{userWithRoles.Username}], requested by {requestor}";
+            serviceResponse.Message = $"Successfully edited roles for user [{userWithRoles.Username}], requested by {requestor}";
             _logger.LogInformation(serviceResponse.Message);
         }
         catch (Exception e)

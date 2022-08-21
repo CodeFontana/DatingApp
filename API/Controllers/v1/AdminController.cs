@@ -29,11 +29,11 @@ public class AdminController : ControllerBase
         }
     }
 
-    [HttpPost("edit-roles/{username}")]
+    [HttpPost("edit-roles")]
     [Authorize(Policy = "RequireAdminRole")]
-    public async Task<ActionResult<ServiceResponseModel<IList<string>>>> EditRolesAsync(string username, [FromQuery] string roles)
+    public async Task<ActionResult<ServiceResponseModel<string>>> EditRolesAsync(string username, UserWithRolesModel userWithRoles)
     {
-        ServiceResponseModel<IList<string>> response = await _adminService.EditRolesAsync(User.Identity.Name, username, roles);
+        ServiceResponseModel<string> response = await _adminService.EditRolesAsync(User.Identity.Name, userWithRoles);
 
         if (response.Success)
         {

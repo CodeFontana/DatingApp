@@ -27,36 +27,35 @@ public class AdminRepository : IAdminRepository
             pageParameters.PageSize);
     }
 
-    public async Task<IList<string>> EditRolesAsync(string username, string roles)
+    public async Task EditRolesAsync(UserWithRolesModel userWithRoles)
     {
-        if (string.IsNullOrWhiteSpace(username))
+        if (string.IsNullOrWhiteSpace(userWithRoles.Username))
         {
             throw new ArgumentException("Invalid user for role modification");
         }
         
-        string[] selectedRoles = roles.Split(",").ToArray();
-        AppUser user = await _userManager.FindByNameAsync(username);
+        AppUser user = await _userManager.FindByNameAsync(userWithRoles.Username);
 
         if (user == null)
         {
-            throw new ArgumentException($"Could not find user [{username}]");
+            throw new ArgumentException($"Could not find user [{userWithRoles.Username}]");
         }
 
         IList<string> userRoles = await _userManager.GetRolesAsync(user);
-        IdentityResult result = await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
+        IdentityResult result = await _userManager.AddToRolesAsync(user, userWithRoles.Roles.Except(userRoles));
 
         if (result.Succeeded == false)
         {
-            throw new Exception($"Failed to add user [{username}] to roles [{selectedRoles.Except(userRoles)}]");
+            throw new Exception($"Failed to add user [{userWithRoles.Username}] to roles [{userWithRoles.Roles.Except(userRoles)}]");
         }
 
-        result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
+        result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(userWithRoles.Roles));
 
         if (result.Succeeded == false)
         {
-            throw new Exception($"Failed to remove user [{username}] from roles [{userRoles.Except(selectedRoles)}]");
+            throw new Exception($"Failed to remove user [{userWithRoles.Username}] from roles [{userRoles.Except(userWithRoles.Roles)}]");
         }
 
-        return await _userManager.GetRolesAsync(user);
+        return;
     }
 }

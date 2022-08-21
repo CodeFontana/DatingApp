@@ -1,4 +1,7 @@
-﻿namespace Client.Services;
+﻿using System.Net.Http.Json;
+using System.Security.Cryptography;
+
+namespace Client.Services;
 
 public class AdminService : IAdminService
 {
@@ -32,6 +35,14 @@ public class AdminService : IAdminService
             result.MetaData = JsonSerializer.Deserialize<PaginationModel>(response.Headers.GetValues("Pagination").First(), _options);
         }
 
+        return result;
+    }
+
+    public async Task<ServiceResponseModel<string>> EditRolesAsync(UserWithRolesModel userWithRoles)
+    {
+        string apiEndpoint = _config["apiLocation"] + _config["adminEndpoint"] + "/edit-roles";
+        using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(apiEndpoint, userWithRoles);
+        ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>> (_options);
         return result;
     }
 }
