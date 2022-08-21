@@ -3,5 +3,6 @@
 public interface IAdminService
 {
     Task<ServiceResponseModel<string>> EditRolesAsync(UserWithRolesModel userWithRoles);
+    Task<ServiceResponseModel<IEnumerable<string>>> GetRolesAsync();
     Task<ServiceResponseModel<IEnumerable<UserWithRolesModel>>> GetUsersWithRolesAsync();
 }

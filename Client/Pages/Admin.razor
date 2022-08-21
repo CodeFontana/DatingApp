@@ -47,7 +47,7 @@
                                             <MudTd><MudText Typo="Typo.h6">@context.Username</MudText></MudTd>
                                             <MudTd><MudText Typo="Typo.h6">@(string.Join(", ", context.Roles))</MudText></MudTd>
                                                 <MudTd>
-                                                    <MudButton Class="mx-2" Variant="Variant.Filled" Color="Color.Info">Edit Roles</MudButton>
+                                                    <MudButton Class="mx-2" Variant="Variant.Filled" Color="Color.Info" OnClick="() => HandleEditRoles(context)">Edit Roles</MudButton>
                                                     <MudButton Class="mx-2" Variant="Variant.Filled" Color="Color.Error">Delete User</MudButton>
                                                 </MudTd>
                                         </RowTemplate>

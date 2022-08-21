@@ -14,6 +14,14 @@ public class AdminService : IAdminService
         _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
 
+    public async Task<ServiceResponseModel<IEnumerable<string>>> GetRolesAsync()
+    {
+        string apiEndpoint = _config["apiLocation"] + _config["adminEndpoint"] + "/roles";
+        using HttpResponseMessage response = await _httpClient.GetAsync(apiEndpoint);
+        ServiceResponseModel<IEnumerable<string>> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<IEnumerable<string>>>(_options);
+        return result;
+    }
+
     public async Task<ServiceResponseModel<IEnumerable<UserWithRolesModel>>> GetUsersWithRolesAsync()
     {
         string apiEndpoint = _config["apiLocation"] + _config["adminEndpoint"] + "/users-with-roles";
