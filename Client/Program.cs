@@ -29,6 +29,7 @@ public class Program
         builder.Services.AddScoped<IPhotoService, PhotoService>();
         builder.Services.AddScoped<ILikesService, LikesService>();
         builder.Services.AddScoped<IMessageService, MessageService>();
+        builder.Services.AddScoped<IAdminService, AdminService>();
         builder.Services.AddScoped<ISpinnerService, SpinnerService>();
         builder.Services.AddScoped<SpinnerHandler>();
         builder.Services.AddScoped(s =>

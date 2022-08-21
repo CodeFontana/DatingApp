@@ -10,5 +10,29 @@
     {
         <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
     }
-    
+
+    <MudTabs Elevation="6" Centered="true" Rounded="true" Color="Color.Primary">
+
+        <AuthorizeView Roles="Administrator">
+            <Authorized>
+                <MudTabPanel Text="User management">
+                    <MudContainer Class="mt-5 px-0">
+                        User-management works!
+                    </MudContainer>
+                </MudTabPanel>
+            </Authorized>
+        </AuthorizeView>
+
+        <AuthorizeView Roles="Administrator,Moderator">
+            <Authorized>
+                <MudTabPanel Text="Photo management">
+                    <MudContainer Class="mt-5 px-0">
+                        Photo-management works!
+                    </MudContainer>
+                </MudTabPanel>
+            </Authorized>
+        </AuthorizeView>
+
+    </MudTabs>
+
 </section>
