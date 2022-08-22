@@ -37,4 +37,12 @@ public class AdminService : IAdminService
         ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>> (_options);
         return result;
     }
+
+    public async Task<ServiceResponseModel<bool>> DeleteAccountAsync(string username)
+    {
+        string apiEndpoint = _config["apiLocation"] + _config["registerEndpoint"] + $"/{username}";
+        using HttpResponseMessage response = await _httpClient.DeleteAsync(apiEndpoint);
+        ServiceResponseModel<bool> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<bool>>(_options);
+        return result;
+    }
 }

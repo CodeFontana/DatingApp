@@ -14,7 +14,7 @@ public class AccountsController : ControllerBase
 
     // GET: api/v1/Accounts
     [HttpGet]
-    [Authorize(Policy = "Administrator")]
+    [Authorize(Policy = "RequireAdminRole")]
     public async Task<ActionResult<ServiceResponseModel<List<AccountModel>>>> Get()
     {
         ServiceResponseModel<List<AccountModel>> response = await _accountService.GetAccountsAsync(HttpContext.User.Identity.Name);
@@ -31,7 +31,7 @@ public class AccountsController : ControllerBase
 
     // GET api/v1/Accounts/username
     [HttpGet("{username}")]
-    [Authorize(Policy = "Administrator")]
+    [Authorize(Policy = "RequireAdminRole")]
     public async Task<ActionResult<ServiceResponseModel<AccountModel>>> Get(string username)
     {
         ServiceResponseModel<AccountModel> response = await _accountService.GetAccountAsync(HttpContext.User.Identity.Name, username);
@@ -82,7 +82,7 @@ public class AccountsController : ControllerBase
 
     // PUT api/v1/Accounts
     [HttpPut]
-    [Authorize(Policy = "Administrator")]
+    [Authorize(Policy = "RequireAdminRole")]
     public async Task<ActionResult<ServiceResponseModel<bool>>> Put([FromBody] AccountUpdateModel updateAccount)
     {
         ServiceResponseModel<bool> response = await _accountService.UpdateAccountAsync(HttpContext.User.Identity.Name, updateAccount);
@@ -99,7 +99,7 @@ public class AccountsController : ControllerBase
 
     // DELETE api/v1/Accounts/username
     [HttpDelete("{username}")]
-    [Authorize(Policy = "Administrator")]
+    [Authorize(Policy = "RequireAdminRole")]
     public async Task<ActionResult<ServiceResponseModel<bool>>> Delete(string username)
     {
         ServiceResponseModel<bool> response = await _accountService.DeleteAccountAsync(HttpContext.User.Identity.Name, username);

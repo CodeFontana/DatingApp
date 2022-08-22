@@ -1,6 +1,4 @@
 ﻿using Client.Components;
-using System;
-using static MudBlazor.CategoryTypes;
 
 namespace Client.Pages;
 
@@ -16,6 +14,8 @@ public partial class Admin
     [Inject] IAdminService AdminService { get; set; }
     [Inject] IDialogService DialogService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
+
+    public MudMessageBox ConfirmDeleteBox { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,6 +69,31 @@ public partial class Admin
         
         var parameters = new DialogParameters { ["User"]=selectedUser, ["AvailableRoles"]=_roles };
         DialogService.Show<EditRolesDialog>($"Edit roles for {selectedUser.Username}", parameters);
+    }
+
+    private async Task HandleDeleteUser(string username)
+    {
+        bool? lastChance = await DialogService.ShowMessageBox("Warning", "Deleting can not be undone!", yesText: "Delete!", cancelText: "Cancel");
+
+        if (lastChance == null)
+        {
+            return;
+        }
+
+        ServiceResponseModel<bool> result = await AdminService.DeleteAccountAsync(username);
+
+        if (result.Success)
+        {
+            _showError = false;
+            //await LoadUserRolesAsync();
+            //await LoadUsersWithRolesAsync();
+        }
+        else
+        {
+            _showError = true;
+            _errorText = $"Request failed: {result.Message}";
+            Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
+        }
     }
 
     private bool UserFilterFunc(UserWithRolesModel user)
