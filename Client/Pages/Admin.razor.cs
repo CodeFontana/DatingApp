@@ -85,8 +85,8 @@ public partial class Admin
         if (result.Success)
         {
             _showError = false;
-            //await LoadUserRolesAsync();
-            //await LoadUsersWithRolesAsync();
+            await LoadUserRolesAsync();
+            await LoadUsersWithRolesAsync();
         }
         else
         {
