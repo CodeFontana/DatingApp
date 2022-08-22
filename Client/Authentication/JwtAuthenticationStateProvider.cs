@@ -7,6 +7,7 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
     private readonly IMemberStateService _memberStateService;
     private readonly IMemberService _memberService;
     private readonly ILocalStorageService _localStorage;
+    private readonly IPresenceService _presenceService;
     private readonly NavigationManager _navigationManager;
     private readonly AuthenticationState _anonymous;
     private Task _authStateMonitor;
@@ -18,6 +19,7 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
                                           IMemberStateService memberStateService,
                                           IMemberService memberService,
                                           ILocalStorageService localStorage,
+                                          IPresenceService presenceService,
                                           NavigationManager navigationManager)
     {
         _config = config;
@@ -25,6 +27,7 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
         _memberStateService = memberStateService;
         _memberService = memberService;
         _localStorage = localStorage;
+        _presenceService = presenceService;
         _navigationManager = navigationManager;
         _anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
     }
@@ -123,6 +126,8 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
                         _authStateMonitoringTokenSource.Token), 
                         TaskCreationOptions.LongRunning);
             }
+
+            await _presenceService.ConnectAsync(token);
         }
         catch (Exception ex)
         {
@@ -136,6 +141,7 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
 
     public async Task NotifyUserLogoutAsync()
     {
+        await _presenceService.DisconnectAsync();
         _authStateMonitoringTokenSource.Cancel();
         string authTokenStorageKey = _config["authTokenStorageKey"];
         await _localStorage.RemoveItemAsync(authTokenStorageKey);

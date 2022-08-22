@@ -37,6 +37,22 @@ public class Program
                                 ValidateLifetime = true,
                                 ClockSkew = TimeSpan.FromMinutes(10)
                             };
+
+                            options.Events = new JwtBearerEvents
+                            {
+                                OnMessageReceived = context =>
+                                {
+                                    var accessToken = context.Request.Query["access_token"];
+                                    var path = context.HttpContext.Request.Path;
+
+                                    if (string.IsNullOrWhiteSpace(accessToken) == false && path.StartsWithSegments("/hubs"))
+                                    {
+                                        context.Token = accessToken;
+                                    }
+
+                                    return Task.CompletedTask;
+                                }
+                            };
                         });
 
         builder.Services.AddAuthorization(config =>
@@ -80,6 +96,8 @@ public class Program
 
         builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
+        builder.Services.AddSignalR();
+
         builder.Services.AddMemoryCache();
         builder.Services.AddResponseCaching();
         builder.Services.AddControllers().AddJsonOptions(config =>
@@ -89,10 +107,15 @@ public class Program
         builder.Services.AddCors(policy =>
         {
             policy.AddPolicy("OpenCorsPolicy", options =>
-                options
-                    .AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod());
+                options.AllowAnyOrigin()
+                       .AllowAnyHeader()
+                       .AllowAnyMethod());
+
+            policy.AddPolicy("SignalRPolicy", options =>
+                options.AllowAnyHeader()
+                       .AllowAnyMethod()
+                       .AllowCredentials()
+                       .SetIsOriginAllowed(isOriginAllowed => true));
         });
         builder.Services.AddSwaggerGen(c =>
         {
@@ -169,10 +192,12 @@ public class Program
 
         app.UseHttpsRedirection();
         app.UseCors("OpenCorsPolicy");
+        app.UseCors("SignalRPolicy");
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseResponseCaching();
         app.MapControllers();
+        app.MapHub<PresenceHub>("/hubs/presence");
         app.UseIpRateLimiting();
         app.MapHealthChecks("/health", new HealthCheckOptions
         {

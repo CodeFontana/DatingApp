@@ -24,6 +24,7 @@ public class Program
         builder.Services.AddAuthorizationCore();
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
         builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();
+        builder.Services.AddScoped<IPresenceService, PresenceService>();
         builder.Services.AddScoped<IMemberService, MemberService>();
         builder.Services.AddScoped<IMemberStateService, MemberStateService>();
         builder.Services.AddScoped<IPhotoService, PhotoService>();
