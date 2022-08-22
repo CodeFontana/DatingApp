@@ -1,11 +1,12 @@
 ﻿namespace Client.Pages;
 
-public partial class MemberDetail
+public partial class MemberDetail : IDisposable
 {
     [Inject] IMemberService MemberService { get; set; }
     [Inject] IPhotoService PhotoService { get; set; }
     [Inject] ILikesService LikesService { get; set; }
     [Inject] IMessageService MessageService { get; set; }
+    [Inject] IPresenceService PresenceService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
     [Parameter] public string Username { get; set; }
     [Parameter] public string StartTab { get; set; }
@@ -42,6 +43,8 @@ public partial class MemberDetail
             _errorText = $"Request failed: {result.Message}";
             Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
         }
+
+        PresenceService.OnlineUsersChanged += StateHasChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -134,5 +137,10 @@ public partial class MemberDetail
             _errorText = $"Request failed: {result.Message}";
             Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
         }
+    }
+
+    public void Dispose()
+    {
+        PresenceService.OnlineUsersChanged -= StateHasChanged;
     }
 }
