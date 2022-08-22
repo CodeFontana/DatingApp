@@ -1,11 +1,45 @@
 ﻿<MudDialog>
     <DialogContent>
-        <div class="d-flex flex-column py-1">
-            <MudText>Dialogs are working!</MudText>
-        </div>
+        <MudGrid>
+            
+            <MudItem xs="5">
+                <MudText Typo="Typo.body1" GutterBottom="true" Style="font-weight: 500;">Assigned Roles</MudText>
+                <MudPaper Width="100%" Height="100%" Outlined="true" Elevation="3">
+                    <MudList Clickable="true" Dense="true" SelectedValue="_leftValue">
+                        @foreach (string role in User.Roles)
+                        {
+                        <MudListItem OnClick="@(() => _leftValue = role)">
+                            <MudText Typo="Typo.body1">@role</MudText>
+                            </MudListItem>
+                        }
+                    </MudList>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="2" Class="d-flex flex-column justify-end">
+                <MudIconButton Variant="Variant.Filled" Color="Color.Surface" Icon="@Icons.Filled.KeyboardArrowRight" Class="my-1" OnClick="HandleRight"></MudIconButton>
+                <MudIconButton Variant="Variant.Filled" Color="Color.Surface" Icon="@Icons.Filled.KeyboardArrowLeft" Class="my-1" OnClick="HandleLeft"></MudIconButton>
+            </MudItem>
+
+            <MudItem xs="5">
+                <MudText Typo="Typo.body1" GutterBottom="true" Style="font-weight: 500;">Available Roles</MudText>
+                <MudPaper Width="100%" Height="100%" Outlined="true" Elevation="3">
+                    <MudList Clickable="true" Dense="true" SelectedValue="_rightValue">
+                        @foreach (string role in _diffRoles)
+                        {
+                            <MudListItem OnClick="@(() => _rightValue = role)">
+                                <MudText Typo="Typo.body1">@role</MudText>
+                            </MudListItem>
+                        }
+                    </MudList>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" Class="mt-8 d-flex justify-center">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit" Class="mx-2">Submit</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="Cancel">Cancel</MudButton>
+            </MudItem>
+
+        </MudGrid>
     </DialogContent>
-    <DialogActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">Submit</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Cancel">Cancel</MudButton>
-    </DialogActions>
 </MudDialog>
