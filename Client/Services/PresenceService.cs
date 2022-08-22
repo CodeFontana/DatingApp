@@ -6,6 +6,8 @@ public class PresenceService : IAsyncDisposable, IPresenceService
     private readonly ISnackbar _snackbar;
     private HubConnection _presenceHub;
 
+    public List<string> OnelineUsers { get; set; } = new();
+
     public PresenceService(IConfiguration config,
                            ISnackbar snackbar)
     {
@@ -35,6 +37,12 @@ public class PresenceService : IAsyncDisposable, IPresenceService
                 _snackbar.Add($"{username} is offline", Severity.Warning);
             });
 
+            _presenceHub.On<string[]>("GetOnlineUsers", (usernames) =>
+            {
+                OnelineUsers = usernames.ToList();
+                NotifyStateChanged();
+            });
+
             await _presenceHub.StartAsync();
         }
     }
@@ -45,6 +53,10 @@ public class PresenceService : IAsyncDisposable, IPresenceService
         await _presenceHub.DisposeAsync();
         _presenceHub = null;
     }
+
+    public event Action OnlineUsersChanged;
+
+    private void NotifyStateChanged() => OnlineUsersChanged?.Invoke();
 
     public async ValueTask DisposeAsync()
     {

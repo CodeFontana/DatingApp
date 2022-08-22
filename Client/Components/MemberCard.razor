@@ -24,8 +24,15 @@
             </MudPaper>
         </MudCardHeader>
         <MudCardContent Style="background-color: var(--mud-palette-surface);">
-            <MudText Typo="Typo.body1" Align="Align.Center" Class="member-info">
-                @Member.KnownAs | @Member.Age
+            <MudText Typo="Typo.body1" Align="Align.Center" Class="member-info d-flex justify-center align-center">
+                @if (PresenceService.OnelineUsers.Contains(Member.Username))
+                {
+                    <MudIcon Class="mt-0" Icon="@Icons.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"></MudIcon> @Member.KnownAs @($" | {Member.Age}")
+                }
+                else 
+                {
+                    @($"{Member.KnownAs} | {Member.Age}")
+                }
             </MudText>
             <MudDivider DividerType="DividerType.Middle" />
             <MudText Typo="Typo.body1" Align="Align.Center" Class="member-location">

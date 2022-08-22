@@ -1,6 +1,6 @@
 ﻿namespace Client.Shared;
 
-public partial class MainLayout
+public partial class MainLayout : IDisposable
 {
     private MudTheme _currentTheme = new();
     private LoginUserModel _loginUser = new();

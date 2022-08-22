@@ -1,11 +1,12 @@
 ﻿namespace Client.Components;
 
-public partial class MemberCard
+public partial class MemberCard : IDisposable
 {
     [Inject] NavigationManager NavManager { get; set; }
     [Inject] IPhotoService PhotoService { get; set; }
     [Inject] ILikesService LikesService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
+    [Inject] IPresenceService PresenceService { get; set; }
     [Parameter] public MemberModel Member { get; set; }
 
     private string _photoFilename = "./assets/user.png";
@@ -14,6 +15,7 @@ public partial class MemberCard
     {
         _photoFilename = await PhotoService.GetPhotoAsync(Member.Username, Member.MainPhotoFilename);
         Member.MainPhotoFilename = _photoFilename;
+        PresenceService.OnlineUsersChanged += StateHasChanged;
     }
 
     private void HandleUserClick()
@@ -38,5 +40,10 @@ public partial class MemberCard
     private void HandleMessageClick()
     {
         NavManager.NavigateTo($"/member/{Member.Username}/messages");
+    }
+
+    public void Dispose()
+    {
+        PresenceService.OnlineUsersChanged -= StateHasChanged;
     }
 }
