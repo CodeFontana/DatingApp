@@ -16,7 +16,6 @@ public class MessagesController : ControllerBase
     }
 
     [HttpGet]
-    [ResponseCache(Duration = 2, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<ActionResult<PaginationResponseModel<PaginationList<MessageModel>>>> GetMessagesForMemberAsync([FromQuery] MessageParameters messageParameters)
     {
         messageParameters.Username = User.Identity.Name;

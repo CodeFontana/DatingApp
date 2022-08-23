@@ -14,7 +14,6 @@ public class LikesController : ControllerBase
     }
 
     [HttpGet]
-    [ResponseCache(Duration = 2, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<ActionResult<PaginationResponseModel<PaginationList<MemberModel>>>> GetUserLikesAsync([FromQuery] LikesParameters likesParameters)
     {
         likesParameters.UserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
