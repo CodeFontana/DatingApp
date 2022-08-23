@@ -6,9 +6,9 @@
 
     <MudContainer MaxWidth="MaxWidth.False">
         <MudGrid>
-            @if (Messages?.Count > 0)
+            @if (MessageService.Messages?.Count > 0)
             {
-                @foreach (MessageModel m in Messages)
+                @foreach (MessageModel m in MessageService.Messages)
                 {
                     <MudItem xs="11" Class="pt-1 pb-0 px-0">
                         <MudItem Class="d-flex">
@@ -45,7 +45,7 @@
             }
 
             <MudItem xs="12">
-                <EditForm class="d-flex align-center" Model="@_newMessage" OnValidSubmit="HandleSendMessage">
+                <EditForm class="d-flex align-center" Model="@_newMessage" OnValidSubmit="HandleSendMessageToHub">
                     <MudTextField Class="mr-2"
                                   @bind-Value="_newMessage.Content"
                                   Margin="Margin.Dense"

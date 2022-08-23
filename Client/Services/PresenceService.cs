@@ -6,6 +6,8 @@ public class PresenceService : IAsyncDisposable, IPresenceService
     private readonly ISnackbar _snackbar;
     private HubConnection _presenceHub;
 
+    public event Action OnlineUsersChanged;
+
     public List<string> OnelineUsers { get; set; } = new();
 
     public PresenceService(IConfiguration config,
@@ -51,10 +53,9 @@ public class PresenceService : IAsyncDisposable, IPresenceService
     {
         await _presenceHub.StopAsync();
         await _presenceHub.DisposeAsync();
+        OnelineUsers = new();
         _presenceHub = null;
     }
-
-    public event Action OnlineUsersChanged;
 
     private void NotifyStateChanged() => OnlineUsersChanged?.Invoke();
 

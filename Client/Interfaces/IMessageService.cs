@@ -2,8 +2,15 @@
 
 public interface IMessageService
 {
+    List<MessageModel> Messages { get; set; }
+
+    event Action MessagesChanged;
+
+    Task ConnectAsync(string jwtToken, string otherUser);
+    Task DisconnectAsync();
     Task<ServiceResponseModel<MessageModel>> CreateMessageAsync(MessageCreateModel messageCreateModel);
     Task<ServiceResponseModel<string>> DeleteMessageAsync(int id);
-    Task<PaginationResponseModel<IEnumerable<MessageModel>>> GetMessagesForMemberAsync(MessageParameters messageParameters);
-    Task<ServiceResponseModel<IEnumerable<MessageModel>>> GetMessageThreadAsync(string username);
+    Task<PaginationResponseModel<List<MessageModel>>> GetMessagesForMemberAsync(MessageParameters messageParameters);
+    Task<ServiceResponseModel<List<MessageModel>>> GetMessageThreadAsync(string username);
+    Task CreateHubMessageAsync(MessageCreateModel messageCreateModel);
 }

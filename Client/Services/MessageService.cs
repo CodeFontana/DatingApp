@@ -1,14 +1,15 @@
-﻿using DataAccessLibrary.Models;
+﻿namespace Client.Services;
 
-namespace Client.Services;
-
-public class MessageService : IMessageService
+public class MessageService : IMessageService, IAsyncDisposable
 {
     private readonly IConfiguration _config;
     private readonly HttpClient _httpClient;
     private readonly IPhotoService _photoService;
     private readonly IMemberStateService _memberStateService;
     private readonly JsonSerializerOptions _options;
+    private HubConnection _messageHub;
+
+    public event Action MessagesChanged;
 
     public MessageService(IConfiguration config,
                           HttpClient httpClient,
@@ -22,6 +23,61 @@ public class MessageService : IMessageService
         _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
 
+    public List<MessageModel> Messages { get; set; } = new();
+
+    public async Task ConnectAsync(string jwtToken, string otherUser)
+    {
+        if (_messageHub == null)
+        {
+            Messages = new();
+            _messageHub = new HubConnectionBuilder()
+            .WithUrl(_config["hubLocation"] + $"/message?user={otherUser}", options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(jwtToken);
+            })
+            .WithAutomaticReconnect()
+            .Build();
+
+            _messageHub.On<IEnumerable<MessageModel>>("ReceiveMessageThread", async (messages) =>
+            {
+                Messages = messages.ToList();
+
+                for (int i = 0; i < messages.Count(); i++)
+                {
+                    Messages[i] = await ResolveUserPhoto(Messages[i]);
+                }
+
+                NotifyStateChanged();
+            });
+
+            _messageHub.On<MessageModel>("ReceiveMessage", async (message) =>
+            {
+                message = await ResolveUserPhoto(message);
+                Messages.Add(message);
+                NotifyStateChanged();
+            });
+
+            await _messageHub.StartAsync();
+        }
+    }
+
+    private void NotifyStateChanged() => MessagesChanged?.Invoke();
+
+    public async Task DisconnectAsync()
+    {
+        if (_messageHub != null)
+        {
+            await _messageHub.StopAsync();
+            Messages = new();
+            _messageHub = null;
+        }
+    }
+
+    public async Task CreateHubMessageAsync(MessageCreateModel messageCreateModel)
+    {
+        await _messageHub.SendAsync("SendMessage", messageCreateModel);
+    }
+
     public async Task<ServiceResponseModel<MessageModel>> CreateMessageAsync(MessageCreateModel messageCreateModel)
     {
         string apiEndpoint = _config["apiLocation"] + _config["messagesEndpoint"];
@@ -30,7 +86,7 @@ public class MessageService : IMessageService
         return result;
     }
 
-    public async Task<PaginationResponseModel<IEnumerable<MessageModel>>> GetMessagesForMemberAsync(MessageParameters messageParameters)
+    public async Task<PaginationResponseModel<List<MessageModel>>> GetMessagesForMemberAsync(MessageParameters messageParameters)
     {
         string apiEndpoint = _config["apiLocation"] + _config["messagesEndpoint"];
 
@@ -42,7 +98,7 @@ public class MessageService : IMessageService
         };
 
         using HttpResponseMessage response = await _httpClient.GetAsync(QueryHelpers.AddQueryString(apiEndpoint, queryStringParam));
-        PaginationResponseModel<IEnumerable<MessageModel>> result = await response.Content.ReadFromJsonAsync<PaginationResponseModel<IEnumerable<MessageModel>>>(_options);
+        PaginationResponseModel<List<MessageModel>> result = await response.Content.ReadFromJsonAsync<PaginationResponseModel<List<MessageModel>>>(_options);
 
         if (response.Headers != null && response.Headers.Contains("Pagination"))
         {
@@ -51,32 +107,16 @@ public class MessageService : IMessageService
 
         if (result.Success)
         {
-            foreach (MessageModel msg in result.Data)
+            for (int i = 0; i < result.Data.Count; i++)
             {
-                if (msg.RecipientUsername == _memberStateService.AppUser.Username)
-                {
-                    msg.RecipientPhotoUrl = _memberStateService.MainPhoto;
-                }
-                else
-                {
-                    msg.RecipientPhotoUrl = await _photoService.GetPhotoAsync(msg.RecipientUsername, msg.RecipientPhotoUrl);
-                }
-
-                if (msg.SenderUsername == _memberStateService.AppUser.Username)
-                {
-                    msg.SenderPhotoUrl = _memberStateService.MainPhoto;
-                }
-                else
-                {
-                    msg.SenderPhotoUrl = await _photoService.GetPhotoAsync(msg.SenderUsername, msg.SenderPhotoUrl);
-                }
+                result.Data[i] = await ResolveUserPhoto(result.Data[i]);
             }
         }
 
         return result;
     }
 
-    public async Task<ServiceResponseModel<IEnumerable<MessageModel>>> GetMessageThreadAsync(string username)
+    public async Task<ServiceResponseModel<List<MessageModel>>> GetMessageThreadAsync(string username)
     {
         if (string.IsNullOrWhiteSpace(username))
         {
@@ -85,29 +125,13 @@ public class MessageService : IMessageService
 
         string apiEndpoint = _config["apiLocation"] + _config["messagesEndpoint"] + $"/thread/{username}"; ;
         using HttpResponseMessage response = await _httpClient.GetAsync(apiEndpoint);
-        ServiceResponseModel<IEnumerable<MessageModel>> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<IEnumerable<MessageModel>>>(_options);
+        ServiceResponseModel<List<MessageModel>> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<List<MessageModel>>>(_options);
 
         if (result.Success)
         {
-            foreach (MessageModel msg in result.Data)
+            for (int i = 0; i < result.Data.Count; i++)
             {
-                if (msg.RecipientUsername == _memberStateService.AppUser.Username)
-                {
-                    msg.RecipientPhotoUrl = _memberStateService.MainPhoto;
-                }
-                else
-                {
-                    msg.RecipientPhotoUrl = await _photoService.GetPhotoAsync(msg.RecipientUsername, msg.RecipientPhotoUrl);
-                }
-
-                if (msg.SenderUsername == _memberStateService.AppUser.Username)
-                {
-                    msg.SenderPhotoUrl = _memberStateService.MainPhoto;
-                }
-                else
-                {
-                    msg.SenderPhotoUrl = await _photoService.GetPhotoAsync(msg.SenderUsername, msg.SenderPhotoUrl);
-                }
+                result.Data[i] = await ResolveUserPhoto(result.Data[i]);
             }
         }
 
@@ -119,6 +143,38 @@ public class MessageService : IMessageService
         string apiEndpoint = _config["apiLocation"] + _config["messagesEndpoint"] + $"/{id}";
         using HttpResponseMessage response = await _httpClient.DeleteAsync(apiEndpoint);
         ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>>(_options);
+        Messages = new();
         return result;
+    }
+
+    private async Task<MessageModel> ResolveUserPhoto(MessageModel message)
+    {
+        if (message.RecipientUsername == _memberStateService.AppUser.Username)
+        {
+            message.RecipientPhotoUrl = _memberStateService.MainPhoto;
+        }
+        else
+        {
+            message.RecipientPhotoUrl = await _photoService.GetPhotoAsync(message.RecipientUsername, message.RecipientPhotoUrl);
+        }
+
+        if (message.SenderUsername == _memberStateService.AppUser.Username)
+        {
+            message.SenderPhotoUrl = _memberStateService.MainPhoto;
+        }
+        else
+        {
+            message.SenderPhotoUrl = await _photoService.GetPhotoAsync(message.SenderUsername, message.SenderPhotoUrl);
+        }
+
+        return message;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_messageHub is not null)
+        {
+            await _messageHub.DisposeAsync();
+        }
     }
 }

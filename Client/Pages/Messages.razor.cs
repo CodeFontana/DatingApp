@@ -29,7 +29,7 @@ public partial class Messages
     private async Task LoadMessagesAsync()
     {
         _loadingMessages = true;
-        PaginationResponseModel<IEnumerable<MessageModel>> result = await MessageService.GetMessagesForMemberAsync(_messageFilter);
+        PaginationResponseModel<List<MessageModel>> result = await MessageService.GetMessagesForMemberAsync(_messageFilter);
 
         if (result.Success)
         {

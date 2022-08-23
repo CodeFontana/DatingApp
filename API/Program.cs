@@ -199,6 +199,7 @@ public class Program
         app.UseResponseCaching();
         app.MapControllers();
         app.MapHub<PresenceHub>("/hubs/presence");
+        app.MapHub<MessageHub>("/hubs/message");
         app.UseIpRateLimiting();
         app.MapHealthChecks("/health", new HealthCheckOptions
         {

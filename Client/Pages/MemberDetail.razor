@@ -92,7 +92,7 @@
 
                     <MudTabPanel Text="Messages" OnClick="HandleMessagesTabClick" @ref="_messagesTab">
                         <MudContainer Class="mt-5 px-0">
-                            <MemberMessage Username="@_member.Username" Messages="@_messages" />
+                            <MemberMessage Username="@_member.Username" />
                         </MudContainer>
                     </MudTabPanel>
 
@@ -137,7 +137,7 @@
                                 <MudText Typo="Typo.h5">Messages</MudText>
                             </TitleContent>
                             <ChildContent>
-                                <MemberMessage Username="@_member.Username" Messages="@_messages" />
+                                <MemberMessage Username="@_member.Username" />
                             </ChildContent>
                         </MudExpansionPanel>
 

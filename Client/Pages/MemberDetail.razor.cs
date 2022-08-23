@@ -1,7 +1,11 @@
-﻿namespace Client.Pages;
+﻿using DataAccessLibrary.Entities;
+
+namespace Client.Pages;
 
 public partial class MemberDetail : IDisposable
 {
+    [Inject] IConfiguration Configuration { get; set; }
+    [Inject] ILocalStorageService LocalStorage { get; set; }
     [Inject] IMemberService MemberService { get; set; }
     [Inject] IPhotoService PhotoService { get; set; }
     [Inject] ILikesService LikesService { get; set; }
@@ -23,7 +27,6 @@ public partial class MemberDetail : IDisposable
     private MudExpansionPanel _messagesPanel;
     private MemberModel _member;
     private string _photoFilename = "./assets/user.png";
-    private List<MessageModel> _messages = new();
     private bool _showError = false;
     private string _errorText;
 
@@ -84,7 +87,7 @@ public partial class MemberDetail : IDisposable
         }
         else if (panel == _messagesTab)
         {
-            await LoadMessages();
+            await LoadMessagesFromHub();
         }
         
         _memberDetailTabs.ActivatePanel(panel);
@@ -98,7 +101,7 @@ public partial class MemberDetail : IDisposable
         }
         else if (panel == _messagesPanel)
         {
-            await LoadMessages();
+            await LoadMessagesFromHub();
         }
 
         panel.Expand();
@@ -120,16 +123,38 @@ public partial class MemberDetail : IDisposable
 
     private async Task HandleMessagesTabClick()
     {
-        await LoadMessages();
+        await LoadMessagesFromHub();
     }
 
-    private async Task LoadMessages()
+    private async Task LoadMessagesFromHub()
     {
-        ServiceResponseModel<IEnumerable<MessageModel>> result = await MessageService.GetMessageThreadAsync(Username);
+        try
+        {
+            string jwtToken = await LocalStorage.GetItemAsync<string>(Configuration["authTokenStorageKey"]);
+
+            if (string.IsNullOrWhiteSpace(jwtToken) == false)
+            {
+                await MessageService.ConnectAsync(jwtToken, _member.Username);
+            }
+            else
+            {
+                await LoadMessagesFromApi();
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Failed to connect to messages hub: {e.Message}");
+            await LoadMessagesFromApi();
+        }
+    }
+
+    private async Task LoadMessagesFromApi()
+    {
+        ServiceResponseModel<List<MessageModel>> result = await MessageService.GetMessageThreadAsync(Username);
 
         if (result.Success)
         {
-            _messages = result.Data.ToList();
+            MessageService.Messages = result.Data.ToList();
         }
         else
         {
