@@ -1,4 +1,6 @@
-﻿namespace Client.Services;
+﻿using System.Linq;
+
+namespace Client.Services;
 
 public class MessageService : IMessageService, IAsyncDisposable
 {
@@ -55,6 +57,7 @@ public class MessageService : IMessageService, IAsyncDisposable
             _messageHub.On<MessageModel>("ReceiveMessage", async (message) =>
             {
                 message = await ResolveUserPhoto(message);
+                Messages = Messages.TakeLast(9).ToList();
                 Messages.Add(message);
                 NotifyStateChanged();
                 await _messageHub.SendAsync("SendThreadAck", DateTime.UtcNow, otherUser);

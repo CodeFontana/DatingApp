@@ -1,4 +1,6 @@
-﻿namespace DataAccessLibrary.Data;
+﻿using System.Security.Cryptography.X509Certificates;
+
+namespace DataAccessLibrary.Data;
 
 public class MessageRepository : IMessageRepository
 {
@@ -47,11 +49,13 @@ public class MessageRepository : IMessageRepository
         List<Message> messages = await _db.Messages
             .Include(u => u.Sender).ThenInclude(p => p.Photos)
             .Include(u => u.Recipient).ThenInclude(p => p.Photos)
-            .Where(m => m.Recipient.UserName == currentUsername 
+            .Where(m => m.Recipient.UserName == currentUsername
                 && m.Sender.UserName == recipientUsername
                 || m.Recipient.UserName == recipientUsername
                 && m.Sender.UserName == currentUsername)
-            .OrderBy(m => m.MessageSent)
+            .OrderByDescending(m => m.MessageSent)
+            .Take(10)
+            .Reverse()
             .AsSplitQuery()
             .ToListAsync();
 
