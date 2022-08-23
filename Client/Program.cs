@@ -19,6 +19,7 @@ public class Program
             config.SnackbarConfiguration.HideTransitionDuration = 500;
             config.SnackbarConfiguration.ShowTransitionDuration = 500;
             config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+            config.SnackbarConfiguration.MaxDisplayedSnackbars = 2;
         });
         builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
         builder.Services.AddAuthorizationCore();
