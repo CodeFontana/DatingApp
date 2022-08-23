@@ -29,7 +29,6 @@ public class MessageService : IMessageService, IAsyncDisposable
     {
         if (_messageHub == null)
         {
-            Messages = new();
             _messageHub = new HubConnectionBuilder()
             .WithUrl(_config["hubLocation"] + $"/message?user={otherUser}", options =>
             {
@@ -68,7 +67,6 @@ public class MessageService : IMessageService, IAsyncDisposable
         if (_messageHub != null)
         {
             await _messageHub.StopAsync();
-            Messages = new();
             _messageHub = null;
         }
     }

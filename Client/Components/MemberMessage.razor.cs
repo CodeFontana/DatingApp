@@ -2,6 +2,8 @@
 
 public partial class MemberMessage : IAsyncDisposable
 {
+    [Inject] IConfiguration Configuration { get; set; }
+    [Inject] ILocalStorageService LocalStorage { get; set; }
     [Inject] IMemberStateService MemberStateService { get; set; }
     [Inject] IMessageService MessageService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
@@ -11,9 +13,48 @@ public partial class MemberMessage : IAsyncDisposable
     private bool _showError = false;
     private string _errorText;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         MessageService.MessagesChanged += StateHasChanged;
+        await LoadMessagesFromHub();
+    }
+
+    private async Task LoadMessagesFromHub()
+    {
+        try
+        {
+            string jwtToken = await LocalStorage.GetItemAsync<string>(Configuration["authTokenStorageKey"]);
+
+            if (string.IsNullOrWhiteSpace(jwtToken) == false)
+            {
+                await MessageService.ConnectAsync(jwtToken, Username);
+            }
+            else
+            {
+                await LoadMessagesFromApi();
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Failed to connect to messages hub: {e.Message}");
+            await LoadMessagesFromApi();
+        }
+    }
+
+    private async Task LoadMessagesFromApi()
+    {
+        ServiceResponseModel<List<MessageModel>> result = await MessageService.GetMessageThreadAsync(Username);
+
+        if (result.Success)
+        {
+            MessageService.Messages = result.Data.ToList();
+        }
+        else
+        {
+            _showError = true;
+            _errorText = $"Request failed: {result.Message}";
+            Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
+        }
     }
 
     private async Task HandleSendMessageToHub()

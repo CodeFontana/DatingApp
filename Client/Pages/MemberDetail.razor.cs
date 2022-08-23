@@ -1,15 +1,11 @@
-﻿using DataAccessLibrary.Entities;
-
-namespace Client.Pages;
+﻿namespace Client.Pages;
 
 public partial class MemberDetail : IDisposable
 {
-    [Inject] IConfiguration Configuration { get; set; }
-    [Inject] ILocalStorageService LocalStorage { get; set; }
+    
     [Inject] IMemberService MemberService { get; set; }
     [Inject] IPhotoService PhotoService { get; set; }
     [Inject] ILikesService LikesService { get; set; }
-    [Inject] IMessageService MessageService { get; set; }
     [Inject] IPresenceService PresenceService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
     [Parameter] public string Username { get; set; }
@@ -50,28 +46,28 @@ public partial class MemberDetail : IDisposable
         PresenceService.OnlineUsersChanged += StateHasChanged;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnAfterRender(bool firstRender)
     {
         switch (StartTab)
         {
             case "about":
-                await ActivateTab(_aboutTab);
-                await ActivatePanel(_aboutPanel);
+                ActivateTab(_aboutTab);
+                ActivatePanel(_aboutPanel);
                 break;
 
             case "interests":
-                await ActivateTab(_interestsTab);
-                await ActivatePanel(_interestsPanel);
+                ActivateTab(_interestsTab);
+                ActivatePanel(_interestsPanel);
                 break;
 
             case "photos":
-                await ActivateTab(_photosTab);
-                await ActivatePanel(_photosPanel);
+                ActivateTab(_photosTab);
+                ActivatePanel(_photosPanel);
                 break;
 
             case "messages":
-                await ActivateTab(_messagesTab);
-                await ActivatePanel(_messagesPanel);
+                ActivateTab(_messagesTab);
+                ActivatePanel(_messagesPanel);
                 break;
 
             default:
@@ -79,29 +75,21 @@ public partial class MemberDetail : IDisposable
         }
     }
 
-    private async Task ActivateTab(MudTabPanel panel)
+    private void ActivateTab(MudTabPanel panel)
     {
         if (panel == null)
         {
             return;
-        }
-        else if (panel == _messagesTab)
-        {
-            await LoadMessagesFromHub();
         }
         
         _memberDetailTabs.ActivatePanel(panel);
     }
 
-    private async Task ActivatePanel(MudExpansionPanel panel)
+    private void ActivatePanel(MudExpansionPanel panel)
     {
         if (panel == null)
         {
             return;
-        }
-        else if (panel == _messagesPanel)
-        {
-            await LoadMessagesFromHub();
         }
 
         panel.Expand();
@@ -118,49 +106,6 @@ public partial class MemberDetail : IDisposable
         else
         {
             Snackbar.Add(result.Message, Severity.Error);
-        }
-    }
-
-    private async Task HandleMessagesTabClick()
-    {
-        await LoadMessagesFromHub();
-    }
-
-    private async Task LoadMessagesFromHub()
-    {
-        try
-        {
-            string jwtToken = await LocalStorage.GetItemAsync<string>(Configuration["authTokenStorageKey"]);
-
-            if (string.IsNullOrWhiteSpace(jwtToken) == false)
-            {
-                await MessageService.ConnectAsync(jwtToken, _member.Username);
-            }
-            else
-            {
-                await LoadMessagesFromApi();
-            }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"Failed to connect to messages hub: {e.Message}");
-            await LoadMessagesFromApi();
-        }
-    }
-
-    private async Task LoadMessagesFromApi()
-    {
-        ServiceResponseModel<List<MessageModel>> result = await MessageService.GetMessageThreadAsync(Username);
-
-        if (result.Success)
-        {
-            MessageService.Messages = result.Data.ToList();
-        }
-        else
-        {
-            _showError = true;
-            _errorText = $"Request failed: {result.Message}";
-            Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
         }
     }
 
