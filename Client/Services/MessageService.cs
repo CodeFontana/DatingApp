@@ -8,6 +8,8 @@ public class MessageService : IMessageService, IAsyncDisposable
     private readonly IMemberStateService _memberStateService;
     private readonly JsonSerializerOptions _options;
     private HubConnection _messageHub;
+    private string _senderPhotoUrl;
+    private string _recipientPhotoUrl;
 
     public event Action MessagesChanged;
 
@@ -83,6 +85,9 @@ public class MessageService : IMessageService, IAsyncDisposable
             await _messageHub.StopAsync();
             _messageHub = null;
         }
+
+        _senderPhotoUrl = null;
+        _recipientPhotoUrl = null;
     }
 
     public async Task CreateHubMessageAsync(MessageCreateModel messageCreateModel)
@@ -165,18 +170,28 @@ public class MessageService : IMessageService, IAsyncDisposable
         {
             message.RecipientPhotoUrl = _memberStateService.MainPhoto;
         }
+        else if (_recipientPhotoUrl is not null)
+        {
+            message.RecipientPhotoUrl = _recipientPhotoUrl;
+        }
         else
         {
-            message.RecipientPhotoUrl = await _photoService.GetPhotoAsync(message.RecipientUsername, message.RecipientPhotoUrl);
+            _recipientPhotoUrl = await _photoService.GetPhotoAsync(message.RecipientUsername, message.RecipientPhotoUrl);
+            message.RecipientPhotoUrl = _recipientPhotoUrl;
         }
 
         if (message.SenderUsername == _memberStateService.AppUser.Username)
         {
             message.SenderPhotoUrl = _memberStateService.MainPhoto;
         }
+        else if (_senderPhotoUrl is not null)
+        {
+            message.SenderPhotoUrl = _senderPhotoUrl;
+        }
         else
         {
-            message.SenderPhotoUrl = await _photoService.GetPhotoAsync(message.SenderUsername, message.SenderPhotoUrl);
+            _senderPhotoUrl = await _photoService.GetPhotoAsync(message.SenderUsername, message.SenderPhotoUrl);
+            message.SenderPhotoUrl = _senderPhotoUrl;
         }
 
         return message;
@@ -188,5 +203,8 @@ public class MessageService : IMessageService, IAsyncDisposable
         {
             await _messageHub.DisposeAsync();
         }
+
+        _senderPhotoUrl = null;
+        _recipientPhotoUrl = null;
     }
 }
