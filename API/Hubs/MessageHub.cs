@@ -1,16 +1,19 @@
 ﻿namespace API.Hubs;
 
-[Authorize]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class MessageHub : Hub
 {
+	private readonly ILogger<MessageHub> _logger;
 	private readonly IMessageRepository _messageRepository;
 	private readonly IMemberRepository _memberRepository;
 	private readonly IMapper _mapper;
 
-	public MessageHub(IMessageRepository messageRepository,
+	public MessageHub(ILogger<MessageHub> logger,
+					  IMessageRepository messageRepository,
 					  IMemberRepository memberRepository,
 					  IMapper mapper)
 	{
+		_logger = logger;
 		_messageRepository = messageRepository;
 		_memberRepository = memberRepository;
 		_mapper = mapper;
@@ -24,11 +27,13 @@ public class MessageHub : Hub
 		await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
 		IEnumerable<MessageModel> messages = await _messageRepository.GetMessageThreadAsync(Context.User.Identity.Name, otherUser);
 		await Clients.Group(groupName).SendAsync("ReceiveMessageThread", messages);
+		_logger.LogInformation($"User {Context.User.Identity.Name} connected, established {groupName}");
 	}
 
 	public override async Task OnDisconnectedAsync(Exception exception)
 	{
-		await base.OnDisconnectedAsync(exception);
+        _logger.LogInformation($"User {Context.User.Identity.Name} disconnected");
+        await base.OnDisconnectedAsync(exception);
 	}
 
 	public async Task SendMessage(MessageCreateModel messageCreateModel)
@@ -59,6 +64,13 @@ public class MessageHub : Hub
 		await _messageRepository.SaveAllAsync();
 		string group = GetGroupName(sender.UserName, recipent.UserName);
 		await Clients.Group(group).SendAsync("ReceiveMessage", _mapper.Map<MessageModel>(message));
+        _logger.LogInformation($"User {Context.User.Identity.Name} sent message to {messageCreateModel.RecipientUsername}");
+    }
+
+	public async Task SendThreadAck(DateTime ackTime, string otherUser)
+	{
+		await Clients.User(otherUser).SendAsync("ReceiveThreadAck", ackTime);
+        _logger.LogInformation($"User {Context.User.Identity.Name} acknowledged thread to {otherUser} at {ackTime.ToLocalTime()}");
     }
 
 	private string GetGroupName(string caller, string other)

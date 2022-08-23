@@ -97,6 +97,7 @@ public class Program
         builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
         builder.Services.AddSignalR();
+        builder.Services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
         builder.Services.AddSingleton<IPresenceTrackerService, PresenceTrackerService>();
 
         builder.Services.AddMemoryCache();

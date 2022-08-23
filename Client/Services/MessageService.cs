@@ -47,12 +47,26 @@ public class MessageService : IMessageService, IAsyncDisposable
                 }
 
                 NotifyStateChanged();
+                await _messageHub.SendAsync("SendThreadAck", DateTime.UtcNow, otherUser);
             });
 
             _messageHub.On<MessageModel>("ReceiveMessage", async (message) =>
             {
                 message = await ResolveUserPhoto(message);
                 Messages.Add(message);
+                NotifyStateChanged();
+                await _messageHub.SendAsync("SendThreadAck", DateTime.UtcNow, otherUser);
+            });
+
+            _messageHub.On<DateTime>("ReceiveThreadAck", (ackTime) => {
+                foreach (MessageModel m in Messages)
+                {
+                    if (m.RecipientUsername == otherUser && m.DateRead == null)
+                    {
+                        m.DateRead = ackTime;
+                    }
+                }
+
                 NotifyStateChanged();
             });
 
