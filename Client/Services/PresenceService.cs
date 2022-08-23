@@ -31,12 +31,12 @@ public class PresenceService : IAsyncDisposable, IPresenceService
 
             _presenceHub.On<string>("UserIsOnline", (username) =>
             {
-                _snackbar.Add($"{username} is online", Severity.Info);
+                //_snackbar.Add($"{username} is online", Severity.Info);
             });
 
             _presenceHub.On<string>("UserIsOffline", (username) =>
             {
-                _snackbar.Add($"{username} is offline", Severity.Warning);
+                //_snackbar.Add($"{username} is offline", Severity.Warning);
             });
 
             _presenceHub.On<string[]>("GetOnlineUsers", (usernames) =>
