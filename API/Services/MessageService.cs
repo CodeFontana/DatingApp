@@ -128,8 +128,8 @@ public class MessageService : IMessageService
             await _messageRepository.DeleteMessageAsync(requestor, messageId);
 
             serviceResponse.Success = true;
-			serviceResponse.Data = $"Successfully deleted message with id={messageId} for user {requestor}";
-            serviceResponse.Message = $"Successfully deleted message with id={messageId} for user {requestor}";
+			serviceResponse.Data = $"Successfully deleted message [{requestor}]";
+            serviceResponse.Message = $"Successfully deleted message [{requestor}]";
             _logger.LogInformation(serviceResponse.Message);
         }
         catch (Exception e)
