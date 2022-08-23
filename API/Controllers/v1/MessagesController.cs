@@ -33,7 +33,6 @@ public class MessagesController : ControllerBase
     }
 
     [HttpGet("thread/{username}")]
-    [ResponseCache(Duration = 10, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<ActionResult<ServiceResponseModel<IEnumerable<MessageModel>>>> GetMessageThreadAsync(string username)
     {
         ServiceResponseModel<IEnumerable<MessageModel>> response = await _messageService.GetMessageThreadAsync(User.Identity.Name, username);
