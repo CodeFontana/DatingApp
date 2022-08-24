@@ -115,7 +115,6 @@ public class AccountRepository : IAccountRepository
 
         user.Email = updateAccount.Email;
         user.UserName = updateAccount.UserName;
-        await _db.SaveChangesAsync();
     }
 
     public async Task<IdentityResult> DeleteAccountAsync(string requestor, string username)
@@ -146,10 +145,5 @@ public class AccountRepository : IAccountRepository
     private async Task<bool> UserExistsAsync(string username)
     {
         return await _userManager.Users.AnyAsync(e => e.NormalizedEmail == username.ToUpper());
-    }
-
-    public async Task<bool> SaveAllAsync()
-    {
-        return await _db.SaveChangesAsync() > 0;
     }
 }

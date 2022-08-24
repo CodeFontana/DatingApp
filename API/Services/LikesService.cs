@@ -2,15 +2,14 @@
 
 public class LikesService : ILikesService
 {
-    private readonly IMemberRepository _memberRepository;
-    private readonly ILikesRepository _likesRepository;
     private readonly ILogger<LikesService> _logger;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public LikesService(IMemberRepository memberRepository, ILikesRepository likesRepository, ILogger<LikesService> logger)
+    public LikesService(ILogger<LikesService> logger,
+                        IUnitOfWork unitOfWork)
     {
-        _memberRepository = memberRepository;
-        _likesRepository = likesRepository;
         _logger = logger;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<PaginationResponseModel<PaginationList<MemberModel>>> GetUserLikesAsync(string requestor, LikesParameters likesParameters)
@@ -20,7 +19,7 @@ public class LikesService : ILikesService
 
         try
         {
-            PaginationList<MemberModel> data = await _likesRepository.GetUserLikesAsync(likesParameters);
+            PaginationList<MemberModel> data = await _unitOfWork.LikesRepository.GetUserLikesAsync(likesParameters);
 
             pagedResponse.Success = true;
             pagedResponse.Data = data;
@@ -46,8 +45,8 @@ public class LikesService : ILikesService
 
         try
         {
-            AppUser likedUser = await _memberRepository.GetMemberByUsernameAsync(username);
-            AppUser sourceUser = await _likesRepository.GetUserWithLikesAsync(sourceUserId);
+            AppUser likedUser = await _unitOfWork.MemberRepository.GetMemberByUsernameAsync(username);
+            AppUser sourceUser = await _unitOfWork.LikesRepository.GetUserWithLikesAsync(sourceUserId);
 
             if (likedUser == null)
             {
@@ -59,7 +58,7 @@ public class LikesService : ILikesService
                 throw new Exception($"You cannot like yourself {username}, but we hope you do anyway");
             }
 
-            UserLike userLike = await _likesRepository.GetUserLikeAsync(sourceUserId, likedUser.Id);
+            UserLike userLike = await _unitOfWork.LikesRepository.GetUserLikeAsync(sourceUserId, likedUser.Id);
 
             if (userLike != null)
             {
@@ -80,7 +79,7 @@ public class LikesService : ILikesService
                 serviceResponse.Message = $"Successfully liked [{username}] on behalf of [{requestor}]";
             }
 
-            if (await _memberRepository.SaveAllAsync())
+            if (await _unitOfWork.Complete())
             {
                 serviceResponse.Success = true;
                 _logger.LogInformation(serviceResponse.Message);

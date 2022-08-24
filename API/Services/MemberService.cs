@@ -2,15 +2,17 @@
 
 public class MemberService : IMemberService
 {
-    private readonly IMemberRepository _memberRepository;
-    private readonly IMapper _mapper;
     private readonly ILogger<MemberService> _logger;
+    private readonly IMapper _mapper;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public MemberService(IMemberRepository memberRepository, IMapper mapper, ILogger<MemberService> logger)
+    public MemberService(ILogger<MemberService> logger,
+                         IUnitOfWork unitOfWork,
+                         IMapper mapper)
     {
-        _memberRepository = memberRepository;
         _mapper = mapper;
         _logger = logger;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ServiceResponseModel<MemberModel>> GetMemberAsync(string username, string requestor)
@@ -21,7 +23,7 @@ public class MemberService : IMemberService
         try
         {
             serviceResponse.Success = true;
-            serviceResponse.Data = await _memberRepository.GetMemberAsync(username);
+            serviceResponse.Data = await _unitOfWork.MemberRepository.GetMemberAsync(username);
             serviceResponse.Message = $"Successfully retrieved [{username}] for [{requestor}]";
             _logger.LogInformation(serviceResponse.Message);
         }
@@ -44,7 +46,7 @@ public class MemberService : IMemberService
         try
         {
             userParameters.CurrentUsername = requestor;
-            PaginationList<MemberModel> data = await _memberRepository.GetMembersAsync(userParameters);
+            PaginationList<MemberModel> data = await _unitOfWork.MemberRepository.GetMembersAsync(userParameters);
 
             pagedResponse.Success = true;
             pagedResponse.Data = data;
@@ -70,11 +72,11 @@ public class MemberService : IMemberService
 
         try
         {
-            AppUser appUser = await _memberRepository.GetMemberByUsernameAsync(username);
+            AppUser appUser = await _unitOfWork.MemberRepository.GetMemberByUsernameAsync(username);
             _mapper.Map(memberUpdate, appUser);
-            _memberRepository.UpdateMember(appUser);
+            _unitOfWork.MemberRepository.UpdateMember(appUser);
 
-            if (await _memberRepository.SaveAllAsync())
+            if (await _unitOfWork.Complete())
             {
                 serviceResponse.Success = true;
                 serviceResponse.Data = $"Successfully updated user [{username}]";

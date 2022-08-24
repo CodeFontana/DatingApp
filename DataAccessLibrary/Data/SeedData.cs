@@ -3,10 +3,9 @@
 public class SeedData
 {
     public static async Task SeedUsersAsync(ILogger logger,
-                                            UserManager<AppUser> userManager,
-                                            RoleManager<AppRole> roleManager)
+                                            IUnitOfWork unitOfWork)
     {
-        if (await userManager.Users.AnyAsync())
+        if (await unitOfWork.UserManager.Users.AnyAsync())
         {
             return;
         }
@@ -31,14 +30,14 @@ public class SeedData
 
             foreach (var role in roles)
             {
-                await roleManager.CreateAsync(role);
+                await unitOfWork.RoleManager.CreateAsync(role);
             }
 
             foreach (AppUser user in users)
             {
                 user.UserName = user.UserName;
-                await userManager.CreateAsync(user, "Passw0rd123!!");
-                await userManager.AddToRoleAsync(user, "Member");
+                await unitOfWork.UserManager.CreateAsync(user, "Passw0rd123!!");
+                await unitOfWork.UserManager.AddToRoleAsync(user, "Member");
             }
 
             AppUser admin = new()
@@ -56,8 +55,8 @@ public class SeedData
                 State = "New York"
             };
 
-            await userManager.CreateAsync(admin, "Passw0rd123!!");
-            await userManager.AddToRolesAsync(admin, new[] { "Administrator", "Moderator", "Member" });
+            await unitOfWork.UserManager.CreateAsync(admin, "Passw0rd123!!");
+            await unitOfWork.UserManager.AddToRolesAsync(admin, new[] { "Administrator", "Moderator", "Member" });
         }
         catch (Exception ex)
         {
@@ -65,16 +64,16 @@ public class SeedData
         }
     }
 
-    public static async Task SeedUserLikesAndMessages(ILogger logger, DataContext db)
+    public static async Task SeedUserLikesAndMessages(ILogger logger, IUnitOfWork unitOfWork)
     {
-        if (await db.Likes.AnyAsync())
+        if (await unitOfWork.Db.Likes.AnyAsync())
         {
             return;
         }
 
         try
         {
-            List<AppUser> users = await db.Users.ToListAsync();
+            List<AppUser> users = await unitOfWork.Db.Users.ToListAsync();
 
             foreach (AppUser user in users)
             {
@@ -84,14 +83,14 @@ public class SeedData
                 for (int i = 0; i < numLikes; i++)
                 {
                     int skipUsers = random.Next(0, users.Count - 1);
-                    AppUser userToLike = db.Users.OrderBy(r => Guid.NewGuid()).Skip(skipUsers).Take(1).FirstOrDefault();
+                    AppUser userToLike = unitOfWork.Db.Users.OrderBy(r => Guid.NewGuid()).Skip(skipUsers).Take(1).FirstOrDefault();
 
                     if (userToLike is not null 
                         && userToLike.Id != user.Id
                         && userToLike.Gender != user.Gender
-                        && db.Likes.Any(l => l.SourceUserId == user.Id && l.LikedUserId == userToLike.Id) == false)
+                        && unitOfWork.Db.Likes.Any(l => l.SourceUserId == user.Id && l.LikedUserId == userToLike.Id) == false)
                     {
-                        db.Likes.Add(new UserLike 
+                        unitOfWork.Db.Likes.Add(new UserLike 
                         { 
                             LikedUser = userToLike, 
                             LikedUserId = userToLike.Id, 
@@ -99,7 +98,7 @@ public class SeedData
                             SourceUserId = user.Id 
                         });
 
-                        db.Messages.Add(new Message
+                        unitOfWork.Db.Messages.Add(new Message
                         {
                             SenderId = user.Id,
                             SenderUsername = user.UserName,
@@ -110,7 +109,7 @@ public class SeedData
                             Content = "Hey gorgeous..."
                         });
 
-                        await db.SaveChangesAsync();
+                        await unitOfWork.Complete();
                     }
                 }
             }

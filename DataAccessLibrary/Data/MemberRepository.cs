@@ -66,11 +66,6 @@ public class MemberRepository : IMemberRepository
             .ToListAsync();
     }
 
-    public async Task<bool> SaveAllAsync()
-    {
-        return await _db.SaveChangesAsync() > 0;
-    }
-
     public void UpdateMember(AppUser user)
     {
         _db.Entry(user).State = EntityState.Modified;

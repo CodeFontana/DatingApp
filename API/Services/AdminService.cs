@@ -3,13 +3,13 @@
 public class AdminService : IAdminService
 {
     private readonly ILogger<AdminService> _logger;
-    private readonly IAdminRepository _adminRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     public AdminService(ILogger<AdminService> logger,
-                        IAdminRepository adminRepository)
+                        IUnitOfWork unitOfWork)
     {
         _logger = logger;
-        _adminRepository = adminRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ServiceResponseModel<List<string>>> GetRolesAsync(string requestor)
@@ -20,7 +20,7 @@ public class AdminService : IAdminService
         try
         {
             serviceResponse.Success = true;
-            serviceResponse.Data = await _adminRepository.GetRolesAsync();
+            serviceResponse.Data = await _unitOfWork.AdminRepository.GetRolesAsync();
             serviceResponse.Message = $"Successfully listed User Roles [{requestor}]";
             _logger.LogInformation(serviceResponse.Message);
         }
@@ -43,7 +43,7 @@ public class AdminService : IAdminService
         try
         {
             serviceResponse.Success = true;
-            serviceResponse.Data = await _adminRepository.GetUsersWithRolesAsync();
+            serviceResponse.Data = await _unitOfWork.AdminRepository.GetUsersWithRolesAsync();
             serviceResponse.Message = $"Successfully listed User-Role relationships for [{requestor}]";
             _logger.LogInformation(serviceResponse.Message);
         }
@@ -65,7 +65,7 @@ public class AdminService : IAdminService
 
         try
         {
-            await _adminRepository.EditRolesAsync(userWithRoles);
+            await _unitOfWork.AdminRepository.EditRolesAsync(userWithRoles);
 
             serviceResponse.Success = true;
             serviceResponse.Data = $"Successfully edited roles for user [{userWithRoles.Username}], requested by {requestor}";

@@ -3,7 +3,6 @@
 public interface IMemberRepository
 {
     void UpdateMember(AppUser user);
-    Task<bool> SaveAllAsync();
     Task<IEnumerable<AppUser>> GetMembersAsync();
     Task<AppUser> GetMemberByIdAsync(int id);
     Task<AppUser> GetMemberByUsernameAsync(string username);

@@ -1,27 +1,26 @@
-﻿namespace API.Services;
+﻿using k8s.KubeConfigModels;
+
+namespace API.Services;
 
 public class MessageService : IMessageService
 {
-	private readonly IMemberRepository _memberRepository;
-	private readonly IMessageRepository _messageRepository;
 	private readonly IPresenceTrackerService _presenceTrackerService;
 	private readonly IHubContext<PresenceHub> _presenceHub;
 	private readonly IMapper _mapper;
 	private readonly ILogger<MessageService> _logger;
+	private readonly IUnitOfWork _unitOfWork;
 
 	public MessageService(ILogger<MessageService> logger, 
-						  IMemberRepository memberRepository,
-						  IMessageRepository messageRepository,
+						  IUnitOfWork unitOfWork,
 						  IPresenceTrackerService presenceTrackerService,
 						  IHubContext<PresenceHub> presenceHub,
 						  IMapper mapper)
 	{
-		_memberRepository = memberRepository;
-		_messageRepository = messageRepository;
+		_logger = logger;
+		_unitOfWork = unitOfWork;
 		_presenceTrackerService = presenceTrackerService;
 		_presenceHub = presenceHub;
 		_mapper = mapper;
-		_logger = logger;
 	}
 
 	public async Task<ServiceResponseModel<MessageModel>> CreateMessageAsync(string requestor, MessageCreateModel messageCreateModel)
@@ -36,8 +35,8 @@ public class MessageService : IMessageService
 				throw new ArgumentException("You cannot send messages to yourself");
 			}
 
-			AppUser sender = await _memberRepository.GetMemberByUsernameAsync(requestor);
-			AppUser recipent = await _memberRepository.GetMemberByUsernameAsync(messageCreateModel.RecipientUsername);
+			AppUser sender = await _unitOfWork.MemberRepository.GetMemberByUsernameAsync(requestor);
+			AppUser recipent = await _unitOfWork.MemberRepository.GetMemberByUsernameAsync(messageCreateModel.RecipientUsername);
 
 			if (recipent is null)
 			{
@@ -53,9 +52,9 @@ public class MessageService : IMessageService
 				Content = messageCreateModel.Content
 			};
 
-			await _messageRepository.CreateMessageAsync(message);
+			await _unitOfWork.MessageRepository.CreateMessageAsync(message);
 
-			if (await _messageRepository.SaveAllAsync())
+			if (await _unitOfWork.Complete())
 			{
 				string[] onlineUsers = await _presenceTrackerService.GetOnlineUsers();
 
@@ -91,7 +90,7 @@ public class MessageService : IMessageService
 
 		try
 		{
-            PaginationList<MessageModel> data = await _messageRepository.GetMessagesForMemberAsync(messageParameters);
+            PaginationList<MessageModel> data = await _unitOfWork.MessageRepository.GetMessagesForMemberAsync(messageParameters);
 
             pagedResponse.Success = true;
             pagedResponse.Data = data;
@@ -116,8 +115,15 @@ public class MessageService : IMessageService
 
 		try
 		{
-			serviceResponse.Success = true;
-			serviceResponse.Data = await _messageRepository.GetMessageThreadAsync(currentUsername, recipientUsername);
+            IEnumerable<MessageModel> messages = await _unitOfWork.MessageRepository.GetMessageThreadAsync(currentUsername, recipientUsername);
+
+            if (_unitOfWork.HasChanges())
+            {
+                await _unitOfWork.Complete();
+            }
+
+            serviceResponse.Success = true;
+			serviceResponse.Data = messages;
             serviceResponse.Message = $"Successfully retrieved message thread between {currentUsername} and {recipientUsername}";
             _logger.LogInformation(serviceResponse.Message);
         }
@@ -138,7 +144,12 @@ public class MessageService : IMessageService
 
         try
         {
-            Tuple<string, string> msgInfo = await _messageRepository.DeleteMessageAsync(requestor, messageId);
+            Tuple<string, string> msgInfo = _unitOfWork.MessageRepository.DeleteMessageAsync(requestor, messageId);
+
+            if (_unitOfWork.HasChanges())
+            {
+                await _unitOfWork.Complete();
+            }
 
             serviceResponse.Success = true;
 			serviceResponse.Data = $"Successfully deleted message from {msgInfo.Item1} to {msgInfo.Item2}";

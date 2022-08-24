@@ -8,5 +8,4 @@ public interface IAccountRepository
     Task<AppUser> LoginAsync(LoginUserModel loginUser);
     Task UpdateAccountAsync(AccountUpdateModel updateAccount);
     Task<IdentityResult> DeleteAccountAsync(string requestor, string username);
-    Task<bool> SaveAllAsync();
 }

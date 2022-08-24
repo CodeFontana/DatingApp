@@ -1,23 +1,21 @@
-﻿using DataAccessLibrary.Models;
-
-namespace API.Services;
+﻿namespace API.Services;
 
 public class PhotoService : IPhotoService
 {
-    private readonly IMemberRepository _userRepository;
+    private readonly ILogger<PhotoService> _logger;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IWebHostEnvironment _appEnv;
-    private readonly ILogger<PhotoService> _logger;
 
-    public PhotoService(IMemberRepository userRepository,
+    public PhotoService(ILogger<PhotoService> logger,
+                        IUnitOfWork unitOfWork,
                         IMapper mapper,
-                        IWebHostEnvironment appEnv,
-                        ILogger<PhotoService> logger)
+                        IWebHostEnvironment appEnv)
     {
-        _userRepository = userRepository;
         _mapper = mapper;
         _appEnv = appEnv;
         _logger = logger;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ServiceResponseModel<PhotoModel>> AddPhotoAsync(string username, IEnumerable<IFormFile> files)
@@ -29,7 +27,7 @@ public class PhotoService : IPhotoService
         try
         {
             _ = username ?? throw new ArgumentException("Invalid username");
-            AppUser appUser = await _userRepository.GetMemberByUsernameAsync(username);
+            AppUser appUser = await _unitOfWork.MemberRepository.GetMemberByUsernameAsync(username);
             IFormFile file = files.FirstOrDefault();
 
             if (appUser == null)
@@ -81,7 +79,7 @@ public class PhotoService : IPhotoService
 
                 appUser.Photos.Add(newPhoto);
 
-                if (await _userRepository.SaveAllAsync())
+                if (await _unitOfWork.Complete())
                 {
                     serviceResponse.Success = true;
                     serviceResponse.Data = _mapper.Map<PhotoModel>(newPhoto);
@@ -147,7 +145,7 @@ public class PhotoService : IPhotoService
         {
             _ = username ?? throw new ArgumentException("Invalid username");
 
-            AppUser appUser = await _userRepository.GetMemberByUsernameAsync(username);
+            AppUser appUser = await _unitOfWork.MemberRepository.GetMemberByUsernameAsync(username);
             Photo p = appUser.Photos.FirstOrDefault(x => x.Id == photoId);
 
             if (p is not null)
@@ -165,7 +163,7 @@ public class PhotoService : IPhotoService
                 throw new ArgumentException($"Photo not found in database [{username}]");
             }
 
-            if (await _userRepository.SaveAllAsync())
+            if (await _unitOfWork.Complete())
             {
                 serviceResponse.Success = true;
                 serviceResponse.Message = $"Successfully set main photo for user [{username}]";
@@ -196,7 +194,7 @@ public class PhotoService : IPhotoService
             _ = username ?? throw new ArgumentException("Invalid username");
             _ = photo ?? throw new ArgumentException("Invalid photo for deletion");
 
-            AppUser appUser = await _userRepository.GetMemberByUsernameAsync(username);
+            AppUser appUser = await _unitOfWork.MemberRepository.GetMemberByUsernameAsync(username);
             Photo p = appUser.Photos.FirstOrDefault(x => x.Id == photo.Id);
 
             if (p is not null)
@@ -221,7 +219,7 @@ public class PhotoService : IPhotoService
                 throw new ArgumentException($"Photo not found in database [{username}]");
             }
 
-            if (await _userRepository.SaveAllAsync())
+            if (await _unitOfWork.Complete())
             {
                 serviceResponse.Success = true;
                 serviceResponse.Message = $"Successfully delete photo for user [{username}]";

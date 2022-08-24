@@ -3,15 +3,15 @@
 public class AccountService : IAccountService
 {
     private readonly ILogger<AccountService> _logger;
-    private readonly IAccountRepository _accountRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ITokenService _tokenService;
 
     public AccountService(ILogger<AccountService> logger,
-                          IAccountRepository accountRepository,
+                          IUnitOfWork unitOfWork,
                           ITokenService tokenService)
     {
         _logger = logger;
-        _accountRepository = accountRepository;
+        _unitOfWork = unitOfWork;
         _tokenService = tokenService;
     }
 
@@ -22,7 +22,7 @@ public class AccountService : IAccountService
 
         try
         {
-            AppUser appUser = await _accountRepository.CreateAccountAsync(registerUser);
+            AppUser appUser = await _unitOfWork.AccountRepository.CreateAccountAsync(registerUser);
 
             serviceResponse.Success = true;
             serviceResponse.Data = new AuthUserModel
@@ -49,7 +49,7 @@ public class AccountService : IAccountService
 
         try
         {
-            AppUser appUser = await _accountRepository.LoginAsync(loginUser);
+            AppUser appUser = await _unitOfWork.AccountRepository.LoginAsync(loginUser);
 
             serviceResponse.Success = true;
             serviceResponse.Data = new AuthUserModel
@@ -77,7 +77,7 @@ public class AccountService : IAccountService
 
         try
         {
-            AppUser appUser = await _accountRepository.GetAccountAsync(username);
+            AppUser appUser = await _unitOfWork.AccountRepository.GetAccountAsync(username);
 
             if (appUser != null)
             {
@@ -117,7 +117,7 @@ public class AccountService : IAccountService
 
         try
         {
-            List<AppUser> appUsers = await _accountRepository.GetAccountsAsync();
+            List<AppUser> appUsers = await _unitOfWork.AccountRepository.GetAccountsAsync();
 
             if (appUsers != null)
             {
@@ -162,7 +162,12 @@ public class AccountService : IAccountService
 
         try
         {
-            await _accountRepository.UpdateAccountAsync(updateAccount);
+            await _unitOfWork.AccountRepository.UpdateAccountAsync(updateAccount);
+
+            if (_unitOfWork.HasChanges())
+            {
+                await _unitOfWork.Complete();
+            }
 
             serviceResponse.Success = true;
             serviceResponse.Data = true;
@@ -186,7 +191,7 @@ public class AccountService : IAccountService
 
         try
         {
-            IdentityResult result = await _accountRepository.DeleteAccountAsync(requestor, username);
+            IdentityResult result = await _unitOfWork.AccountRepository.DeleteAccountAsync(requestor, username);
 
             if (result.Succeeded)
             {

@@ -66,14 +66,12 @@ public class MessageRepository : IMessageRepository
             {
                 message.DateRead = DateTime.UtcNow;
             }
-
-            await _db.SaveChangesAsync();
         }
         
         return _mapper.Map<IEnumerable<MessageModel>>(messages);
     }
 
-    public async Task<Tuple<string, string>> DeleteMessageAsync(string requestUser, int id)
+    public Tuple<string, string> DeleteMessageAsync(string requestUser, int id)
     {
         Message message = _db.Messages.FirstOrDefault(m => m.Id == id);
 
@@ -103,12 +101,6 @@ public class MessageRepository : IMessageRepository
             _db.Messages.Remove(message);
         }
 
-        await _db.SaveChangesAsync();
         return new Tuple<string, string>(message.SenderUsername, message.RecipientUsername);
-    }
-
-    public async Task<bool> SaveAllAsync()
-    {
-        return await _db.SaveChangesAsync() > 0;
     }
 }
