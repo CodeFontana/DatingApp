@@ -32,7 +32,7 @@ public class MessageHub : Hub
 		string groupName = GetGroupName(Context.User.Identity.Name, otherUser);
 		await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
 		IEnumerable<MessageModel> messages = await _messageRepository.GetMessageThreadAsync(Context.User.Identity.Name, otherUser);
-		await Clients.Group(groupName).SendAsync("ReceiveMessageThread", messages);
+		await Clients.Caller.SendAsync("ReceiveMessageThread", messages);
 		_logger.LogInformation($"User {Context.User.Identity.Name} connected, established {groupName}");
 	}
 
