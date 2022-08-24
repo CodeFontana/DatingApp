@@ -3,6 +3,7 @@
 public interface IMessageService
 {
     List<MessageModel> Messages { get; set; }
+    bool ConnectedToHub { get; }
 
     event Action MessagesChanged;
 

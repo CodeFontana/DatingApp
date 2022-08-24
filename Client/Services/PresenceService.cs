@@ -4,6 +4,8 @@ public class PresenceService : IAsyncDisposable, IPresenceService
 {
     private readonly IConfiguration _config;
     private readonly ISnackbar _snackbar;
+    private readonly IMessageService _messageService;
+    private readonly NavigationManager _navman;
     private HubConnection _presenceHub;
 
     public event Action OnlineUsersChanged;
@@ -11,10 +13,14 @@ public class PresenceService : IAsyncDisposable, IPresenceService
     public List<string> OnelineUsers { get; set; } = new();
 
     public PresenceService(IConfiguration config,
-                           ISnackbar snackbar)
+                           ISnackbar snackbar,
+                           IMessageService messageService,
+                           NavigationManager navman)
     {
         _config = config;
         _snackbar = snackbar;
+        _messageService = messageService;
+        _navman = navman;
     }
 
     public async Task ConnectAsync(string jwtToken)
@@ -41,7 +47,10 @@ public class PresenceService : IAsyncDisposable, IPresenceService
 
             _presenceHub.On<string>("MessageReceived", (username) =>
             {
-                _snackbar.Add($"New Message from {username}!", Severity.Info);
+                if (_messageService.ConnectedToHub == false)
+                {
+                    _snackbar.Add($"New Message from {username}!", Severity.Info);
+                }
             });
 
             _presenceHub.On<string[]>("GetOnlineUsers", (usernames) =>

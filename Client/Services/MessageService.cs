@@ -1,4 +1,6 @@
-﻿namespace Client.Services;
+﻿using System.Reflection.Metadata.Ecma335;
+
+namespace Client.Services;
 
 public class MessageService : IMessageService, IAsyncDisposable
 {
@@ -26,6 +28,7 @@ public class MessageService : IMessageService, IAsyncDisposable
     }
 
     public List<MessageModel> Messages { get; set; } = new();
+    public bool ConnectedToHub { get => _messageHub == null ? false : _messageHub.State == HubConnectionState.Connected; }
 
     public async Task ConnectAsync(string jwtToken, string otherUser)
     {
