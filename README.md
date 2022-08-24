@@ -34,16 +34,24 @@ This project is all about learning ASP.NET Core Web API, ASP.NET Core Blazor Web
   * Request Sorting and Pagination of API data
   * Local caching of API data
   * Automatic Loading Spinner during API requests (https://stackoverflow.com/questions/56604886/blazor-display-wait-or-spinner-on-api-call/69182425#69182425)
+  * User presence using SignalR
+  * User messaging and chat, also via SignalR
+  
 * Class Library / Entity Framework Core features
   * One to One, One to Many and Many to Many relationships between EF Core Entities
   * Data Annotations and Custom Attributes for Entity Models for avoiding common EF Core pitfalls in database design
   * Split Queryies to eliminate cartesian explosion problem and allowing the app to scale with production data
+  * Repository Pattern
+  * Unit of Work Pattern
 
 ## Roadmap
-* Finish client implementation of Messaging feature
-* Add Chat feature based on SignalR
-* Implement Unit-of-Work pattern for EF
+* SignalR notifications for user likes
+* Add photo management feature -- Approving and Rejecting user photos
 * Implement Public vs Private User Interests
+* Change Password feature
+* Confirmation email for new accounts and password changes
+* Location API
+* Block users feature
 
 ## Great Articles
 https://dev.to/dotnet/why-build-single-page-apps-in-blazor-103m
