@@ -3,6 +3,6 @@
 public interface IPresenceTrackerService
 {
     Task<string[]> GetOnlineUsers();
-    Task UserConnected(string username, string connectionId);
-    Task UserDisconnected(string username, string connectionId);
+    Task<bool> UserConnected(string username, string connectionId);
+    Task<bool> UserDisconnected(string username, string connectionId);
 }

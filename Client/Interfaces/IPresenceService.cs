@@ -2,7 +2,7 @@
 
 public interface IPresenceService
 {
-    List<string> OnelineUsers { get; set; }
+    List<string> OnlineUsers { get; set; }
 
     event Action OnlineUsersChanged;
 

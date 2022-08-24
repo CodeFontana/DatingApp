@@ -12,20 +12,26 @@ public class PresenceHub : Hub
     
     public override async Task OnConnectedAsync()
     {
-        await _presenceTrackerService.UserConnected(Context.User.Identity.Name, Context.ConnectionId);
-        await Clients.Others.SendAsync("UserIsOnline", Context.User.Identity.Name);
+        bool isOneline = await _presenceTrackerService.UserConnected(Context.User.Identity.Name, Context.ConnectionId);
+
+        if (isOneline)
+        {
+            await Clients.Others.SendAsync("UserIsOnline", Context.User.Identity.Name);
+        }
+        
         string[] currentUsers = await _presenceTrackerService.GetOnlineUsers();
-        await Clients.All.SendAsync("GetOnlineUsers", currentUsers);
+        await Clients.Caller.SendAsync("GetOnlineUsers", currentUsers);
     }
 
     public override async Task OnDisconnectedAsync(Exception exception)
     {
-        await _presenceTrackerService.UserDisconnected(Context.User.Identity.Name, Context.ConnectionId);
-        await Clients.Others.SendAsync("UserIsOffline", Context.User.Identity.Name);
+        bool isOffline = await _presenceTrackerService.UserDisconnected(Context.User.Identity.Name, Context.ConnectionId);
 
-        string[] currentUsers = await _presenceTrackerService.GetOnlineUsers();
-        await Clients.All.SendAsync("GetOnlineUsers", currentUsers);
-
+        if (isOffline)
+        {
+            await Clients.Others.SendAsync("UserIsOffline", Context.User.Identity.Name);
+        }
+        
         await base.OnDisconnectedAsync(exception);
     }
 }

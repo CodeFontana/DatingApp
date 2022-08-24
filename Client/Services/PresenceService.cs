@@ -10,7 +10,7 @@ public class PresenceService : IAsyncDisposable, IPresenceService
 
     public event Action OnlineUsersChanged;
 
-    public List<string> OnelineUsers { get; set; } = new();
+    public List<string> OnlineUsers { get; set; } = new();
 
     public PresenceService(IConfiguration config,
                            ISnackbar snackbar,
@@ -37,12 +37,14 @@ public class PresenceService : IAsyncDisposable, IPresenceService
 
             _presenceHub.On<string>("UserIsOnline", (username) =>
             {
-                //_snackbar.Add($"{username} is online", Severity.Info);
+                OnlineUsers.Add(username);
+                NotifyStateChanged();
             });
 
             _presenceHub.On<string>("UserIsOffline", (username) =>
             {
-                //_snackbar.Add($"{username} is offline", Severity.Warning);
+                OnlineUsers.Remove(username);
+                NotifyStateChanged();
             });
 
             _presenceHub.On<string>("MessageReceived", (username) =>
@@ -62,7 +64,7 @@ public class PresenceService : IAsyncDisposable, IPresenceService
 
             _presenceHub.On<string[]>("GetOnlineUsers", (usernames) =>
             {
-                OnelineUsers = usernames.ToList();
+                OnlineUsers = usernames.ToList();
                 NotifyStateChanged();
             });
 
@@ -74,7 +76,7 @@ public class PresenceService : IAsyncDisposable, IPresenceService
     {
         await _presenceHub.StopAsync();
         await _presenceHub.DisposeAsync();
-        OnelineUsers = new();
+        OnlineUsers = new();
         _presenceHub = null;
     }
 

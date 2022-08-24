@@ -24,7 +24,7 @@
                               Style="border: 4px solid var(--mud-palette-surface);" />
                     </MudCardHeader>
                     <MudCardContent Class="mx-auto pt-0" Style="width: 90%; height: 90%; max-width: 100%;">
-                        @if (PresenceService.OnelineUsers.Contains(Username))
+                        @if (PresenceService.OnlineUsers.Contains(Username))
                         {
                             <div class="d-flex justify-center align-center mb-3">
                                 <MudIcon Class="mt-0" Icon="@Icons.Filled.CheckCircle" Color="Color.Success" Size="Size.Medium"></MudIcon>
