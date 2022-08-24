@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
-namespace DataAccessLibrary.Data;
+﻿namespace DataAccessLibrary.Data;
 
 public class MessageRepository : IMessageRepository
 {
@@ -75,7 +73,7 @@ public class MessageRepository : IMessageRepository
         return _mapper.Map<IEnumerable<MessageModel>>(messages);
     }
 
-    public async Task DeleteMessageAsync(string requestUser, int id)
+    public async Task<Tuple<string, string>> DeleteMessageAsync(string requestUser, int id)
     {
         Message message = _db.Messages.FirstOrDefault(m => m.Id == id);
 
@@ -106,6 +104,7 @@ public class MessageRepository : IMessageRepository
         }
 
         await _db.SaveChangesAsync();
+        return new Tuple<string, string>(message.SenderUsername, message.RecipientUsername);
     }
 
     public async Task<bool> SaveAllAsync()

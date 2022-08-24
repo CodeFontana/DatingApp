@@ -125,10 +125,10 @@ public class MessageService : IMessageService
 
         try
         {
-            await _messageRepository.DeleteMessageAsync(requestor, messageId);
+            Tuple<string, string> msgInfo = await _messageRepository.DeleteMessageAsync(requestor, messageId);
 
             serviceResponse.Success = true;
-			serviceResponse.Data = $"Successfully deleted message";
+			serviceResponse.Data = $"Successfully deleted message from {msgInfo.Item1} to {msgInfo.Item2}";
             serviceResponse.Message = $"Successfully deleted message [{requestor}]";
             _logger.LogInformation(serviceResponse.Message);
         }
