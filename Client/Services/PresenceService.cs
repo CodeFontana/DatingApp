@@ -49,7 +49,14 @@ public class PresenceService : IAsyncDisposable, IPresenceService
             {
                 if (_messageService.ConnectedToHub == false)
                 {
-                    _snackbar.Add($"New Message from {username}!", Severity.Info);
+                    _snackbar.Add($"New Message from {username}!", Severity.Info, config =>
+                    {
+                        config.Onclick = snackbar =>
+                        {
+                            _navman.NavigateTo($"/member/{username}/messages");
+                            return Task.CompletedTask;
+                        };
+                    });
                 }
             });
 
