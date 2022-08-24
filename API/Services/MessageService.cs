@@ -4,16 +4,22 @@ public class MessageService : IMessageService
 {
 	private readonly IMemberRepository _memberRepository;
 	private readonly IMessageRepository _messageRepository;
+	private readonly IPresenceTrackerService _presenceTrackerService;
+	private readonly IHubContext<PresenceHub> _presenceHub;
 	private readonly IMapper _mapper;
 	private readonly ILogger<MessageService> _logger;
 
-	public MessageService(IMemberRepository memberRepository,
+	public MessageService(ILogger<MessageService> logger, 
+						  IMemberRepository memberRepository,
 						  IMessageRepository messageRepository,
-						  IMapper mapper,
-						  ILogger<MessageService> logger)
+						  IPresenceTrackerService presenceTrackerService,
+						  IHubContext<PresenceHub> presenceHub,
+						  IMapper mapper)
 	{
 		_memberRepository = memberRepository;
 		_messageRepository = messageRepository;
+		_presenceTrackerService = presenceTrackerService;
+		_presenceHub = presenceHub;
 		_mapper = mapper;
 		_logger = logger;
 	}
@@ -51,7 +57,14 @@ public class MessageService : IMessageService
 
 			if (await _messageRepository.SaveAllAsync())
 			{
-				serviceResponse.Success = true;
+				string[] onlineUsers = await _presenceTrackerService.GetOnlineUsers();
+
+                if (onlineUsers.Contains(recipent.UserName))
+				{
+                    await _presenceHub.Clients.User(recipent.UserName).SendAsync("MessageReceived", sender.KnownAs);
+                }
+
+                serviceResponse.Success = true;
 				serviceResponse.Data = _mapper.Map<MessageModel>(message);
 				serviceResponse.Message = $"Successfully created message from {sender.UserName} to {recipent.UserName}";
 				_logger.LogInformation(serviceResponse.Message);

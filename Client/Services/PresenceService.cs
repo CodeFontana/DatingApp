@@ -9,6 +9,7 @@ public class PresenceService : IAsyncDisposable, IPresenceService
     private HubConnection _presenceHub;
 
     public event Action OnlineUsersChanged;
+    public event Action MessagesChanged;
 
     public List<string> OnlineUsers { get; set; } = new();
 
@@ -51,6 +52,8 @@ public class PresenceService : IAsyncDisposable, IPresenceService
             {
                 if (_messageService.ConnectedToHub == false)
                 {
+                    NotifyMessagesChanged();
+
                     _snackbar.Add($"New Message from {username}!", Severity.Info, config =>
                     {
                         config.Onclick = snackbar =>
@@ -81,6 +84,7 @@ public class PresenceService : IAsyncDisposable, IPresenceService
     }
 
     private void NotifyStateChanged() => OnlineUsersChanged?.Invoke();
+    private void NotifyMessagesChanged() => MessagesChanged?.Invoke();
 
     public async ValueTask DisposeAsync()
     {

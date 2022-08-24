@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace Client.Services;
+﻿namespace Client.Services;
 
 public class MessageService : IMessageService, IAsyncDisposable
 {

@@ -1,6 +1,4 @@
-﻿using DataAccessLibrary.Models;
-
-namespace API.Controllers.v1;
+﻿namespace API.Controllers.v1;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]

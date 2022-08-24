@@ -6,6 +6,7 @@ public partial class MemberMessage : IAsyncDisposable
     [Inject] ILocalStorageService LocalStorage { get; set; }
     [Inject] IMemberStateService MemberStateService { get; set; }
     [Inject] IMessageService MessageService { get; set; }
+    [Inject] IPresenceService PresenceService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
     [Parameter] public string Username { get; set; }
 
@@ -13,9 +14,10 @@ public partial class MemberMessage : IAsyncDisposable
     private bool _showError = false;
     private string _errorText;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         MessageService.MessagesChanged += StateHasChanged;
+        PresenceService.MessagesChanged += async () => await LoadMessagesFromApi();
         await LoadMessagesFromHub();
     }
 
@@ -47,7 +49,8 @@ public partial class MemberMessage : IAsyncDisposable
 
         if (result.Success)
         {
-            MessageService.Messages = result.Data.ToList();
+            MessageService.Messages = result.Data;
+            StateHasChanged();
         }
         else
         {
@@ -95,5 +98,6 @@ public partial class MemberMessage : IAsyncDisposable
     {
         await MessageService.DisconnectAsync();
         MessageService.MessagesChanged -= StateHasChanged;
+        PresenceService.MessagesChanged -= StateHasChanged;
     }
 }

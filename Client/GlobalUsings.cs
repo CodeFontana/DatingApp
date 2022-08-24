@@ -20,6 +20,7 @@ global using MudBlazor;
 global using MudBlazor.Services;
 global using System;
 global using System.Collections.Generic;
+global using System.Collections.ObjectModel;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Linq;
 global using System.Net.Http;
