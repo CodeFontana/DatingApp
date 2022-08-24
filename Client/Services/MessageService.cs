@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Client.Services;
+﻿namespace Client.Services;
 
 public class MessageService : IMessageService, IAsyncDisposable
 {
