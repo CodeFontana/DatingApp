@@ -15,11 +15,11 @@ public class Program
             config.SnackbarConfiguration.PreventDuplicates = false;
             config.SnackbarConfiguration.NewestOnTop = false;
             config.SnackbarConfiguration.ShowCloseIcon = true;
-            config.SnackbarConfiguration.VisibleStateDuration = 10000;
+            config.SnackbarConfiguration.VisibleStateDuration = 9000;
             config.SnackbarConfiguration.HideTransitionDuration = 500;
             config.SnackbarConfiguration.ShowTransitionDuration = 500;
             config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
-            config.SnackbarConfiguration.MaxDisplayedSnackbars = 2;
+            config.SnackbarConfiguration.MaxDisplayedSnackbars = 3;
         });
         builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
         builder.Services.AddAuthorizationCore();
