@@ -46,7 +46,7 @@ This project is all about learning ASP.NET Core Web API, ASP.NET Core Blazor Web
 
 ## Roadmap
 * SignalR notifications for user likes
-* Add photo management feature -- Approving and Rejecting user photos
+* Add photo management feature -- approving or rejecting user photos
 * Implement Public vs Private User Interests
 * Change Password feature
 * Confirmation email for new accounts and password changes
