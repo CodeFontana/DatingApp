@@ -23,18 +23,17 @@ public class MessageRepository : IMessageRepository
 
     public async Task<PaginationList<MessageModel>> GetMessagesForMemberAsync(MessageParameters messageParameters)
     {
-        IQueryable<Message> query = _db.Messages
+        IQueryable<MessageModel> messages = _db.Messages
             .OrderByDescending(m => m.MessageSent)
+            .ProjectTo<MessageModel>(_mapper.ConfigurationProvider)
             .AsQueryable();
 
-        query = messageParameters.Container switch
+        messages = messageParameters.Container switch
         {
-            "Inbox" => query.Where(u => u.Recipient.UserName == messageParameters.Username && u.RecipientDeleted == false),
-            "Sent" => query.Where(u => u.Sender.UserName == messageParameters.Username && u.SenderDeleted == false),
-            _ => query.Where(u => u.Recipient.UserName == messageParameters.Username && u.DateRead == null && u.RecipientDeleted == false)
+            "Inbox" => messages.Where(u => u.RecipientUsername == messageParameters.Username && u.RecipientDeleted == false),
+            "Sent" => messages.Where(u => u.SenderUsername == messageParameters.Username && u.SenderDeleted == false),
+            _ => messages.Where(u => u.RecipientUsername == messageParameters.Username && u.DateRead == null && u.RecipientDeleted == false)
         };
-
-        IQueryable<MessageModel> messages = query.ProjectTo<MessageModel>(_mapper.ConfigurationProvider);
 
         return await PaginationList<MessageModel>.CreateAsync(
             messages,
@@ -44,31 +43,30 @@ public class MessageRepository : IMessageRepository
 
     public async Task<IEnumerable<MessageModel>> GetMessageThreadAsync(string currentUsername, string recipientUsername)
     {
-        List<Message> messages = await _db.Messages
-            .Include(u => u.Sender).ThenInclude(p => p.Photos)
-            .Include(u => u.Recipient).ThenInclude(p => p.Photos)
+        List<MessageModel> messages = await _db.Messages
             .Where(m => m.Recipient.UserName == currentUsername
                 && m.Sender.UserName == recipientUsername
                 || m.Recipient.UserName == recipientUsername
                 && m.Sender.UserName == currentUsername)
             .OrderByDescending(m => m.MessageSent)
+            .AsSplitQuery()
             .Take(10)
             .Reverse()
-            .AsSplitQuery()
+            .ProjectTo<MessageModel>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
-        List<Message> unreadMessages = messages
-            .Where(m => m.DateRead == null && m.Recipient.UserName == currentUsername).ToList();
+        List<MessageModel> unreadMessages = messages
+            .Where(m => m.DateRead == null && m.RecipientUsername == currentUsername).ToList();
 
         if (unreadMessages.Any())
         {
-            foreach (Message message in unreadMessages)
+            foreach (MessageModel message in unreadMessages)
             {
                 message.DateRead = DateTime.UtcNow;
             }
         }
         
-        return _mapper.Map<IEnumerable<MessageModel>>(messages);
+        return messages;
     }
 
     public Tuple<string, string> DeleteMessageAsync(string requestUser, int id)
