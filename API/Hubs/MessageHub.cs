@@ -6,16 +6,22 @@ public class MessageHub : Hub
 	private readonly ILogger<MessageHub> _logger;
 	private readonly IMessageRepository _messageRepository;
 	private readonly IMemberRepository _memberRepository;
+	private readonly IPresenceTrackerService _presenceTrackerService;
+	private readonly IHubContext<PresenceHub> _presenceHub;
 	private readonly IMapper _mapper;
 
 	public MessageHub(ILogger<MessageHub> logger,
 					  IMessageRepository messageRepository,
 					  IMemberRepository memberRepository,
+					  IPresenceTrackerService presenceTrackerService,
+					  IHubContext<PresenceHub> presenceHub,
 					  IMapper mapper)
 	{
 		_logger = logger;
 		_messageRepository = messageRepository;
 		_memberRepository = memberRepository;
+		_presenceTrackerService = presenceTrackerService;
+		_presenceHub = presenceHub;
 		_mapper = mapper;
 	}
 
@@ -62,9 +68,18 @@ public class MessageHub : Hub
 
         await _messageRepository.CreateMessageAsync(message);
 		await _messageRepository.SaveAllAsync();
+		
 		string group = GetGroupName(sender.UserName, recipent.UserName);
 		await Clients.Group(group).SendAsync("ReceiveMessage", _mapper.Map<MessageModel>(message));
-        _logger.LogInformation($"User {Context.User.Identity.Name} sent message to {messageCreateModel.RecipientUsername}");
+
+        string[] onlineUsers = await _presenceTrackerService.GetOnlineUsers();
+
+        if (onlineUsers.Contains(recipent.UserName))
+        {
+            await _presenceHub.Clients.User(recipent.UserName).SendAsync("MessageReceived", sender.KnownAs);
+        }
+
+		_logger.LogInformation($"User {Context.User.Identity.Name} sent message to {messageCreateModel.RecipientUsername}");
     }
 
 	public async Task SendThreadAck(DateTime ackTime, string otherUser)

@@ -39,6 +39,11 @@ public class PresenceService : IAsyncDisposable, IPresenceService
                 //_snackbar.Add($"{username} is offline", Severity.Warning);
             });
 
+            _presenceHub.On<string>("MessageReceived", (username) =>
+            {
+                _snackbar.Add($"New Message from {username}!", Severity.Info);
+            });
+
             _presenceHub.On<string[]>("GetOnlineUsers", (usernames) =>
             {
                 OnelineUsers = usernames.ToList();
