@@ -79,7 +79,7 @@ public class PhotoService : IPhotoService
 
                 appUser.Photos.Add(newPhoto);
 
-                if (await _unitOfWork.Complete())
+                if (await _unitOfWork.CompleteAsync())
                 {
                     serviceResponse.Success = true;
                     serviceResponse.Data = _mapper.Map<PhotoModel>(newPhoto);
@@ -163,7 +163,7 @@ public class PhotoService : IPhotoService
                 throw new ArgumentException($"Photo not found in database [{username}]");
             }
 
-            if (await _unitOfWork.Complete())
+            if (await _unitOfWork.CompleteAsync())
             {
                 serviceResponse.Success = true;
                 serviceResponse.Message = $"Successfully set main photo for user [{username}]";
@@ -219,7 +219,7 @@ public class PhotoService : IPhotoService
                 throw new ArgumentException($"Photo not found in database [{username}]");
             }
 
-            if (await _unitOfWork.Complete())
+            if (await _unitOfWork.CompleteAsync())
             {
                 serviceResponse.Success = true;
                 serviceResponse.Message = $"Successfully delete photo for user [{username}]";

@@ -31,7 +31,7 @@ public class UnitOfWork : IUnitOfWork
     public ILikesRepository LikesRepository => new LikesRepository(_db, _mapper);
     public IMessageRepository MessageRepository => new MessageRepository(_db, _mapper);
 
-    public async Task<bool> Complete()
+    public async Task<bool> CompleteAsync()
     {
         return await _db.SaveChangesAsync() > 0;
     }

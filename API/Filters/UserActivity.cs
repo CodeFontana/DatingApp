@@ -14,6 +14,6 @@ public class UserActivity : IAsyncActionFilter
         IUnitOfWork unitOfWork = resultContext!.HttpContext.RequestServices.GetService<IUnitOfWork>();
         AppUser user = await unitOfWork.AccountRepository.GetAccountAsync(resultContext.HttpContext.User.Identity.Name);
         user.LastActive = DateTime.UtcNow;
-        await unitOfWork.Complete();
+        await unitOfWork.CompleteAsync();
     }
 }

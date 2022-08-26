@@ -109,7 +109,7 @@ public class SeedData
                             Content = "Hey gorgeous..."
                         });
 
-                        await unitOfWork.Complete();
+                        await unitOfWork.CompleteAsync();
                     }
                 }
             }

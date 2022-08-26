@@ -76,7 +76,7 @@ public class MemberService : IMemberService
             _mapper.Map(memberUpdate, appUser);
             _unitOfWork.MemberRepository.UpdateMember(appUser);
 
-            if (await _unitOfWork.Complete())
+            if (await _unitOfWork.CompleteAsync())
             {
                 serviceResponse.Success = true;
                 serviceResponse.Data = $"Successfully updated user [{username}]";

@@ -79,7 +79,7 @@ public class LikesService : ILikesService
                 serviceResponse.Message = $"Successfully liked [{username}] on behalf of [{requestor}]";
             }
 
-            if (await _unitOfWork.Complete())
+            if (await _unitOfWork.CompleteAsync())
             {
                 serviceResponse.Success = true;
                 _logger.LogInformation(serviceResponse.Message);

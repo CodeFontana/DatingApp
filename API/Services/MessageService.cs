@@ -54,7 +54,7 @@ public class MessageService : IMessageService
 
 			await _unitOfWork.MessageRepository.CreateMessageAsync(message);
 
-			if (await _unitOfWork.Complete())
+			if (await _unitOfWork.CompleteAsync())
 			{
 				string[] onlineUsers = await _presenceTrackerService.GetOnlineUsers();
 
@@ -119,7 +119,7 @@ public class MessageService : IMessageService
 
             if (_unitOfWork.HasChanges())
             {
-                await _unitOfWork.Complete();
+                await _unitOfWork.CompleteAsync();
             }
 
             serviceResponse.Success = true;
@@ -148,7 +148,7 @@ public class MessageService : IMessageService
 
             if (_unitOfWork.HasChanges())
             {
-                await _unitOfWork.Complete();
+                await _unitOfWork.CompleteAsync();
             }
 
             serviceResponse.Success = true;

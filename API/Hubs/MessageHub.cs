@@ -34,7 +34,7 @@ public class MessageHub : Hub
 
         if (_unitOfWork.HasChanges())
         {
-            await _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
         }
 
         await Clients.Caller.SendAsync("ReceiveMessageThread", messages);
@@ -72,7 +72,7 @@ public class MessageHub : Hub
         };
 
         await _unitOfWork.MessageRepository.CreateMessageAsync(message);
-		await _unitOfWork.Complete();
+		await _unitOfWork.CompleteAsync();
 		
 		string group = GetGroupName(sender.UserName, recipent.UserName);
 		await Clients.Group(group).SendAsync("ReceiveMessage", _mapper.Map<MessageModel>(message));

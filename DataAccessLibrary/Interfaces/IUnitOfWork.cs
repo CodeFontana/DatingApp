@@ -12,6 +12,6 @@ public interface IUnitOfWork
     SignInManager<AppUser> SignInManager { get; }
     DataContext Db { get; }
 
-    Task<bool> Complete();
+    Task<bool> CompleteAsync();
     bool HasChanges();
 }
