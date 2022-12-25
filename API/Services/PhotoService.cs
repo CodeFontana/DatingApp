@@ -1,4 +1,20 @@
-﻿namespace API.Services;
+﻿using API.Interfaces;
+using AutoMapper;
+using DataAccessLibrary.Entities;
+using DataAccessLibrary.Interfaces;
+using DataAccessLibrary.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace API.Services;
 
 public class PhotoService : IPhotoService
 {

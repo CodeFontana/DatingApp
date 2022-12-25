@@ -1,4 +1,14 @@
-﻿namespace API.Controllers.v1;
+﻿using API.Extensions;
+using API.Filters;
+using API.Interfaces;
+using DataAccessLibrary.Models;
+using DataAccessLibrary.Pagination;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.Threading.Tasks;
+
+namespace API.Controllers.v1;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]

@@ -1,4 +1,9 @@
-﻿namespace API.Interfaces;
+﻿using DataAccessLibrary.Models;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace API.Interfaces;
 
 public interface IPhotoService
 {

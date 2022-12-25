@@ -1,4 +1,10 @@
-﻿namespace API.Hubs;
+﻿using API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
+using System;
+using System.Threading.Tasks;
+
+namespace API.Hubs;
 
 [Authorize]
 public class PresenceHub : Hub

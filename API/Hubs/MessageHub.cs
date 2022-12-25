@@ -1,4 +1,19 @@
-﻿namespace API.Hubs;
+﻿using API.Interfaces;
+using AutoMapper;
+using DataAccessLibrary.Entities;
+using DataAccessLibrary.Interfaces;
+using DataAccessLibrary.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace API.Hubs;
 
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class MessageHub : Hub

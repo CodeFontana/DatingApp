@@ -1,4 +1,11 @@
-﻿namespace API.Filters;
+﻿using DataAccessLibrary.Entities;
+using DataAccessLibrary.Interfaces;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
+
+namespace API.Filters;
 
 public class UserActivity : IAsyncActionFilter
 {

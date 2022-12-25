@@ -1,4 +1,8 @@
-﻿namespace API.Interfaces;
+﻿using DataAccessLibrary.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace API.Interfaces;
 
 public interface IAccountService
 {

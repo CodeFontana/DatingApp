@@ -1,4 +1,6 @@
-﻿namespace API.Interfaces;
+﻿using System.Threading.Tasks;
+
+namespace API.Interfaces;
 
 public interface IPresenceTrackerService
 {

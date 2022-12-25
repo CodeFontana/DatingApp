@@ -1,4 +1,8 @@
-﻿namespace API.Extensions;
+﻿using DataAccessLibrary.Pagination;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json;
+
+namespace API.Extensions;
 
 public static class HttpExtensions
 {

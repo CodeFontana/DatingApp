@@ -1,4 +1,8 @@
-﻿namespace API.Interfaces;
+﻿using DataAccessLibrary.Models;
+using DataAccessLibrary.Pagination;
+using System.Threading.Tasks;
+
+namespace API.Interfaces;
 
 public interface IMemberService
 {

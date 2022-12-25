@@ -1,3 +1,31 @@
+using API.Filters;
+using API.Hubs;
+using API.Interfaces;
+using API.Middleware;
+using API.Services;
+using AspNetCoreRateLimit;
+using ConsoleLoggerLibrary;
+using DataAccessLibrary.Data;
+using DataAccessLibrary.Entities;
+using DataAccessLibrary.Helpers;
+using DataAccessLibrary.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+
 namespace API;
 
 public class Program
@@ -154,15 +182,7 @@ public class Program
         });
 
         builder.Services.AddHealthChecks()
-                        .AddDbContextCheck<DataContext>("Database Health Check")
-                        .AddSqlServer(builder.Configuration.GetConnectionString("Default"));
-
-        builder.Services.AddHealthChecksUI(options =>
-        {
-            options.AddHealthCheckEndpoint("WebAPI", "/health");
-            options.SetEvaluationTimeInSeconds(60);
-            options.SetMinimumSecondsBetweenFailureNotifications(600);
-        }).AddInMemoryStorage();
+                        .AddDbContextCheck<DataContext>("Database Health Check");
 
         builder.Services.Configure<IpRateLimitOptions>(
             builder.Configuration.GetSection("IpRateLimiting"));
@@ -193,11 +213,7 @@ public class Program
         app.MapHub<PresenceHub>("/hubs/presence");
         app.MapHub<MessageHub>("/hubs/message");
         app.UseIpRateLimiting();
-        app.MapHealthChecks("/health", new HealthCheckOptions
-        {
-            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-        }).AllowAnonymous();
-        app.MapHealthChecksUI().AllowAnonymous();
+        app.MapHealthChecks("/health").AllowAnonymous();
         app.Run();
     }
 
