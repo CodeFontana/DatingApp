@@ -12,7 +12,7 @@
                 {
                     <MudItem xs="11" Class="pt-1 pb-0 px-0">
                         <MudItem Class="d-flex">
-                            <MudIcon Class="mr-1" Icon="@Icons.Filled.AccessTime" Size="Size.Small" />
+                            <MudIcon Class="mr-1" Icon="@Icons.Material.Filled.AccessTime" Size="Size.Small" />
                             <MudText Typo="Typo.caption">@m.MessageSent.ToLocalTime().Humanize()</MudText>
                             @if (m.SenderUsername != Username && m.DateRead == null)
                             {

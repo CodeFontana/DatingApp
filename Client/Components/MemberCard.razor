@@ -6,17 +6,17 @@
                 <div class='img-blur' style="background-image: url('@_photoFilename')"></div>
             </div>
             <MudPaper Elevation="0" Class="d-flex justify-center member-icons animate gap-5">
-                <MudIconButton Icon="@Icons.Filled.Person"
+                <MudIconButton Icon="@Icons.Material.Filled.Person"
                                Variant="Variant.Filled" Color="Color.Primary"
                                Size="Size.Large"
                                aria-label="Profile"
                                OnClick="HandleUserClick" />
-                <MudIconButton Icon="@Icons.Filled.HeartBroken"
+                <MudIconButton Icon="@Icons.Material.Filled.HeartBroken"
                                Variant="Variant.Filled" Color="Color.Primary"
                                Size="Size.Large"
                                OnClick="HandleLikeToggleAsync"
                                aria-label="Like" />
-                <MudIconButton Icon="@Icons.Filled.Mail"
+                <MudIconButton Icon="@Icons.Material.Filled.Mail"
                                Variant="Variant.Filled" Color="Color.Primary"
                                Size="Size.Large"
                                OnClick="HandleMessageClick"
@@ -27,7 +27,7 @@
             <MudText Typo="Typo.body1" Align="Align.Center" Class="member-info d-flex justify-center align-center">
                 @if (PresenceService.OnlineUsers.Contains(Member.Username))
                 {
-                    <MudIcon Class="mt-0 mr-1" Icon="@Icons.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"></MudIcon> @Member.KnownAs @($" | {Member.Age}")
+                    <MudIcon Class="mt-0 mr-1" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"></MudIcon> @Member.KnownAs @($" | {Member.Age}")
                 }
                 else 
                 {
