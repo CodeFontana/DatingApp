@@ -16,6 +16,7 @@ public partial class MemberCard : IDisposable
         _photoFilename = await PhotoService.GetPhotoAsync(Member.Username, Member.MainPhotoFilename);
         Member.MainPhotoFilename = _photoFilename;
         PresenceService.OnlineUsersChanged += StateHasChanged;
+        await base.OnParametersSetAsync();
     }
 
     private void HandleUserClick()

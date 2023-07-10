@@ -19,6 +19,7 @@ public partial class MemberMessage : IAsyncDisposable
         MessageService.MessagesChanged += StateHasChanged;
         PresenceService.MessagesChanged += async () => await LoadMessagesFromApi();
         await LoadMessagesFromHub();
+        await base.OnParametersSetAsync();
     }
 
     private async Task LoadMessagesFromHub()

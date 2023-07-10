@@ -24,6 +24,7 @@ public partial class EditRolesDialog
     {
         MudDialog.SetTitle($"Edit roles for {User.Username}");
         _diffRoles = AvailableRoles.Except(User.Roles).ToList();
+        base.OnParametersSet();
     }
 
     private void HandleRight()

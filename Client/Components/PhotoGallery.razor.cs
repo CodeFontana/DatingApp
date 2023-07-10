@@ -19,6 +19,7 @@ public partial class PhotoGallery
         }
 
         SpinnerService.HoldSpinner = false;
+        await base.OnParametersSetAsync();
     }
 
     private void HandleThumbnailClick(int index)

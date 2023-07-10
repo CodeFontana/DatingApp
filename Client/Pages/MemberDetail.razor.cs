@@ -44,6 +44,7 @@ public partial class MemberDetail : IDisposable
         }
 
         PresenceService.OnlineUsersChanged += StateHasChanged;
+        await base.OnParametersSetAsync();
     }
 
     protected override void OnAfterRender(bool firstRender)

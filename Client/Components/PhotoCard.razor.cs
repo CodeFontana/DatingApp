@@ -14,6 +14,7 @@ public partial class PhotoCard
     protected override async Task OnParametersSetAsync()
     {
         _photoFilename = await PhotoService.GetPhotoAsync(MemberStateService.AppUser.Username, Photo.Filename);
+        await base.OnParametersSetAsync();
     }
 
     private async Task HandleSetMainPhotoAsync()
