@@ -1,4 +1,5 @@
 ﻿@inject ISpinnerService SpinnerService
+@implements IDisposable
 
 @if (isVisible)
 {
@@ -49,5 +50,11 @@
     {
         isVisible = false;
         StateHasChanged();
+    }
+
+public void Dispose()
+    {
+        SpinnerService.OnShow -= ShowSpinner;
+        SpinnerService.OnHide -= HideSpinner;
     }
 }
