@@ -31,7 +31,9 @@
                     </MudItem>
 
                     <MudItem xs="1" Class="pt-1 pb-0 px-0">
-                        <MudAvatar Image="@m.SenderPhotoUrl" Size="Size.Large" />
+                        <MudAvatar Size="Size.Large">
+                            <MudImage Src="@m.SenderPhotoUrl" />
+                        </MudAvatar>
                     </MudItem>
 
                     <MudItem xs="12" Class="pa-0">

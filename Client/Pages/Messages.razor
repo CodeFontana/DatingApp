@@ -51,14 +51,18 @@
                         @if (_messageFilter.Container == "Inbox" || _messageFilter.Container == "Unread")
                         {
                             <MudTd Class="d-flex align-center">
-                                <MudAvatar Image="@context.SenderPhotoUrl" />
+                                <MudAvatar>
+                                    <MudImage Src="@context.SenderPhotoUrl" />
+                                </MudAvatar>
                                 <MudText Class="ml-2" Typo="Typo.h6" Inline="true">@context.SenderUsername</MudText>
                             </MudTd>
                         }
                         else
                         {
                             <MudTd Class="d-flex align-center">
-                                <MudAvatar Image="@context.RecipientPhotoUrl" />
+                                <MudAvatar>
+                                    <MudImage Src="@context.RecipientPhotoUrl" />
+                                </MudAvatar>
                                 <MudText Class="ml-2" Typo="Typo.h6" Inline="true">@context.RecipientUsername</MudText>
                             </MudTd>
                         }

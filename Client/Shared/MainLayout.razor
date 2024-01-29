@@ -45,7 +45,9 @@
                 {
                     <MudMenu AnchorOrigin="Origin.BottomLeft">
                         <ActivatorContent>
-                            <MudAvatar Image="@MemberStateService.MainPhoto" />
+                            <MudAvatar>
+                                <MudImage Src="@MemberStateService.MainPhoto" />
+                            </MudAvatar>
                         </ActivatorContent>
                         <ChildContent>
                             <MudMenuItem Class="px-0 py-0">
