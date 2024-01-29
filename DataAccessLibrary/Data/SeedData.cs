@@ -83,7 +83,10 @@ public class SeedData
                 for (int i = 0; i < numLikes; i++)
                 {
                     int skipUsers = random.Next(0, users.Count - 1);
-                    AppUser userToLike = unitOfWork.Db.Users.OrderBy(r => Guid.NewGuid()).Skip(skipUsers).Take(1).FirstOrDefault();
+                    AppUser userToLike = unitOfWork.Db.Users
+                        .OrderBy(r => Guid.NewGuid())
+                        .Skip(skipUsers)
+                        .Take(1).FirstOrDefault();
 
                     if (userToLike is not null 
                         && userToLike.Id != user.Id
