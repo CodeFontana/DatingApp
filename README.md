@@ -40,7 +40,7 @@ This project is all about learning ASP.NET Core Web API, ASP.NET Core Blazor Web
 * Class Library / Entity Framework Core features
   * One to One, One to Many and Many to Many relationships between EF Core Entities
   * Data Annotations and Custom Attributes for Entity Models for avoiding common EF Core pitfalls in database design
-  * Split Queryies to eliminate cartesian explosion problem and allowing the app to scale with production data
+  * Split Queries to eliminate cartesian explosion problem and allowing the app to scale with production data
   * Repository Pattern
   * Unit of Work Pattern
 
