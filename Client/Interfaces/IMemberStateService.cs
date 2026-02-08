@@ -2,7 +2,7 @@
 
 public interface IMemberStateService
 {
-    MemberModel AppUser { get; }
+    MemberModel Member { get; }
     string MainPhoto { get; }
 
     event Action OnChange;

@@ -50,7 +50,7 @@ public partial class PhotoEditor
                 name: "\"files\"",
                 fileName: imageFile.Name);
 
-            ServiceResponseModel<PhotoModel> result = await PhotoService.AddPhotoAsync(MemberStateService.AppUser.Username, content);
+            ServiceResponseModel<PhotoModel> result = await PhotoService.AddPhotoAsync(MemberStateService.Member.Username, content);
 
             if (result.Success)
             {

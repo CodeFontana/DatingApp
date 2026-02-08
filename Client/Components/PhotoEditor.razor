@@ -6,7 +6,7 @@
 
     <MudGrid Justify="Justify.Center">
 
-        @foreach (PhotoModel p in MemberStateService.AppUser.Photos)
+        @foreach (PhotoModel p in MemberStateService.Member.Photos)
         {
             <PhotoCard Photo="@p" OnImageChanged="HandleImageChangedAsync" />
         }

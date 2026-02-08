@@ -3,12 +3,10 @@
 public class LikesRepository : ILikesRepository
 {
     private readonly DataContext _db;
-    private readonly IMapper _mapper;
 
-    public LikesRepository(DataContext context, IMapper mapper)
+    public LikesRepository(DataContext context)
     {
         _db = context;
-        _mapper = mapper;
     }
 
     public async Task<UserLike> GetUserLikeAsync(int sourceUserId, int likedUserId)
@@ -32,11 +30,11 @@ public class LikesRepository : ILikesRepository
             likes = likes.Where(like => like.LikedUserId == likesParameters.UserId);
             users = likes.Select(like => like.SourceUser);
         }
-        
+
         return await PaginationList<MemberModel>.CreateAsync(
             users.ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
                      .AsNoTracking(),
-            likesParameters.PageNumber, 
+            likesParameters.PageNumber,
             likesParameters.PageSize);
     }
 

@@ -3,12 +3,10 @@
 public class MessageRepository : IMessageRepository
 {
     private readonly DataContext _db;
-    private readonly IMapper _mapper;
 
-    public MessageRepository(DataContext context, IMapper mapper)
+    public MessageRepository(DataContext context)
     {
         _db = context;
-        _mapper = mapper;
     }
 
     public async Task CreateMessageAsync(Message message)
@@ -25,7 +23,7 @@ public class MessageRepository : IMessageRepository
     {
         IQueryable<MessageModel> messages = _db.Messages
             .OrderByDescending(m => m.MessageSent)
-            .ProjectTo<MessageModel>(_mapper.ConfigurationProvider)
+            .Select(MessageModel.Projection)
             .AsQueryable();
 
         messages = messageParameters.Container switch
@@ -52,7 +50,7 @@ public class MessageRepository : IMessageRepository
             .AsSplitQuery()
             .Take(10)
             .Reverse()
-            .ProjectTo<MessageModel>(_mapper.ConfigurationProvider)
+            .Select(MessageModel.Projection)
             .ToListAsync();
 
         List<MessageModel> unreadMessages = messages
@@ -65,7 +63,7 @@ public class MessageRepository : IMessageRepository
                 message.DateRead = DateTime.UtcNow;
             }
         }
-        
+
         return messages;
     }
 
@@ -78,7 +76,7 @@ public class MessageRepository : IMessageRepository
             throw new ArgumentException($"Message with id={id} was not found");
         }
 
-        if (message.SenderUsername != requestUser 
+        if (message.SenderUsername != requestUser
             && message.RecipientUsername != requestUser)
         {
             throw new UnauthorizedAccessException($"Request user [{requestUser}] is not authorized to delete this message");
@@ -101,4 +99,5 @@ public class MessageRepository : IMessageRepository
 
         return new Tuple<string, string>(message.SenderUsername, message.RecipientUsername);
     }
+
 }

@@ -163,7 +163,7 @@ public class MessageService : IMessageService, IAsyncDisposable
 
     private async Task<MessageModel> ResolveUserPhoto(MessageModel message)
     {
-        if (message.RecipientUsername == _memberStateService.AppUser.Username)
+        if (message.RecipientUsername == _memberStateService.Member.Username)
         {
             message.RecipientPhotoUrl = _memberStateService.MainPhoto;
         }
@@ -172,7 +172,7 @@ public class MessageService : IMessageService, IAsyncDisposable
             message.RecipientPhotoUrl = await _photoService.GetPhotoAsync(message.RecipientUsername, message.RecipientPhotoUrl);
         }
 
-        if (message.SenderUsername == _memberStateService.AppUser.Username)
+        if (message.SenderUsername == _memberStateService.Member.Username)
         {
             message.SenderPhotoUrl = _memberStateService.MainPhoto;
         }

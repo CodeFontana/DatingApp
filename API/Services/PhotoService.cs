@@ -1,18 +1,17 @@
-﻿using API.Interfaces;
-using AutoMapper;
-using DataAccessLibrary.Entities;
-using DataAccessLibrary.Interfaces;
-using DataAccessLibrary.Models;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Interfaces;
+using DataAccessLibrary.Entities;
+using DataAccessLibrary.Interfaces;
+using DataAccessLibrary.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace API.Services;
 
@@ -20,15 +19,12 @@ public class PhotoService : IPhotoService
 {
     private readonly ILogger<PhotoService> _logger;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
     private readonly IWebHostEnvironment _appEnv;
 
     public PhotoService(ILogger<PhotoService> logger,
                         IUnitOfWork unitOfWork,
-                        IMapper mapper,
                         IWebHostEnvironment appEnv)
     {
-        _mapper = mapper;
         _appEnv = appEnv;
         _logger = logger;
         _unitOfWork = unitOfWork;
@@ -98,7 +94,7 @@ public class PhotoService : IPhotoService
                 if (await _unitOfWork.CompleteAsync())
                 {
                     serviceResponse.Success = true;
-                    serviceResponse.Data = _mapper.Map<PhotoModel>(newPhoto);
+                    serviceResponse.Data = PhotoModel.FromEntity(newPhoto);
                     serviceResponse.Message = $"Successfully added photo for user [{username}]";
                     _logger.LogInformation(serviceResponse.Message);
                 }
@@ -314,7 +310,7 @@ public class PhotoService : IPhotoService
     {
         // Use Exif tag to correct photo orientation
         sourceImage = CorrectExifOrientation(sourceImage);
-        
+
         RectangleF sourceBounds = new(0.0f, 0.0f, (float)sourceImage.Width, (float)sourceImage.Height);
         Image destinationImage = new Bitmap((int)destBounds.Width, (int)destBounds.Height);
         using Graphics g = Graphics.FromImage(destinationImage);

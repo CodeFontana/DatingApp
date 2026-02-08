@@ -31,18 +31,18 @@
                 <MudCardHeader>
                     <MudImage Class="img-thumbnail mx-auto"
                               Src="@MemberStateService.MainPhoto"
-                              Alt="@MemberStateService.AppUser.KnownAs"
+                              Alt="@MemberStateService.Member.KnownAs"
                               Style="border: 4px solid var(--mud-palette-surface);" />
                 </MudCardHeader>
                 <MudCardContent Class="mx-auto" Style="width: 90%; height: 90%; max-width: 100%;">
                     <MudText Style="font-weight: bolder;">Location:</MudText>
-                    <MudText Class="mb-3">@MemberStateService.AppUser.City, @MemberStateService.AppUser.State</MudText>
+                    <MudText Class="mb-3">@MemberStateService.Member.City, @MemberStateService.Member.State</MudText>
                     <MudText Style="font-weight: bolder;">Age:</MudText>
-                    <MudText Class="mb-3">@MemberStateService.AppUser.Age</MudText>
+                    <MudText Class="mb-3">@MemberStateService.Member.Age</MudText>
                     <MudText Style="font-weight: bolder;">Last active:</MudText>
-                    <MudText Class="mb-3">@DateTime.Now.Subtract(MemberStateService.AppUser.LastActive).Humanize()</MudText>
+                    <MudText Class="mb-3">@DateTime.Now.Subtract(MemberStateService.Member.LastActive).Humanize()</MudText>
                     <MudText Style="font-weight: bolder;">Member since:</MudText>
-                    <MudText>@MemberStateService.AppUser.Created.ToLongDateString()</MudText>
+                    <MudText>@MemberStateService.Member.Created.ToLongDateString()</MudText>
                 </MudCardContent>
                 @if (_changesMade)
                 {
@@ -68,7 +68,7 @@
         <MudItem xs="12" md="8" lg="9">
             <MudTabs Elevation="6" Centered="true" Rounded="true" Color="Color.Primary">
 
-                <MudTabPanel Text="@($"About {MemberStateService.AppUser.KnownAs}")">
+                <MudTabPanel Text="@($"About {MemberStateService.Member.KnownAs}")">
                     <MudContainer Class="mt-5 px-0">
                         <EditForm id="editForm" Model="@_memberUpdate" @oninput="(e) => OnProfileUpdated(e)" OnValidSubmit="HandleValidSubmitAsync">
                             <DataAnnotationsValidator />
@@ -81,7 +81,7 @@
                                                   Variant="Variant.Outlined"
                                                   @bind-Value="@_memberUpdate.Introduction"
                                                   Lines="6" />
-                                    <ValidationMessage For="(() => MemberStateService.AppUser.Introduction)" />
+                                    <ValidationMessage For="(() => MemberStateService.Member.Introduction)" />
 
                                     <MudTextField Class="mb-10"
                                                   T="string"
@@ -89,7 +89,7 @@
                                                   Variant="Variant.Outlined"
                                                   @bind-Value="@_memberUpdate.LookingFor"
                                                   Lines="6" />
-                                    <ValidationMessage For="(() => MemberStateService.AppUser.LookingFor)" />
+                                    <ValidationMessage For="(() => MemberStateService.Member.LookingFor)" />
 
                                     <MudTextField Class="mb-10"
                                                   T="string"
@@ -97,7 +97,7 @@
                                                   Variant="Variant.Outlined"
                                                   @bind-Value="@_memberUpdate.Interests"
                                                   Lines="6" />
-                                    <ValidationMessage For="(() => MemberStateService.AppUser.Interests)" />
+                                    <ValidationMessage For="(() => MemberStateService.Member.Interests)" />
 
                                     <MudGrid>
                                         <MudItem xs="6">

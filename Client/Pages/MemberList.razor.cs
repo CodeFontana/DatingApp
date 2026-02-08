@@ -18,7 +18,7 @@ public partial class MemberList : IAsyncDisposable
     {
         if (string.IsNullOrWhiteSpace(_membersFilter.Gender))
         {
-            if (MemberStateService.AppUser.Gender.ToLower().Equals("female"))
+            if (MemberStateService.Member.Gender.ToLower().Equals("female"))
             {
                 _membersFilter.Gender = "male";
             }
@@ -124,7 +124,7 @@ public partial class MemberList : IAsyncDisposable
         _membersFilter.MaxAge = 45;
         _membersFilter.OrderBy = "LastActive";
 
-        if (MemberStateService.AppUser.Gender.ToLower().Equals("female"))
+        if (MemberStateService.Member.Gender.ToLower().Equals("female"))
         {
             _membersFilter.Gender = "male";
         }

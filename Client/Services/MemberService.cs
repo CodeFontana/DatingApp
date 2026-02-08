@@ -5,16 +5,13 @@ public class MemberService : IMemberService
     private readonly IConfiguration _config;
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _options;
-    private readonly IMapper _mapper;
 
     public MemberService(IConfiguration config,
-                         HttpClient httpClient,
-                         IMapper mapper)
+                         HttpClient httpClient)
     {
         _config = config;
         _httpClient = httpClient;
         _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        _mapper = mapper;
     }
 
     public List<MemberModel> MemberCache { get; set; } = new();
@@ -58,7 +55,7 @@ public class MemberService : IMemberService
             member.CacheTime = DateTime.Now;
             MemberCache.Add(member);
         }
-        
+
         return result;
     }
 
@@ -122,13 +119,6 @@ public class MemberService : IMemberService
         string apiEndpoint = _config["apiLocation"] + _config["membersEndpoint"];
         using HttpResponseMessage response = await _httpClient.PutAsJsonAsync(apiEndpoint, memberUpdate);
         ServiceResponseModel<string> result = await response.Content.ReadFromJsonAsync<ServiceResponseModel<string>>(_options);
-
-        if (result.Success)
-        {
-            MemberModel member = (await GetMemberAsync(memberUpdate.Username)).Data;
-            _mapper.Map(memberUpdate, member);
-        }
-
         return result;
     }
 }

@@ -1,14 +1,12 @@
 ﻿namespace DataAccessLibrary.Data;
 
-public class MemberRepository : IMemberRepository
+public sealed class MemberRepository : IMemberRepository
 {
     private readonly DataContext _db;
-    private readonly IMapper _mapper;
 
-    public MemberRepository(DataContext context, IMapper mapper)
+    public MemberRepository(DataContext context)
     {
         _db = context;
-        _mapper = mapper;
     }
 
     public async Task<MemberModel> GetMemberAsync(string username)
@@ -16,7 +14,7 @@ public class MemberRepository : IMemberRepository
         return await _db.Users
             .AsNoTracking()
             .Where(x => x.UserName == username)
-            .ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
+            .Select(MemberModel.Projection)
             .SingleOrDefaultAsync();
     }
 
@@ -40,8 +38,9 @@ public class MemberRepository : IMemberRepository
 
         return await PaginationList<MemberModel>
             .CreateAsync(
-                users.ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
-                     .AsNoTracking(),
+                users
+                    .AsNoTracking()
+                    .Select(MemberModel.Projection),
             userParameters.PageNumber,
             userParameters.PageSize);
     }

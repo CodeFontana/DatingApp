@@ -6,19 +6,16 @@ public class UnitOfWork : IUnitOfWork
     private readonly UserManager<AppUser> _userManager;
     private readonly RoleManager<AppRole> _roleManager;
     private readonly SignInManager<AppUser> _signInManager;
-    private readonly IMapper _mapper;
 
-    public UnitOfWork(DataContext db, 
+    public UnitOfWork(DataContext db,
                       UserManager<AppUser> userManager,
                       RoleManager<AppRole> roleManager,
-                      SignInManager<AppUser> signInManager,
-                      IMapper mapper)
+                      SignInManager<AppUser> signInManager)
     {
         _db = db;
         _userManager = userManager;
         _roleManager = roleManager;
         _signInManager = signInManager;
-        _mapper = mapper;
     }
 
     public DataContext Db => _db;
@@ -27,9 +24,9 @@ public class UnitOfWork : IUnitOfWork
     public SignInManager<AppUser> SignInManager => _signInManager;
     public IAccountRepository AccountRepository => new AccountRepository(_db, _userManager, _signInManager);
     public IAdminRepository AdminRepository => new AdminRepository(_userManager, _roleManager);
-    public IMemberRepository MemberRepository => new MemberRepository(_db, _mapper);
-    public ILikesRepository LikesRepository => new LikesRepository(_db, _mapper);
-    public IMessageRepository MessageRepository => new MessageRepository(_db, _mapper);
+    public IMemberRepository MemberRepository => new MemberRepository(_db);
+    public ILikesRepository LikesRepository => new LikesRepository(_db);
+    public IMessageRepository MessageRepository => new MessageRepository(_db);
 
     public async Task<bool> CompleteAsync()
     {

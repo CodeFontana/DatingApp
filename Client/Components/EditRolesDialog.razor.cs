@@ -8,7 +8,7 @@ public partial class EditRolesDialog
 
     [Inject] IAdminService AdminService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
-    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] public IMudDialogInstance MudDialog { get; set; }
     [Parameter] public UserWithRolesModel User { get; set; }
     [Parameter] public List<string> AvailableRoles { get; set; }
 

@@ -74,8 +74,6 @@ public partial class Lists
                 NotifyOnBreakpointOnly = true,
             });
 
-
-
             _subscriptionId = subscriptionResult.SubscriptionId;
             StateHasChanged();
         }

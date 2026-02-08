@@ -21,7 +21,6 @@ public class Program
             config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
             config.SnackbarConfiguration.MaxDisplayedSnackbars = 3;
         });
-        builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
         builder.Services.AddAuthorizationCore();
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
         builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();

@@ -1,26 +1,22 @@
-﻿using API.Interfaces;
-using AutoMapper;
+﻿using System;
+using System.Threading.Tasks;
+using API.Interfaces;
 using DataAccessLibrary.Entities;
 using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Pagination;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
 
 namespace API.Services;
 
-public class MemberService : IMemberService
+public sealed class MemberService : IMemberService
 {
     private readonly ILogger<MemberService> _logger;
-    private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
 
     public MemberService(ILogger<MemberService> logger,
-                         IUnitOfWork unitOfWork,
-                         IMapper mapper)
+                         IUnitOfWork unitOfWork)
     {
-        _mapper = mapper;
         _logger = logger;
         _unitOfWork = unitOfWork;
     }
@@ -83,7 +79,7 @@ public class MemberService : IMemberService
         try
         {
             AppUser appUser = await _unitOfWork.MemberRepository.GetMemberByUsernameAsync(username);
-            _mapper.Map(memberUpdate, appUser);
+            memberUpdate.ApplyTo(appUser);
             _unitOfWork.MemberRepository.UpdateMember(appUser);
 
             if (await _unitOfWork.CompleteAsync())

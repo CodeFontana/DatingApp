@@ -4,7 +4,6 @@ public partial class MemberEdit
 {
     [Inject] IMemberService MemberService { get; set; }
     [Inject] IMemberStateService MemberStateService { get; set; }
-    [Inject] IMapper Mapper { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
 
     private bool _showError = false;
@@ -23,7 +22,7 @@ public partial class MemberEdit
 
         if (result)
         {
-            Mapper.Map(MemberStateService.AppUser, _memberUpdate);
+            _memberUpdate = MemberUpdateModel.FromMemberModel(MemberStateService.Member);
         }
         else
         {

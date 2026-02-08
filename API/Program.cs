@@ -1,18 +1,30 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Mime;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.RateLimiting;
+using System.Threading.Tasks;
 using API.Filters;
 using API.Hubs;
 using API.Interfaces;
 using API.Middleware;
 using API.Services;
-using AspNetCoreRateLimit;
 using ConsoleLoggerLibrary;
 using DataAccessLibrary.Data;
 using DataAccessLibrary.Entities;
-using DataAccessLibrary.Helpers;
 using DataAccessLibrary.Interfaces;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.OpenApi;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,11 +32,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using Microsoft.OpenApi;
 
 namespace API;
 
@@ -49,39 +57,40 @@ public class Program
             .AddRoleValidator<RoleValidator<AppRole>>()
             .AddEntityFrameworkStores<DataContext>();
 
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                        .AddJwtBearer(options =>
+        builder.Services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new()
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = builder.Configuration.GetValue<string>("Authentication:JwtIssuer"),
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration.GetValue<string>("Authentication:JwtAudience"),
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.ASCII.GetBytes(
+                            builder.Configuration.GetValue<string>("Authentication:JwtSecurityKey"))),
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromSeconds(5)
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+
+                        if (string.IsNullOrWhiteSpace(accessToken) == false && path.StartsWithSegments("/hubs"))
                         {
-                            options.TokenValidationParameters = new()
-                            {
-                                ValidateIssuer = true,
-                                ValidIssuer = builder.Configuration.GetValue<string>("Authentication:JwtIssuer"),
-                                ValidateAudience = true,
-                                ValidAudience = builder.Configuration.GetValue<string>("Authentication:JwtAudience"),
-                                ValidateIssuerSigningKey = true,
-                                IssuerSigningKey = new SymmetricSecurityKey(
-                                    Encoding.ASCII.GetBytes(
-                                        builder.Configuration.GetValue<string>("Authentication:JwtSecurityKey"))),
-                                ValidateLifetime = true,
-                                ClockSkew = TimeSpan.FromMinutes(10)
-                            };
+                            context.Token = accessToken;
+                        }
 
-                            options.Events = new JwtBearerEvents
-                            {
-                                OnMessageReceived = context =>
-                                {
-                                    var accessToken = context.Request.Query["access_token"];
-                                    var path = context.HttpContext.Request.Path;
-
-                                    if (string.IsNullOrWhiteSpace(accessToken) == false && path.StartsWithSegments("/hubs"))
-                                    {
-                                        context.Token = accessToken;
-                                    }
-
-                                    return Task.CompletedTask;
-                                }
-                            };
-                        });
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
         builder.Services.AddAuthorization(config =>
         {
@@ -113,8 +122,6 @@ public class Program
         builder.Services.AddScoped<IMessageService, MessageService>();
         builder.Services.AddScoped<UserActivity>();
 
-        builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
-
         builder.Services.AddSignalR();
         builder.Services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
         builder.Services.AddSingleton<IPresenceTrackerService, PresenceTrackerService>();
@@ -124,6 +131,10 @@ public class Program
         builder.Services.AddControllers().AddJsonOptions(config =>
         {
             config.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
+        builder.Services.AddOpenApi(options =>
+        {
+            options.AddDocumentTransformer<JwtBearerSecuritySchemeTransformer>();
         });
         builder.Services.AddCors(policy =>
         {
@@ -138,59 +149,31 @@ public class Program
                        .AllowCredentials()
                        .SetIsOriginAllowed(isOriginAllowed => true));
         });
-        builder.Services.AddSwaggerGen(c =>
-        {
-            c.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "DatingApp API",
-                Version = "v1"
-            });
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                In = ParameterLocation.Header,
-                Description = "Specify JWT bearer token",
-                Name = "Authorization",
-                Type = SecuritySchemeType.ApiKey
-            });
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
-        });
-
-        builder.Services.AddApiVersioning(options =>
-        {
-            options.AssumeDefaultVersionWhenUnspecified = true;
-            options.DefaultApiVersion = new(1, 0);
-            options.ReportApiVersions = true;
-        });
-
-        builder.Services.AddVersionedApiExplorer(options =>
-        {
-            options.GroupNameFormat = "'v'VVV";
-            options.SubstituteApiVersionInUrl = true;
-        });
 
         builder.Services.AddHealthChecks()
                         .AddDbContextCheck<DataContext>("Database Health Check");
 
-        builder.Services.Configure<IpRateLimitOptions>(
-            builder.Configuration.GetSection("IpRateLimiting"));
-        builder.Services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-        builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
-        builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-        builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
-        builder.Services.AddInMemoryRateLimiting();
+        builder.Services.AddRateLimiter(options =>
+        {
+            options.AddFixedWindowLimiter("fixed", limiterOptions =>
+            {
+                limiterOptions.PermitLimit = 4;
+                limiterOptions.Window = TimeSpan.FromSeconds(12);
+                limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                limiterOptions.QueueLimit = 0;
+            });
+
+            options.OnRejected = (context, cancellationToken) =>
+            {
+                context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                context.HttpContext.Response.ContentType = MediaTypeNames.Text.Plain;
+                context.HttpContext.RequestServices.GetRequiredService<ILoggerFactory>()?
+                    .CreateLogger("Microsoft.AspNetCore.RateLimitingMiddleware")
+                    .LogWarning("OnRejected: {GetUserEndPoint}", GetUserEndPoint(context.HttpContext));
+                context.HttpContext.Response.WriteAsync("Rate limit exceeded. Please try again later.", cancellationToken: cancellationToken);
+                return new ValueTask();
+            };
+        });
 
         WebApplication app = builder.Build();
         await ApplyDbMigrations(app);
@@ -199,23 +182,37 @@ public class Program
 
         if (app.Environment.IsDevelopment())
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
+            app.MapOpenApi().AllowAnonymous();
+            app.UseSwaggerUI(options =>
+            {
+                // options.SwaggerEndpoint("/openapi/v2.json", "DatingApp v2");
+                options.SwaggerEndpoint("/openapi/v1.json", "DatingApp v1");
+                options.EnableTryItOutByDefault();
+                options.ConfigObject.AdditionalItems["syntaxHighlight"] = new Dictionary<string, object>
+                {
+                    ["activated"] = false
+                };
+            });
         }
 
         app.UseHttpsRedirection();
         app.UseCors("OpenCorsPolicy");
         app.UseCors("SignalRPolicy");
+        app.UseRateLimiter();
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseResponseCaching();
         app.MapControllers();
         app.MapHub<PresenceHub>("/hubs/presence");
         app.MapHub<MessageHub>("/hubs/message");
-        app.UseIpRateLimiting();
         app.MapHealthChecks("/health").AllowAnonymous();
         app.Run();
     }
+
+    static string GetUserEndPoint(HttpContext context) =>
+        $"User {context.User.Identity?.Name ?? "Anonymous"}, " +
+        $"Endpoint: {context.Request.Path}, " +
+        $"IP: {context.Connection.RemoteIpAddress}";
 
     public static async Task ApplyDbMigrations(WebApplication app)
     {
@@ -236,6 +233,43 @@ public class Program
             var logger = services.GetRequiredService<ILogger<Program>>();
             logger.LogError(ex, "An error occurred during migration.");
             Console.ReadKey();
+        }
+    }
+
+    internal sealed class JwtBearerSecuritySchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider) : IOpenApiDocumentTransformer
+    {
+        public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
+        {
+            IEnumerable<AuthenticationScheme> authenticationSchemes = await authenticationSchemeProvider.GetAllSchemesAsync();
+
+            if (authenticationSchemes.Any(authScheme => authScheme.Name == "Bearer"))
+            {
+                // Add the security scheme at the document level
+                Dictionary<string, IOpenApiSecurityScheme> securitySchemes = new()
+                {
+                    ["Bearer"] = new OpenApiSecurityScheme
+                    {
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "bearer",
+                        BearerFormat = "JWT",
+                        In = ParameterLocation.Header,
+                        Description = "JWT Authorization header using the Bearer scheme. Enter your token (without the 'Bearer ' prefix).",
+                    }
+                };
+                document.Components ??= new OpenApiComponents();
+                document.Components.SecuritySchemes = securitySchemes;
+
+                // Apply it as a requirement for all operations
+                foreach (KeyValuePair<HttpMethod, OpenApiOperation> operation in document.Paths.Values.SelectMany(path => path.Operations!))
+                {
+                    operation.Value.Security ??= [];
+                    operation.Value.Security.Add(new OpenApiSecurityRequirement
+                    {
+                        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+                    });
+                }
+            }
         }
     }
 }
