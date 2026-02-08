@@ -1,14 +1,14 @@
-﻿using API.Filters;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using API.Filters;
 using API.Interfaces;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace API.Controllers.v1;
 
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/v1/[controller]")]
 [ApiController]
 [ServiceFilter(typeof(UserActivity))]
 public class AccountsController : ControllerBase

@@ -1,14 +1,14 @@
-﻿using API.Interfaces;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using API.Interfaces;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace API.Controllers.v1;
 
 [ApiController]
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/v1/[controller]")]
 [Authorize]
 public class AdminController : ControllerBase
 {

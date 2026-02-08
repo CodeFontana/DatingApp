@@ -1,17 +1,17 @@
-﻿using API.Extensions;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
+using API.Extensions;
 using API.Filters;
 using API.Interfaces;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace API.Controllers.v1;
 
 [ApiController]
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/v1/[controller]")]
 [Authorize]
 [ServiceFilter(typeof(UserActivity))]
 public class LikesController : ControllerBase
