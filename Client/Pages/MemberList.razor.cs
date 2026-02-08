@@ -7,7 +7,7 @@ public partial class MemberList : IAsyncDisposable
     private PaginationModel _metaData;
     private bool _showError = false;
     private string _errorText;
-
+    private Breakpoint _breakpoint;
 
     [Inject] IMemberStateService MemberStateService { get; set; }
     [Inject] IMemberService MemberService { get; set; }
@@ -40,6 +40,38 @@ public partial class MemberList : IAsyncDisposable
             await LoadMembersAsync();
             StateHasChanged();
         }
+    }
+
+    private async Task HandleBreakpointChangedAsync(Breakpoint breakpoint)
+    {
+        if (breakpoint == _breakpoint)
+        {
+            return;
+        }
+
+        _breakpoint = breakpoint;
+
+        int newPageSize = breakpoint switch
+        {
+            Breakpoint.Xxl => 12,
+            Breakpoint.Xl => 12,
+            Breakpoint.Lg => 8,
+            Breakpoint.Md => 8,
+            Breakpoint.Sm => 6,
+            Breakpoint.Xs => 10,
+            _ => 8
+        };
+
+        if (_membersFilter.PageSize == newPageSize)
+        {
+            return;
+        }
+
+        _membersFilter.PageSize = newPageSize;
+        _membersFilter.PageNumber = 1;
+
+        await LoadMembersAsync();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task LoadMembersAsync()
