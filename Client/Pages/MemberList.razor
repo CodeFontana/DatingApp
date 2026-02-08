@@ -1,10 +1,12 @@
 ﻿@page "/members"
 @attribute [Authorize]
 
+<MudBreakpointProvider OnBreakpointChanged="HandleBreakpointChangedAsync" />
+
 <PageTitle>DatingApp - Members</PageTitle>
 
 <section>
-    <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-5">Your matches - @_metaData?.TotalCount found</MudText>
+    <MudText Typo="Typo.h3" Align="Align.Center">Your matches - @_metaData?.TotalCount found</MudText>
 
     <EditForm Model="@_membersFilter" OnValidSubmit="HandleFilterSubmitAsync">
         <DataAnnotationsValidator />
