@@ -32,8 +32,8 @@ public class LikesRepository : ILikesRepository
         }
 
         return await PaginationList<MemberModel>.CreateAsync(
-            users.ProjectTo<MemberModel>(_mapper.ConfigurationProvider)
-                     .AsNoTracking(),
+            users.Select(MemberModel.Projection)
+            .AsNoTracking(),
             likesParameters.PageNumber,
             likesParameters.PageSize);
     }
