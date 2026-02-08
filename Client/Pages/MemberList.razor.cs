@@ -7,7 +7,7 @@ public partial class MemberList : IAsyncDisposable
     private PaginationModel _metaData;
     private bool _showError = false;
     private string _errorText;
-    
+
 
     [Inject] IMemberStateService MemberStateService { get; set; }
     [Inject] IMemberService MemberService { get; set; }
@@ -30,6 +30,15 @@ public partial class MemberList : IAsyncDisposable
         if (_membersFilter.PageSize <= 0)
         {
             _membersFilter.PageSize = 8;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadMembersAsync();
+            StateHasChanged();
         }
     }
 
