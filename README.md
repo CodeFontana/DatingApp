@@ -15,8 +15,7 @@ This project is all about learning ASP.NET Core Web API, ASP.NET Core Blazor Web
   * User management and authentication with ASP.NET Core Identity with JWT Bearer Tokens
     * Generates JWT with user's roles and claims.
     * User authorization via role management and authorization policies
-  * Response Caching
-  * Response Sorting and Pagination
+  * Response Caching, Sorting & Pagination
   * API Versioning
   * OpenAPI specification with Swagger
     * Support for JWT Bearer Tokens
@@ -24,7 +23,7 @@ This project is all about learning ASP.NET Core Web API, ASP.NET Core Blazor Web
   * API health checks, including SQL database health check (https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
   * Exception Handling Middleware
   * User activity monitoring with Service Filters
-  * IP Rate Limiting (https://github.com/stefanprodan/AspNetCoreRateLimit)
+  * IP Rate Limiting
   * Logging with ConsoleLogger project (https://github.com/CodeFontana/ConsoleLogger)
   * Automated Database Migration with Seeding of demo data to get started
 * Client features
@@ -36,7 +35,6 @@ This project is all about learning ASP.NET Core Web API, ASP.NET Core Blazor Web
   * Automatic Loading Spinner during API requests (https://stackoverflow.com/questions/56604886/blazor-display-wait-or-spinner-on-api-call/69182425#69182425)
   * User presence using SignalR
   * User messaging and chat, also via SignalR
-  
 * Class Library / Entity Framework Core features
   * One to One, One to Many and Many to Many relationships between EF Core Entities
   * Data Annotations and Custom Attributes for Entity Models for avoiding common EF Core pitfalls in database design
