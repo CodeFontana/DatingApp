@@ -92,8 +92,6 @@ public partial class MemberDetail : IDisposable
         {
             return;
         }
-
-        panel.Expand();
     }
 
     private async Task HandleLikeToggleAsync()

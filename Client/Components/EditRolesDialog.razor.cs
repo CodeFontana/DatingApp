@@ -14,15 +14,11 @@ public partial class EditRolesDialog
 
     protected override void OnInitialized()
     {
-        MudDialog.Options.CloseButton = true;
-        MudDialog.Options.CloseOnEscapeKey = true;
-        MudDialog.Options.FullWidth = true;
-        MudDialog.SetOptions(MudDialog.Options);
+        // Options are configured by the dialog host when the dialog is shown.
     }
 
     protected override void OnParametersSet()
     {
-        MudDialog.SetTitle($"Edit roles for {User.Username}");
         _diffRoles = AvailableRoles.Except(User.Roles).ToList();
         base.OnParametersSet();
     }

@@ -21,7 +21,7 @@ public partial class MainLayout : IDisposable
     {
         string theme = await LocalStorage.GetItemAsync<string>("Theme");
 
-        if (string.IsNullOrWhiteSpace(theme) 
+        if (string.IsNullOrWhiteSpace(theme)
             || string.Equals(theme, "Dark", System.StringComparison.CurrentCultureIgnoreCase))
         {
             _currentTheme = darkTheme;
@@ -115,12 +115,12 @@ public partial class MainLayout : IDisposable
     {
         Typography = new()
         {
-            Default = new()
+            Default = new DefaultTypography()
             {
-                FontFamily = new[] { "system-ui", "-apple-system","Segoe UI", "Roboto", "Helvetica Neue", "Noto Sans", "Liberation Sans", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" }
+                FontFamily = new[] { "system-ui", "-apple-system", "Segoe UI", "Roboto", "Helvetica Neue", "Noto Sans", "Liberation Sans", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" }
             }
         },
-        Palette = new()
+        PaletteLight = new()
         {
             Black = "#000000FF",
             White = "#FFFFFFFF",
@@ -174,7 +174,7 @@ public partial class MainLayout : IDisposable
             ActionDisabledBackground = "#0000001E",
 
             Background = "#FFFFFFFF",
-            BackgroundGrey = "#F5F5F5FF",
+            BackgroundGray = "#F5F5F5FF",
 
             Surface = "#FFFFFFFF",
 
@@ -212,12 +212,12 @@ public partial class MainLayout : IDisposable
     {
         Typography = new()
         {
-            Default = new()
+            Default = new DefaultTypography()
             {
                 FontFamily = new[] { "system-ui", "-apple-system", "Segoe UI", "Roboto", "Helvetica Neue", "Noto Sans", "Liberation Sans", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" }
             }
         },
-        Palette = new()
+        PaletteDark = new()
         {
             Black = "#27272F",
             White = "#FFFFFFFF",
@@ -271,7 +271,7 @@ public partial class MainLayout : IDisposable
             ActionDisabledBackground = "rgba(255,255,255, 0.12)",
 
             Background = "#1A1A27FF",
-            BackgroundGrey = "#151521FF",
+            BackgroundGray = "#151521FF",
 
             Surface = "#1E1E2DFF",
 

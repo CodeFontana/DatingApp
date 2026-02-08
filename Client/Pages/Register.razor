@@ -20,12 +20,12 @@
                 <MudCardContent>
                     <div class="d-flex align-center">
                         <MudRadioGroup Class="mx-auto"
-                                       @bind-SelectedOption="_registerUser.Gender"
                                        T="string"
+                                       @bind-SelectedOption="_registerUser.Gender"
                                        Required="true"
                                        For="@(() => _registerUser.Gender)">
-                            <MudRadio Option="@("Female")">Female</MudRadio>
-                            <MudRadio Option="@("Male")">Male</MudRadio>
+                            <MudRadio T="string" Option="@("Female")">Female</MudRadio>
+                            <MudRadio T="string" Option="@("Male")">Male</MudRadio>
                         </MudRadioGroup>
                     </div>
                     <div class="d-flex align-center">

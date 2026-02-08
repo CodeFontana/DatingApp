@@ -8,11 +8,10 @@ public partial class Lists
     private string _pageTitle;
     private bool _showError = false;
     private string _errorText;
-    private Guid _subscriptionId;
+    
 
     [Inject] ILikesService LikesService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
-    [Inject] IBreakpointService BreakpointListener { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -30,55 +29,12 @@ public partial class Lists
             _pageTitle = "Members who I like";
         }
 
-        await LoadLikesAsync();
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
+        if (_likesFilter.PageSize <= 0)
         {
-            BreakpointServiceSubscribeResult subscriptionResult = await BreakpointListener.Subscribe(async (breakpoint) =>
-            {
-                Console.WriteLine($"Current Breakpoint: {breakpoint}");
-
-                if (breakpoint == Breakpoint.Xxl)
-                {
-                    _likesFilter.PageSize = 12;
-                }
-                else if (breakpoint == Breakpoint.Xl)
-                {
-                    _likesFilter.PageSize = 12;
-                }
-                else if (breakpoint == Breakpoint.Lg)
-                {
-                    _likesFilter.PageSize = 8;
-                }
-                else if (breakpoint == Breakpoint.Md)
-                {
-                    _likesFilter.PageSize = 8;
-                }
-                else if (breakpoint == Breakpoint.Sm)
-                {
-                    _likesFilter.PageSize = 6;
-                }
-                else if (breakpoint == Breakpoint.Xs)
-                {
-                    _likesFilter.PageSize = 10;
-                }
-
-                await LoadLikesAsync();
-                await InvokeAsync(StateHasChanged);
-            }, new ResizeOptions
-            {
-                ReportRate = 250,
-                NotifyOnBreakpointOnly = true,
-            });
-
-            _subscriptionId = subscriptionResult.SubscriptionId;
-            StateHasChanged();
+            _likesFilter.PageSize = 8;
         }
 
-        await base.OnAfterRenderAsync(firstRender);
+        await LoadLikesAsync();
     }
 
     private async Task LoadLikesAsync()

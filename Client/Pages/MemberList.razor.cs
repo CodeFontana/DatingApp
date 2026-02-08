@@ -7,12 +7,11 @@ public partial class MemberList : IAsyncDisposable
     private PaginationModel _metaData;
     private bool _showError = false;
     private string _errorText;
-    private Guid _subscriptionId;
+    
 
     [Inject] IMemberStateService MemberStateService { get; set; }
     [Inject] IMemberService MemberService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
-    [Inject] IBreakpointService BreakpointListener { get; set; }
 
     protected override void OnInitialized()
     {
@@ -27,62 +26,11 @@ public partial class MemberList : IAsyncDisposable
                 _membersFilter.Gender = "female";
             }
         }
-    }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            BreakpointServiceSubscribeResult subscriptionResult = await BreakpointListener.Subscribe(async (breakpoint) =>
-            {
-                await ScalePageSize(breakpoint);
-            }, new ResizeOptions
-            {
-                ReportRate = 250,
-                NotifyOnBreakpointOnly = true,
-            });
-
-
-            Breakpoint start = subscriptionResult.Breakpoint;
-            await ScalePageSize(start);
-            _subscriptionId = subscriptionResult.SubscriptionId;
-            StateHasChanged();
-        }
-
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
-    private async Task ScalePageSize(Breakpoint breakpoint)
-    {
-        Console.WriteLine($"Current Breakpoint: {breakpoint}");
-
-        if (breakpoint == Breakpoint.Xxl)
-        {
-            _membersFilter.PageSize = 12;
-        }
-        else if (breakpoint == Breakpoint.Xl)
-        {
-            _membersFilter.PageSize = 12;
-        }
-        else if (breakpoint == Breakpoint.Lg)
+        if (_membersFilter.PageSize <= 0)
         {
             _membersFilter.PageSize = 8;
         }
-        else if (breakpoint == Breakpoint.Md)
-        {
-            _membersFilter.PageSize = 8;
-        }
-        else if (breakpoint == Breakpoint.Sm)
-        {
-            _membersFilter.PageSize = 6;
-        }
-        else if (breakpoint == Breakpoint.Xs)
-        {
-            _membersFilter.PageSize = 10;
-        }
-
-        await LoadMembersAsync();
-        await InvokeAsync(StateHasChanged);
     }
 
     private async Task LoadMembersAsync()
@@ -149,5 +97,5 @@ public partial class MemberList : IAsyncDisposable
         await LoadMembersAsync();
     }
 
-    public async ValueTask DisposeAsync() => await BreakpointListener.Unsubscribe(_subscriptionId);
+    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 }

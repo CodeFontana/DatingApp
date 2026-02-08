@@ -56,7 +56,7 @@ public class PresenceService : IAsyncDisposable, IPresenceService
 
                     _snackbar.Add($"New Message from {username}!", Severity.Info, config =>
                     {
-                        config.Onclick = snackbar =>
+                         config.OnClick = snackbar =>
                         {
                             _navman.NavigateTo($"/member/{username}/messages");
                             return Task.CompletedTask;

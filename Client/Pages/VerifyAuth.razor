@@ -20,10 +20,10 @@
                     </MudItem>
 
                     <MudItem xs="12" Class="d-flex justify-center">
-                        <MudList>
-                            <MudListItem Text="@($"Admin Role: {AuthContext.User.IsInRole("Administrator")}")" />
-                            <MudListItem Text="@($"Moderator Role: {AuthContext.User.IsInRole("Moderator")}")" />
-                            <MudListItem Text="@($"Member Role: {AuthContext.User.IsInRole("Member")}")" />
+                        <MudList T="string">
+                            <MudListItem T="string" Text="@($"Admin Role: {AuthContext.User.IsInRole("Administrator")}")" />
+                            <MudListItem T="string" Text="@($"Moderator Role: {AuthContext.User.IsInRole("Moderator")}")" />
+                            <MudListItem T="string" Text="@($"Member Role: {AuthContext.User.IsInRole("Member")}")" />
                         </MudList>
                     </MudItem>
                 </Authorized>
