@@ -14,8 +14,9 @@
 }
 
 .spin-wave {
-    width: 200px;
-    height: 160px;
+    margin: 10px auto;
+    width: 120px;
+    height: 120px;
     text-align: center;
     font-size: 10px;
 }
