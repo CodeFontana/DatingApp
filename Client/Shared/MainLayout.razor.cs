@@ -120,7 +120,7 @@ public partial class MainLayout : IDisposable
                 FontFamily = new[] { "system-ui", "-apple-system", "Segoe UI", "Roboto", "Helvetica Neue", "Noto Sans", "Liberation Sans", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" }
             }
         },
-        PaletteLight = new()
+        PaletteLight = new PaletteLight()
         {
             Black = "#000000FF",
             White = "#FFFFFFFF",
@@ -217,7 +217,7 @@ public partial class MainLayout : IDisposable
                 FontFamily = new[] { "system-ui", "-apple-system", "Segoe UI", "Roboto", "Helvetica Neue", "Noto Sans", "Liberation Sans", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" }
             }
         },
-        PaletteDark = new()
+        PaletteDark = new PaletteDark()
         {
             Black = "#27272F",
             White = "#FFFFFFFF",

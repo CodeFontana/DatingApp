@@ -60,20 +60,20 @@ public partial class Admin
         _loadingUsers = false;
     }
 
-    private void HandleEditRoles(UserWithRolesModel selectedUser)
+    private async Task HandleEditRoles(UserWithRolesModel selectedUser)
     {
         if (_roles is null || _roles.Count == 0)
         {
             Snackbar.Add("Unable to load user roles from database, unable to edit roles at this time", Severity.Error);
         }
-        
+
         var parameters = new DialogParameters { ["User"]=selectedUser, ["AvailableRoles"]=_roles };
-        DialogService.Show<EditRolesDialog>($"Edit roles for {selectedUser.Username}", parameters);
+        await DialogService.ShowAsync<EditRolesDialog>($"Edit roles for {selectedUser.Username}", parameters);
     }
 
     private async Task HandleDeleteUser(string username)
     {
-        bool? lastChance = await DialogService.ShowMessageBox("Warning", "Deleting can not be undone!", yesText: "Delete!", cancelText: "Cancel");
+        bool? lastChance = await DialogService.ShowMessageBoxAsync("Warning", "Deleting can not be undone!", yesText: "Delete!", cancelText: "Cancel");
 
         if (lastChance == null)
         {

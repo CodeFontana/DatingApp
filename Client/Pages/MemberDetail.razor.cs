@@ -47,43 +47,45 @@ public partial class MemberDetail : IDisposable
         await base.OnParametersSetAsync();
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         switch (StartTab)
         {
             case "about":
-                ActivateTab(_aboutTab);
+                await ActivateTab(_aboutTab);
                 ActivatePanel(_aboutPanel);
                 break;
 
             case "interests":
-                ActivateTab(_interestsTab);
+                await ActivateTab(_interestsTab);
                 ActivatePanel(_interestsPanel);
                 break;
 
             case "photos":
-                ActivateTab(_photosTab);
+                await ActivateTab(_photosTab);
                 ActivatePanel(_photosPanel);
                 break;
 
             case "messages":
-                ActivateTab(_messagesTab);
+                await ActivateTab(_messagesTab);
                 ActivatePanel(_messagesPanel);
                 break;
 
             default:
                 break;
         }
+
+        await base.OnAfterRenderAsync(firstRender);
     }
 
-    private void ActivateTab(MudTabPanel panel)
+    private async Task ActivateTab(MudTabPanel panel)
     {
         if (panel == null)
         {
             return;
         }
-        
-        _memberDetailTabs.ActivatePanel(panel);
+
+        await _memberDetailTabs.ActivatePanelAsync(panel);
     }
 
     private void ActivatePanel(MudExpansionPanel panel)
