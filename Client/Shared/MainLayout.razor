@@ -46,7 +46,7 @@
                 {
                     <MudMenu AnchorOrigin="Origin.BottomLeft">
                         <ActivatorContent>
-                            <MudAvatar>
+                            <MudAvatar Style="cursor: pointer;" @onclick="@context.ToggleAsync">
                                 <MudImage Src="@MemberStateService.MainPhoto" />
                             </MudAvatar>
                         </ActivatorContent>
