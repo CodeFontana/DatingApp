@@ -12,7 +12,6 @@ global using System.Threading.Tasks;
 global using Blazored.LocalStorage;
 global using Client.Authentication;
 global using Client.Helpers;
-global using Client.Interfaces;
 global using Client.Services;
 global using DataAccessLibrary.Models;
 global using DataAccessLibrary.Pagination;

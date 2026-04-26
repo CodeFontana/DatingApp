@@ -1,0 +1,25 @@
+﻿@using Client.Features.Authentication.Components
+@using Client.Features.Home.Pages
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="typeof(App).Assembly" NotFoundPage="typeof(NotFound)">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)" Context="AuthContext">
+                <Authorizing>
+                    <MudText Typo="Typo.h4" Align="Align.Center">Please wait...</MudText>
+                </Authorizing>
+                <NotAuthorized>
+                    @if (AuthContext.User.Identity?.IsAuthenticated == false)
+                    {
+                        <Redirect Url="/" />
+                    }
+                    else
+                    {
+                        <NotAuthorized />
+                    }
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="routeData" Selector="h1" />
+        </Found>
+    </Router>
+</CascadingAuthenticationState>
