@@ -1,190 +1,303 @@
 @inherits LayoutComponentBase
+@using Client.Features.Theme
 
-<MudThemeProvider Theme="_currentTheme" />
+<MudThemeProvider Theme="AppTheme.Default" @bind-IsDarkMode="_isDarkMode" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 <Spinner />
 
-<MudLayout Style="min-width: 350px;">
-    <MudAppBar Elevation="0" Dense="true" Color="@(_currentTheme == lightTheme ? Color.Dark : Color.Inherit)" Style="min-width: 350px;">
+<MudLayout Class="app-layout" Style="min-width: 350px;">
 
-        @if (_drawerOpen == false)
-        {
-            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="() => _drawerOpen = !_drawerOpen" />
-            <MudText Typo="Typo.h6" Style="white-space: nowrap">Dating App</MudText>
-        }
+    <MudAppBar Elevation="0"
+               Dense="true"
+               Color="Color.Surface"
+               Class="app-appbar"
+               Style="border-bottom: 1px solid var(--mud-palette-divider);">
+
+        <MudIconButton Icon="@Icons.Material.Rounded.Menu"
+                       Color="Color.Default"
+                       Edge="Edge.Start"
+                       OnClick="ToggleDrawer"
+                       Class="mr-1" />
+
+        <MudLink Href="/"
+                 Underline="Underline.None"
+                 Color="Color.Inherit"
+                 Class="app-brand">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Rounded.Favorite"
+                         Color="Color.Primary"
+                         Size="Size.Medium" />
+                <MudText Typo="Typo.subtitle1"
+                         Class="app-brand-text"
+                         Style="white-space: nowrap;">
+                    Dating App
+                </MudText>
+            </MudStack>
+        </MudLink>
 
         <AuthorizeView Context="AppBarContext">
             <Authorized>
+                <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                    <MudStack Row="true"
+                              Spacing="1"
+                              AlignItems="AlignItems.Center"
+                              Class="app-appbar-nav ml-4">
+                        <MudButton Href="/members"
+                                   Variant="Variant.Text"
+                                   Color="Color.Inherit"
+                                   StartIcon="@Icons.Material.Rounded.People">
+                            Members
+                        </MudButton>
+                        <MudButton Href="/lists"
+                                   Variant="Variant.Text"
+                                   Color="Color.Inherit"
+                                   StartIcon="@Icons.Material.Rounded.FormatListBulleted">
+                            Lists
+                        </MudButton>
+                        <MudButton Href="/messages"
+                                   Variant="Variant.Text"
+                                   Color="Color.Inherit"
+                                   StartIcon="@Icons.Material.Rounded.ChatBubbleOutline">
+                            Messages
+                        </MudButton>
+                        <AuthorizeView Context="AdminContext" Roles="Administrator,Moderator">
+                            <MudButton Href="/admin"
+                                       Variant="Variant.Text"
+                                       Color="Color.Inherit"
+                                       StartIcon="@Icons.Material.Rounded.Shield">
+                                Admin
+                            </MudButton>
+                        </AuthorizeView>
+                    </MudStack>
+                </MudHidden>
+            </Authorized>
+        </AuthorizeView>
 
-                <MudContainer Class="d-none d-sm-flex justify-start" MaxWidth="MaxWidth.Small">
+        <MudSpacer />
 
-                    <MudNavLink Href="/members" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.People" Style="width: unset;">
-                        <MudText Typo="Typo.body1">Members</MudText>
-                    </MudNavLink>
+        <MudTooltip Text="@_themeTooltip" Arrow="true" Placement="Placement.Bottom">
+            <MudIconButton Icon="@_themeIcon"
+                           Color="Color.Default"
+                           OnClick="ToggleThemeAsync" />
+        </MudTooltip>
 
-                    <MudNavLink Href="/lists" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.List" Style="width: unset;">
-                        <MudText Typo="Typo.body1">Lists</MudText>
-                    </MudNavLink>
-
-                    <MudNavLink Href="/messages" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Message" Style="width: unset;">
-                        <MudText Typo="Typo.body1">Messages</MudText>
-                    </MudNavLink>
-
-                    <AuthorizeView Context="AdminContext" Roles="Administrator,Moderator">
-                        <MudNavLink Href="/admin" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Shield" Style="width: unset;">
-                            <MudText Typo="Typo.body1">Admin</MudText>
-                        </MudNavLink>
-                    </AuthorizeView>
-
-                </MudContainer>
-
-                <MudSpacer />
-
+        <AuthorizeView Context="AccountContext">
+            <Authorized>
                 @if (MemberStateService.Member is not null)
                 {
-                    <MudMenu AnchorOrigin="Origin.BottomLeft">
+                    <MudMenu AnchorOrigin="Origin.BottomRight"
+                             TransformOrigin="Origin.TopRight"
+                             Dense="true">
                         <ActivatorContent>
-                            <MudAvatar Style="cursor: pointer;" @onclick="@context.ToggleAsync">
-                                <MudImage Src="@MemberStateService.MainPhoto" />
-                            </MudAvatar>
+                            <MudTooltip Text="Account" Arrow="true" Placement="Placement.Bottom">
+                                <MudAvatar Style="cursor: pointer;"
+                                           Class="ml-2"
+                                           Size="Size.Small"
+                                           @onclick="@(async e => await context.ToggleAsync(e))">
+                                    <MudImage Src="@MemberStateService.MainPhoto" />
+                                </MudAvatar>
+                            </MudTooltip>
                         </ActivatorContent>
                         <ChildContent>
-                            <MudMenuItem Class="px-0 py-0">
-                                <MudNavLink Href="/member/edit" Match="NavLinkMatch.All" Style="white-space: nowrap">
-                                    <strong>Edit Profile</strong>
-                                </MudNavLink>
-                            </MudMenuItem>
+                            <MudStack Spacing="0" Class="px-4 py-2">
+                                <MudText Typo="Typo.subtitle2">
+                                    @(MemberStateService.Member.KnownAs ?? AccountContext.User.Identity?.Name ?? "Signed in")
+                                </MudText>
+                                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary);">
+                                    @AccountContext.User.Identity?.Name
+                                </MudText>
+                            </MudStack>
                             <MudDivider />
-                            <MudMenuItem Class="px-0 py-0">
-                                <MudNavLink @onclick="() => HandleLogoutAsync()">
-                                    <strong>Logout</strong>
-                                </MudNavLink>
+                            <MudMenuItem Icon="@Icons.Material.Rounded.Edit"
+                                         Href="/member/edit">
+                                Edit profile
+                            </MudMenuItem>
+                            <MudMenuItem Icon="@Icons.Material.Rounded.Logout"
+                                         OnClick="HandleLogoutAsync">
+                                Logout
                             </MudMenuItem>
                         </ChildContent>
                     </MudMenu>
                 }
             </Authorized>
             <NotAuthorized>
-
-                <MudSpacer />
-
-                <EditForm class="d-none d-md-flex align-center" Model="@_loginUser" OnValidSubmit="HandleLoginAsync">
-                    <MudTextField Class="d-inline-flex mx-2"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense"
-                                  Label="Username"
-                                  @bind-Value="_loginUser.Username"
-                                  Adornment="Adornment.End"
-                                  AdornmentIcon="@Icons.Material.Filled.Person"
-                                  AdornmentAriaLabel="Username"
-                                  Style=@(_currentTheme == lightTheme ? "color: #495057; background: #FFFFFF; border-radius: .25rem;" : "") />
-                    <MudTextField Class="d-inline-flex mx-2"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" Label="Password"
-                                  InputType="@_passwordInput"
-                                  @bind-Value="_loginUser.Password"
-                                  Adornment="Adornment.End"
-                                  AdornmentIcon="@_passwordInputIcon"
-                                  OnAdornmentClick="ToggleShowPassword"
-                                  AdornmentAriaLabel="Show Password"
-                                  Style=@(_currentTheme == lightTheme ? "color: #495057; background: #FFFFFF; border-radius: .25rem;" : "") />
-                    <MudButton Class="d-inline-flex mx-2"
-                               Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               ButtonType="ButtonType.Submit"
-                               Size="Size.Medium"
-                               StartIcon="@Icons.Material.Filled.Login">
-                        Login
-                    </MudButton>
-                </EditForm>
-
+                <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                    <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center" Class="ml-2">
+                        <MudButton Variant="Variant.Text"
+                                   Color="Color.Inherit"
+                                   StartIcon="@Icons.Material.Rounded.Login"
+                                   Href="/login">
+                            Sign in
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Rounded.PersonAdd"
+                                   Href="/register">
+                            Create account
+                        </MudButton>
+                    </MudStack>
+                </MudHidden>
+                <MudHidden Breakpoint="Breakpoint.MdAndUp">
+                    <MudIconButton Icon="@Icons.Material.Rounded.Login"
+                                   Color="Color.Default"
+                                   Href="/login" />
+                </MudHidden>
             </NotAuthorized>
         </AuthorizeView>
 
-        @if (_currentTheme == lightTheme)
-        {
-            <MudButton OnClick="@((e) => ToggleThemeAsync())">
-                <MudIcon Icon="@Icons.Material.Filled.DarkMode" Color="Color.Default"></MudIcon>
-            </MudButton>
-        }
-        else
-        {
-            <MudButton OnClick="@((e) => ToggleThemeAsync())">
-                <MudIcon Icon="@Icons.Material.Filled.LightMode"></MudIcon>
-            </MudButton>
-        }
     </MudAppBar>
 
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Color="@(_currentTheme == lightTheme ? Color.Dark : Color.Dark)">
-        <MudDrawerHeader Class="d-flex align-center" Style="padding: 0px 12px; min-height: 32px;">
-            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="() => _drawerOpen = !_drawerOpen" />
-            <MudText Typo="Typo.h6" Style="white-space: nowrap">Dating App</MudText>
+    <MudDrawer @bind-Open="_drawerOpen"
+               Elevation="0"
+               Variant="DrawerVariant.Responsive"
+               ClipMode="DrawerClipMode.Never"
+               Class="app-drawer">
+
+        <MudDrawerHeader Class="app-drawer-header" Style="padding: 1.25rem 1.25rem 1rem;">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudAvatar Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled">
+                    <MudIcon Icon="@Icons.Material.Rounded.Favorite" Size="Size.Small" />
+                </MudAvatar>
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.subtitle2"
+                             Style="color: var(--mud-palette-drawer-text); font-weight: 600;">
+                        Dating App
+                    </MudText>
+                    <MudText Typo="Typo.caption"
+                             Style="color: var(--mud-palette-drawer-icon);">
+                        @_environmentLabel
+                    </MudText>
+                </MudStack>
+            </MudStack>
         </MudDrawerHeader>
-        <MudDrawerContainer>
+
+        <MudDivider Class="mx-4 app-drawer-divider" />
+
+        <div class="app-drawer-nav">
+
+            <MudText Typo="Typo.overline"
+                     Class="px-6 pt-4 pb-2 app-drawer-section">
+                Navigation
+            </MudText>
+
             <AuthorizeView Context="DrawerContext">
 
                 <Authorized>
-
-                    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
-                        <MudText Typo="Typo.body1">Home</MudText>
-                    </MudNavLink>
-
-                    <MudNavLink Href="/members" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.People">
-                        <MudText Typo="Typo.body1">Members</MudText>
-                    </MudNavLink>
-
-                    <MudNavLink Href="/lists" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.List">
-                        <MudText Typo="Typo.body1">Lists</MudText>
-                    </MudNavLink>
-
-                    <MudNavLink Href="/messages" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Message">
-                        <MudText Typo="Typo.body1">Messages</MudText>
-                    </MudNavLink>
-
-                    <AuthorizeView Context="AdminContext" Roles="Administrator,Moderator">
-                        <MudNavLink Href="/admin" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Shield">
-                            <MudText Typo="Typo.body1">Admin</MudText>
+                    <MudNavMenu Class="px-2">
+                        <MudNavLink Href="/"
+                                    Match="NavLinkMatch.All"
+                                    Icon="@Icons.Material.Rounded.Home"
+                                    IconColor="Color.Inherit">
+                            Home
                         </MudNavLink>
-                    </AuthorizeView>
+                        <MudNavLink Href="/members"
+                                    Match="NavLinkMatch.All"
+                                    Icon="@Icons.Material.Rounded.People"
+                                    IconColor="Color.Inherit">
+                            Members
+                        </MudNavLink>
+                        <MudNavLink Href="/lists"
+                                    Match="NavLinkMatch.All"
+                                    Icon="@Icons.Material.Rounded.FormatListBulleted"
+                                    IconColor="Color.Inherit">
+                            Lists
+                        </MudNavLink>
+                        <MudNavLink Href="/messages"
+                                    Match="NavLinkMatch.All"
+                                    Icon="@Icons.Material.Rounded.ChatBubbleOutline"
+                                    IconColor="Color.Inherit">
+                            Messages
+                        </MudNavLink>
+                        <AuthorizeView Context="AdminContext" Roles="Administrator,Moderator">
+                            <MudNavLink Href="/admin"
+                                        Match="NavLinkMatch.All"
+                                        Icon="@Icons.Material.Rounded.Shield"
+                                        IconColor="Color.Inherit">
+                                Admin
+                            </MudNavLink>
+                        </AuthorizeView>
+                    </MudNavMenu>
 
+                    <MudText Typo="Typo.overline"
+                             Class="px-6 pt-4 pb-2 app-drawer-section">
+                        Account
+                    </MudText>
+                    <MudNavMenu Class="px-2">
+                        <MudNavLink Href="/member/edit"
+                                    Match="NavLinkMatch.All"
+                                    Icon="@Icons.Material.Rounded.Edit"
+                                    IconColor="Color.Inherit">
+                            Edit profile
+                        </MudNavLink>
+                        <MudNavLink OnClick="HandleLogoutAsync"
+                                    Icon="@Icons.Material.Rounded.Logout"
+                                    IconColor="Color.Inherit">
+                            Logout
+                        </MudNavLink>
+                    </MudNavMenu>
                 </Authorized>
 
                 <NotAuthorized>
+                    <MudNavMenu Class="px-2">
+                        <MudNavLink Href="/"
+                                    Match="NavLinkMatch.All"
+                                    Icon="@Icons.Material.Rounded.Home"
+                                    IconColor="Color.Inherit">
+                            Home
+                        </MudNavLink>
+                    </MudNavMenu>
 
-                    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
-                        <MudText Typo="Typo.body1">Home</MudText>
-                    </MudNavLink>
-
-                    <MudNavLink Href="/register" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.EditNote">
-                        <MudText Typo="Typo.body1">Register</MudText>
-                    </MudNavLink>
-
-                    <MudNavLink Href="/login" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Login">
-                        <MudText Typo="Typo.body1">Login</MudText>
-                    </MudNavLink>
-
+                    <MudText Typo="Typo.overline"
+                             Class="px-6 pt-4 pb-2 app-drawer-section">
+                        Account
+                    </MudText>
+                    <MudNavMenu Class="px-2">
+                        <MudNavLink Href="/login"
+                                    Match="NavLinkMatch.All"
+                                    Icon="@Icons.Material.Rounded.Login"
+                                    IconColor="Color.Inherit">
+                            Sign in
+                        </MudNavLink>
+                        <MudNavLink Href="/register"
+                                    Match="NavLinkMatch.All"
+                                    Icon="@Icons.Material.Rounded.PersonAdd"
+                                    IconColor="Color.Inherit">
+                            Create account
+                        </MudNavLink>
+                    </MudNavMenu>
                 </NotAuthorized>
 
             </AuthorizeView>
 
             @if (HostEnv.IsDevelopment())
             {
-                <MudNavLink Href="/verifyauth" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Key">
-                    <MudText Typo="Typo.body1">Verify Authentication</MudText>
-                </MudNavLink>
-
-                <MudNavLink Href="/theme" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ColorLens">
-                    <MudText Typo="Typo.body1">Color Theme</MudText>
-                </MudNavLink>
+                <MudText Typo="Typo.overline"
+                         Class="px-6 pt-4 pb-2 app-drawer-section">
+                    Developer
+                </MudText>
+                <MudNavMenu Class="px-2">
+                    <MudNavLink Href="/verifyauth"
+                                Match="NavLinkMatch.All"
+                                Icon="@Icons.Material.Rounded.Lock"
+                                IconColor="Color.Inherit">
+                        Verify auth
+                    </MudNavLink>
+                    <MudNavLink Href="/theme"
+                                Match="NavLinkMatch.All"
+                                Icon="@Icons.Material.Rounded.Palette"
+                                IconColor="Color.Inherit">
+                        Theme
+                    </MudNavLink>
+                </MudNavMenu>
             }
+        </div>
 
-        </MudDrawerContainer>
     </MudDrawer>
 
     <MudMainContent>
-        <MudContainer Class="my-0" MaxWidth="MaxWidth.False">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="py-6 px-4 px-sm-6">
             @Body
         </MudContainer>
     </MudMainContent>

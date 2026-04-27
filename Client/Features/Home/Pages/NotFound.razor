@@ -2,12 +2,32 @@
 @layout MainLayout
 @inject NavigationManager Nav
 
-<PageTitle>DatingApp - Not Found</PageTitle>
+<PageTitle>Dating App - Not Found</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge">
-    <MudText Align="Align.Center" Typo="Typo.h3">Sorry, there's nothing at this address.</MudText>
-    <MudDivider DividerType="DividerType.Middle" Class="my-5"/>
-    <MudButton Class="d-flex mx-auto" Variant="Variant.Filled" Color="Color.Primary" @onclick="HandleClick">Go Home</MudButton>
+<MudContainer MaxWidth="MaxWidth.Small" Class="py-8">
+    <MudPaper Elevation="0" Class="auth-surface pa-8">
+        <MudStack Spacing="4" AlignItems="AlignItems.Center">
+            <MudAvatar Color="Color.Secondary" Variant="Variant.Filled" Size="Size.Large">
+                <MudIcon Icon="@Icons.Material.Rounded.SearchOff" />
+            </MudAvatar>
+            <MudText Typo="Typo.h4" Align="Align.Center" Style="font-weight: 700;">
+                Nothing here
+            </MudText>
+            <MudText Typo="Typo.body1"
+                     Align="Align.Center"
+                     Style="color: var(--mud-palette-text-secondary); max-width: 50ch;">
+                Sorry, there's nothing at this address. The page may have moved, or
+                you may have followed a stale link.
+            </MudText>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       StartIcon="@Icons.Material.Rounded.Home"
+                       OnClick="HandleClick">
+                Go home
+            </MudButton>
+        </MudStack>
+    </MudPaper>
 </MudContainer>
 
 @code {

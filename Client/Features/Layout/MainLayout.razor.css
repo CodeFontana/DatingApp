@@ -1,0 +1,72 @@
+/* Brand link in the AppBar should look like a brand, not a default link. */
+::deep .app-brand {
+    color: var(--mud-palette-text-primary);
+}
+
+::deep .app-brand:hover {
+    text-decoration: none;
+    opacity: 0.85;
+}
+
+::deep .app-brand-text {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+/* Top-level nav buttons in the AppBar pick up text-secondary tone so they
+   don't shout, but the active page is highlighted via .mud-nav-link-active
+   rules in the global app.css. */
+::deep .app-appbar-nav .mud-button-text {
+    color: var(--mud-palette-text-secondary);
+    text-transform: none;
+    font-weight: 500;
+}
+
+::deep .app-appbar-nav .mud-button-text:hover {
+    color: var(--mud-palette-text-primary);
+    background-color: color-mix(in srgb, var(--mud-palette-primary) 10%, transparent);
+}
+
+/* Drawer chrome: theme-aware so light mode is light and dark mode is GitHub
+   Dimmed; keeps the navigation pinned to the top, prevents horizontal scroll. */
+::deep .app-drawer,
+::deep .app-drawer .mud-drawer-content {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+::deep .app-drawer {
+    border-right: 1px solid var(--mud-palette-divider);
+}
+
+::deep .app-drawer-header {
+    flex: 0 0 auto;
+}
+
+::deep .app-drawer-divider {
+    border-color: var(--mud-palette-divider) !important;
+    flex: 0 0 auto;
+}
+
+::deep .app-drawer-nav {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 1rem;
+}
+
+::deep .app-drawer-section {
+    color: var(--mud-palette-drawer-icon);
+    letter-spacing: 0.12em;
+}
+
+/* Keep nav link labels from wrapping or causing a horizontal scrollbar. */
+::deep .app-drawer .mud-nav-link,
+::deep .app-drawer .mud-navmenu .mud-nav-link {
+    width: auto;
+    min-width: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

@@ -1,59 +1,82 @@
 ﻿@page "/login"
 
-<PageTitle>DatingApp - Login</PageTitle>
+<PageTitle>Dating App - Sign in</PageTitle>
 
-<section>
-    <MudContainer MaxWidth="MaxWidth.ExtraSmall">
-        <EditForm Model="@_loginUser" OnValidSubmit="OnLoginAsync">
-            <DataAnnotationsValidator />
-            <MudCard Elevation="5">
-                <MudCardHeader>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.h3" Align="Align.Center">Member Login</MudText>
-                    </CardHeaderContent>
-                </MudCardHeader>
-                <MudDivider DividerType="DividerType.Middle" />
-                <MudCardContent>
+<MudContainer MaxWidth="MaxWidth.Small" Class="py-4">
+    <EditForm Model="@_loginUser" OnValidSubmit="OnLoginAsync">
+        <DataAnnotationsValidator />
+
+        <MudPaper Elevation="0" Class="auth-surface pa-6 pa-sm-8">
+            <MudStack Spacing="4">
+
+                <MudStack Spacing="1" AlignItems="AlignItems.Center">
+                    <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Size="Size.Large">
+                        <MudIcon Icon="@Icons.Material.Rounded.Login" />
+                    </MudAvatar>
+                    <MudText Typo="Typo.h4" Align="Align.Center" Style="font-weight: 700;">
+                        Welcome back
+                    </MudText>
+                    <MudText Typo="Typo.body2"
+                             Align="Align.Center"
+                             Style="color: var(--mud-palette-text-secondary);">
+                        Sign in to view your matches and messages.
+                    </MudText>
+                </MudStack>
+
+                <MudDivider />
+
+                <MudStack Spacing="3">
                     <MudTextField Label="Username"
-                                  Class="mt-3"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
                                   @bind-Value="_loginUser.Username"
                                   For="@(() => _loginUser.Username)"
                                   Adornment="Adornment.End"
-                                  AdornmentIcon="@Icons.Material.Filled.Person"
+                                  AdornmentIcon="@Icons.Material.Rounded.Person"
                                   AdornmentAriaLabel="Username" />
+
                     <MudTextField Label="Password"
-                                  Class="mt-3"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
                                   @bind-Value="_loginUser.Password"
                                   For="@(() => _loginUser.Password)"
                                   InputType="@_passwordInput"
                                   Adornment="Adornment.End"
                                   AdornmentIcon="@_passwordInputIcon"
                                   OnAdornmentClick="ToggleShowPassword"
-                                  AdornmentAriaLabel="Show Password" />
-                </MudCardContent>
-                <MudCardActions Class="d-flex justify-center mt-5">
-                    <MudButton Class="mx-2"
-                               ButtonType="ButtonType.Submit"
-                               Size="Size.Large"
-                               Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.Login">
-                        Login
-                    </MudButton>
-                    <MudButton Class="mx-2"
-                               Size="Size.Large"
-                               Variant="Variant.Filled"
-                               Color="Color.Tertiary"
-                               StartIcon="@Icons.Material.Filled.EditNote"
-                               OnClick="OnRegister">
-                        Register
-                    </MudButton>
-                </MudCardActions>
+                                  AdornmentAriaLabel="Show password" />
+                </MudStack>
+
                 @if (_showError)
                 {
-                    <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+                    <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Dense="true">
+                        @_errorText
+                    </MudAlert>
                 }
-            </MudCard>
-        </EditForm>
-    </MudContainer>
-</section>
+
+                <MudButton ButtonType="ButtonType.Submit"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           FullWidth="true"
+                           StartIcon="@Icons.Material.Rounded.Login">
+                    Sign in
+                </MudButton>
+
+                <MudStack Row="true"
+                          AlignItems="AlignItems.Center"
+                          Justify="Justify.Center"
+                          Spacing="1">
+                    <MudText Typo="Typo.body2"
+                             Style="color: var(--mud-palette-text-secondary);">
+                        New here?
+                    </MudText>
+                    <MudLink Href="/register" Typo="Typo.body2" Underline="Underline.Hover">
+                        Create an account
+                    </MudLink>
+                </MudStack>
+
+            </MudStack>
+        </MudPaper>
+    </EditForm>
+</MudContainer>

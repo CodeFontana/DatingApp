@@ -3,32 +3,31 @@
 
 @if (isVisible)
 {
-    <div class="spinner-container">
+    <div class="@(IsRelativePosition ? "spinner-relative-container" : "spinner-container")">
         @if (_spinType == 0)
         {
-            <Spinner_Wave />
+            <Wave />
         }
         else if (_spinType == 1)
         {
-            <Spinner_ChasingDots />
+            <ThreeDots />
         }
         else if (_spinType == 2)
         {
-            <Spinner_ThreeDots />
-        }
-        else if (_spinType == 3)
-        {
-            <Spinner_FadingCircle />
+            <FadingCircle />
         }
         else
         {
-            <Spinner_Wave />
+            <Wave />
         }
     </div>
 }
 
 @code
 {
+    [Parameter]
+    public bool IsRelativePosition { get; set; }
+
     private Random _rndGen = new();
     private int _spinType = 0;
     protected bool isVisible { get; set; }
@@ -37,7 +36,7 @@
     {
         SpinnerService.OnShow += ShowSpinner;
         SpinnerService.OnHide += HideSpinner;
-        _spinType = _rndGen.Next(4);
+        _spinType = _rndGen.Next(3);
     }
 
     public void ShowSpinner()
@@ -52,7 +51,7 @@
         StateHasChanged();
     }
 
-public void Dispose()
+    public void Dispose()
     {
         SpinnerService.OnShow -= ShowSpinner;
         SpinnerService.OnHide -= HideSpinner;

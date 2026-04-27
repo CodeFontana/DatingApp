@@ -1,45 +1,113 @@
 ﻿@page "/"
 
-<PageTitle>DatingApp - Home</PageTitle>
+<PageTitle>Dating App - Home</PageTitle>
 
-<section>
-    <MudContainer Class="animate__bounceInUp">
-        <MudGrid Justify="Justify.Center">
+<MudStack Spacing="6" Class="animate__bounceInUp">
 
-            <MudItem xs="12" Class="d-flex justify-center">
-                <MudText Typo="Typo.h2" Align="Align.Center">Find your match</MudText>
-            </MudItem>
+    <MudPaper Elevation="0" Class="app-hero pa-8">
+        <MudStack Spacing="3">
 
-            <MudItem xs="12" Class="d-flex justify-center">
-                <MudText Align="Align.Center"
-                         Style="font-size: 1.25rem; font-weight: 300;">
-                    Come on in to view your matches... all you need to do is sign up!
-                </MudText>
-            </MudItem>
+            <MudText Typo="Typo.overline"
+                     Style="color: var(--mud-palette-primary); letter-spacing: 0.12em;">
+                Welcome
+            </MudText>
 
-            <MudItem xs="6">
-                <MudDivider DividerType="DividerType.Middle" />
-            </MudItem>
+            <MudText Typo="Typo.h2" Style="font-weight: 800;">
+                Find your <span style="color: var(--mud-palette-primary);">match</span>.
+            </MudText>
 
-            <MudItem xs="12" Class="d-flex justify-center">
-                <MudButton Class="mx-2"
-                           Variant="Variant.Filled"
-                           Color="Color.Dark"
-                           @onclick="OnRegister"
-                           StartIcon="@Icons.Material.Filled.EditNote"
-                           Size="Size.Large">
-                    Register
-                </MudButton>
-                <MudButton Class="mx-2"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           @onclick="OnLogin"
-                           StartIcon="@Icons.Material.Filled.Login"
-                           Size="Size.Large">
-                    Login
-                </MudButton>
-            </MudItem>
+            <MudText Typo="Typo.body1"
+                     Style="color: var(--mud-palette-text-secondary); max-width: 60ch;">
+                A modern place to meet people, exchange messages, and build connections.
+                Sign up in seconds &mdash; no clutter, no noise, just the good stuff.
+            </MudText>
 
-        </MudGrid>
-    </MudContainer>
-</section>
+            <AuthorizeView Context="HeroAuth">
+                <NotAuthorized>
+                    <MudStack Row="true" Spacing="2" Class="mt-2">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Size="Size.Large"
+                                   StartIcon="@Icons.Material.Rounded.PersonAdd"
+                                   OnClick="OnRegister">
+                            Create account
+                        </MudButton>
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Default"
+                                   Size="Size.Large"
+                                   StartIcon="@Icons.Material.Rounded.Login"
+                                   OnClick="OnLogin">
+                            Sign in
+                        </MudButton>
+                    </MudStack>
+                </NotAuthorized>
+                <Authorized>
+                    <MudStack Row="true" Spacing="2" Class="mt-2">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Size="Size.Large"
+                                   Href="/members"
+                                   EndIcon="@Icons.Material.Rounded.ArrowForward">
+                            Browse members
+                        </MudButton>
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Default"
+                                   Size="Size.Large"
+                                   Href="/messages"
+                                   StartIcon="@Icons.Material.Rounded.ChatBubbleOutline">
+                            Messages
+                        </MudButton>
+                    </MudStack>
+                </Authorized>
+            </AuthorizeView>
+        </MudStack>
+    </MudPaper>
+
+    <MudGrid Spacing="4">
+        <MudItem xs="12" sm="6" md="4" Class="d-flex">
+            <MudPaper Elevation="0" Class="app-card pa-5">
+                <MudStack Spacing="2" Class="flex-grow-1">
+                    <MudAvatar Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Medium">
+                        <MudIcon Icon="@Icons.Material.Rounded.People" Size="Size.Small" />
+                    </MudAvatar>
+                    <MudText Typo="Typo.h6">Discover members</MudText>
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">
+                        Browse profiles tailored to your preferences with rich photo galleries
+                        and an easy filter for distance, age, and interests.
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="4" Class="d-flex">
+            <MudPaper Elevation="0" Class="app-card pa-5">
+                <MudStack Spacing="2" Class="flex-grow-1">
+                    <MudAvatar Color="Color.Secondary" Variant="Variant.Outlined" Size="Size.Medium">
+                        <MudIcon Icon="@Icons.Material.Rounded.Favorite" Size="Size.Small" />
+                    </MudAvatar>
+                    <MudText Typo="Typo.h6">Curated lists</MudText>
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">
+                        Keep tabs on people you like and people who liked you back, neatly
+                        organised in lists you control.
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="4" Class="d-flex">
+            <MudPaper Elevation="0" Class="app-card pa-5">
+                <MudStack Spacing="2" Class="flex-grow-1">
+                    <MudAvatar Color="Color.Tertiary" Variant="Variant.Outlined" Size="Size.Medium">
+                        <MudIcon Icon="@Icons.Material.Rounded.ChatBubbleOutline" Size="Size.Small" />
+                    </MudAvatar>
+                    <MudText Typo="Typo.h6">Real-time chat</MudText>
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">
+                        SignalR-powered messaging with presence so you know exactly who is
+                        online and ready to talk.
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+</MudStack>

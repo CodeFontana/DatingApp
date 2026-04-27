@@ -1,11 +1,31 @@
 ﻿@inject NavigationManager Nav
 
-<PageTitle>Not Authorized</PageTitle>
+<PageTitle>Not authorized</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge">
-    <MudText Align="Align.Center" Typo="Typo.h3">You are not authorized.</MudText>
-    <MudDivider DividerType="DividerType.Middle" Class="my-5" />
-    <MudButton Class="d-flex mx-auto" Variant="Variant.Filled" Color="Color.Primary" @onclick="HandleClick">Go Home</MudButton>
+<MudContainer MaxWidth="MaxWidth.Small" Class="py-8">
+    <MudPaper Elevation="0" Class="auth-surface pa-8">
+        <MudStack Spacing="4" AlignItems="AlignItems.Center">
+            <MudAvatar Color="Color.Error" Variant="Variant.Filled" Size="Size.Large">
+                <MudIcon Icon="@Icons.Material.Rounded.Lock" />
+            </MudAvatar>
+            <MudText Typo="Typo.h4" Align="Align.Center" Style="font-weight: 700;">
+                You're not authorized
+            </MudText>
+            <MudText Typo="Typo.body1"
+                     Align="Align.Center"
+                     Style="color: var(--mud-palette-text-secondary); max-width: 50ch;">
+                Your account doesn't have permission to view this page. If you think
+                that's a mistake, contact an administrator.
+            </MudText>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       StartIcon="@Icons.Material.Rounded.Home"
+                       OnClick="HandleClick">
+                Go home
+            </MudButton>
+        </MudStack>
+    </MudPaper>
 </MudContainer>
 
 @code {

@@ -5,3 +5,11 @@
     transform: translateX(-50%);
     z-index: 999;
 }
+
+.spinner-relative-container {
+    position: relative;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+}

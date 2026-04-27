@@ -1,43 +1,65 @@
 ﻿@page "/verifyauth"
 
-<PageTitle>DatingApp - Verify Auth</PageTitle>
+<PageTitle>Dating App - Verify auth</PageTitle>
 
-<section>
-    <MudContainer>
-        <MudGrid Justify="Justify.Center">
+<MudContainer MaxWidth="MaxWidth.Small" Class="py-4">
+    <MudPaper Elevation="0" Class="auth-surface pa-6 pa-sm-8">
+        <MudStack Spacing="4">
 
-            <MudItem xs="12" Class="d-flex justify-center">
-                <MudText Typo="Typo.h3" Align="Align.Center">Verify Authentication</MudText>
-            </MudItem>
+            <MudStack Spacing="1" AlignItems="AlignItems.Center">
+                <MudAvatar Color="Color.Tertiary" Variant="Variant.Filled" Size="Size.Large">
+                    <MudIcon Icon="@Icons.Material.Rounded.Lock" />
+                </MudAvatar>
+                <MudText Typo="Typo.h4" Align="Align.Center" Style="font-weight: 700;">
+                    Verify authentication
+                </MudText>
+                <MudText Typo="Typo.body2"
+                         Align="Align.Center"
+                         Style="color: var(--mud-palette-text-secondary);">
+                    Inspect the current authentication state and any role claims.
+                </MudText>
+            </MudStack>
+
+            <MudDivider />
 
             <AuthorizeView Context="AuthContext">
 
                 <Authorized>
-                    <MudItem xs="12" Class="d-flex justify-center">
-                        <MudText Align="Align.Center" Typo="Typo.h4">
-                            Authenticated as @AuthContext.User.Identity.Name
-                        </MudText>
-                    </MudItem>
+                    <MudStack Spacing="3">
+                        <MudAlert Severity="Severity.Success" Variant="Variant.Outlined" Dense="true">
+                            Authenticated as <strong>@AuthContext.User.Identity.Name</strong>
+                        </MudAlert>
 
-                    <MudItem xs="12" Class="d-flex justify-center">
-                        <MudList T="string">
-                            <MudListItem T="string" Text="@($"Admin Role: {AuthContext.User.IsInRole("Administrator")}")" />
-                            <MudListItem T="string" Text="@($"Moderator Role: {AuthContext.User.IsInRole("Moderator")}")" />
-                            <MudListItem T="string" Text="@($"Member Role: {AuthContext.User.IsInRole("Member")}")" />
+                        <MudText Typo="Typo.overline"
+                                 Style="color: var(--mud-palette-text-secondary); letter-spacing: 0.12em;">
+                            Roles
+                        </MudText>
+
+                        <MudList T="string" Dense="true">
+                            <MudListItem T="string"
+                                         Icon="@(AuthContext.User.IsInRole("Administrator") ? Icons.Material.Rounded.CheckCircle : Icons.Material.Rounded.RadioButtonUnchecked)"
+                                         IconColor="@(AuthContext.User.IsInRole("Administrator") ? Color.Success : Color.Default)"
+                                         Text="@($"Administrator: {AuthContext.User.IsInRole("Administrator")}")" />
+                            <MudListItem T="string"
+                                         Icon="@(AuthContext.User.IsInRole("Moderator") ? Icons.Material.Rounded.CheckCircle : Icons.Material.Rounded.RadioButtonUnchecked)"
+                                         IconColor="@(AuthContext.User.IsInRole("Moderator") ? Color.Success : Color.Default)"
+                                         Text="@($"Moderator: {AuthContext.User.IsInRole("Moderator")}")" />
+                            <MudListItem T="string"
+                                         Icon="@(AuthContext.User.IsInRole("Member") ? Icons.Material.Rounded.CheckCircle : Icons.Material.Rounded.RadioButtonUnchecked)"
+                                         IconColor="@(AuthContext.User.IsInRole("Member") ? Color.Success : Color.Default)"
+                                         Text="@($"Member: {AuthContext.User.IsInRole("Member")}")" />
                         </MudList>
-                    </MudItem>
+                    </MudStack>
                 </Authorized>
 
                 <NotAuthorized>
-                    <MudItem xs="12" Class="d-flex justify-center">
-                        <MudText Align="Align.Center" Typo="Typo.h4">
-                            Not Authenticated
-                        </MudText>
-                    </MudItem>
+                    <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" Dense="true">
+                        Not authenticated.
+                    </MudAlert>
                 </NotAuthorized>
 
             </AuthorizeView>
 
-        </MudGrid>
-    </MudContainer>
-</section>
+        </MudStack>
+    </MudPaper>
+</MudContainer>

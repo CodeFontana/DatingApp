@@ -1,12 +1,40 @@
 ﻿@page "/sessionexpired"
 @inject NavigationManager Nav
 
-<PageTitle>DatingApp - Session Expired</PageTitle>
+<PageTitle>Dating App - Session expired</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge">
-    <MudText Align="Align.Center" Typo="Typo.h3">Your session has expired, please login again.</MudText>
-    <MudDivider DividerType="DividerType.Middle" Class="my-5"/>
-    <MudButton Class="d-flex mx-auto" Variant="Variant.Filled" Color="Color.Primary" @onclick="HandleClick">Go Home</MudButton>
+<MudContainer MaxWidth="MaxWidth.Small" Class="py-8">
+    <MudPaper Elevation="0" Class="auth-surface pa-8">
+        <MudStack Spacing="4" AlignItems="AlignItems.Center">
+            <MudAvatar Color="Color.Warning" Variant="Variant.Filled" Size="Size.Large">
+                <MudIcon Icon="@Icons.Material.Rounded.HourglassBottom" />
+            </MudAvatar>
+            <MudText Typo="Typo.h4" Align="Align.Center" Style="font-weight: 700;">
+                Your session has expired
+            </MudText>
+            <MudText Typo="Typo.body1"
+                     Align="Align.Center"
+                     Style="color: var(--mud-palette-text-secondary); max-width: 50ch;">
+                For your security, you've been signed out. Please sign in again to
+                continue where you left off.
+            </MudText>
+            <MudStack Row="true" Spacing="2">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           StartIcon="@Icons.Material.Rounded.Login"
+                           Href="/login">
+                    Sign in
+                </MudButton>
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Default"
+                           Size="Size.Large"
+                           OnClick="HandleClick">
+                    Go home
+                </MudButton>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
 </MudContainer>
 
 @code {
