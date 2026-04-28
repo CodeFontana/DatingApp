@@ -9,7 +9,7 @@ public class LikesRepository : ILikesRepository
         _db = context;
     }
 
-    public async Task<UserLike> GetUserLikeAsync(int sourceUserId, int likedUserId)
+    public async Task<UserLike?> GetUserLikeAsync(int sourceUserId, int likedUserId)
     {
         return await _db.Likes.FindAsync(sourceUserId, likedUserId);
     }
@@ -38,7 +38,7 @@ public class LikesRepository : ILikesRepository
             likesParameters.PageSize);
     }
 
-    public async Task<AppUser> GetUserWithLikesAsync(int userId)
+    public async Task<AppUser?> GetUserWithLikesAsync(int userId)
     {
         return await _db.Users
             .Include(x => x.LikedUsers)

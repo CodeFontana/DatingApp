@@ -1,5 +1,6 @@
 /* ---------- Global typography polish ---------- */
 html {
+    font-size: 15px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -76,6 +77,67 @@ samp,
     border-radius: 10px;
 }
 
+.app-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.app-page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.app-page-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.app-page-subtitle {
+    color: var(--mud-palette-text-secondary);
+    max-width: 70ch;
+}
+
+.app-action-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.app-filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.app-content-state {
+    border: 1px solid color-mix(in srgb, var(--mud-palette-lines-default) 55%, var(--mud-palette-lines-inputs));
+    border-radius: 12px;
+    background-color: color-mix(in srgb, var(--mud-palette-surface) 92%, transparent);
+    min-height: 220px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1.5rem;
+}
+
+.app-empty-state {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.app-muted {
+    color: var(--mud-palette-text-secondary);
+}
+
 /* ---------- Reusable card surface used by hero / feature tiles ----------
    Light-mode borders are pulled toward the input-line tone so cards have
    real presence on the page background; shadows are tuned for visibility.
@@ -92,6 +154,11 @@ samp,
     height: 100%;
     width: 100%;
     transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+.app-card-static {
+    display: block;
+    height: auto;
 }
 
 .app-card:hover {
@@ -223,8 +290,8 @@ samp,
     align-items: center;
     justify-content: center;
     gap: 1.5rem;
-    background-color: #F6F8FA;
-    color: #1F2328;
+    background-color: var(--mud-palette-background-grey);
+    color: var(--mud-palette-text-primary);
     font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -252,7 +319,7 @@ samp,
 
 .boot-status {
     margin: 0;
-    color: #57606A;
+    color: var(--mud-palette-text-secondary);
     font-size: 0.9rem;
     letter-spacing: 0.02em;
 }

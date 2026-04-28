@@ -2,7 +2,7 @@
 && Member.Photos.Count > 0
 && SpinnerService.HoldSpinner == false)
 {
-    <MudCarousel Class="d-flex mx-auto mb-5"
+    <MudCarousel Class="d-flex mx-auto mb-2"
              @ref="_carousel"
              ItemsSource="@Member.Photos"
              @bind-SelectedIndex="_position"
@@ -20,6 +20,9 @@
             </MudContainer>
         </ItemTemplate>
     </MudCarousel>
+    <MudText Typo="Typo.caption" Align="Align.Center" Class="mb-4 app-muted">
+        Photo @(_position + 1) of @Member.Photos.Count
+    </MudText>
 
     <MudGrid>
         @for (int i = 0; i < Member.Photos.Count; i++)

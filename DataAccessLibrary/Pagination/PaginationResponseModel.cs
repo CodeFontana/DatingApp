@@ -2,5 +2,5 @@
 
 public class PaginationResponseModel<T> : ServiceResponseModel<T>
 {
-    public PaginationModel MetaData { get; set; }
+    public PaginationModel MetaData { get; set; } = new();
 }

@@ -9,7 +9,6 @@ global using System.Security.Claims;
 global using System.Text.Json;
 global using System.Threading;
 global using System.Threading.Tasks;
-global using Blazored.LocalStorage;
 global using Client.Authentication;
 global using Client.Helpers;
 global using Client.Services;

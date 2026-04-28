@@ -2,7 +2,7 @@
 
 public interface IAccountRepository
 {
-    Task<AppUser> GetAccountAsync(string username);
+    Task<AppUser?> GetAccountAsync(string username);
     Task<List<AppUser>> GetAccountsAsync();
     Task<AppUser> CreateAccountAsync(RegisterUserModel registerUser);
     Task<AppUser> LoginAsync(LoginUserModel loginUser);

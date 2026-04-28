@@ -3,18 +3,39 @@
 
 <PageTitle>DatingApp - Messages</PageTitle>
 
-<section>
-    <MudText Typo="Typo.h3" Align="Align.Center" Class="mb-5">@_pageTitle</MudText>
-
-    <MudButtonGroup Class="d-flex justify-center mb-5" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Large" DisableElevation="true">
-        <MudButton StartIcon="@Icons.Material.Filled.Mail" OnClick="@(() => HandlePredicateChange("unread"))">Unread</MudButton>
-        <MudButton StartIcon="@Icons.Material.Filled.Inbox" OnClick="@(() => HandlePredicateChange("inbox"))">Inbox</MudButton>
-        <MudButton StartIcon="@Icons.Material.Filled.Outbound" OnClick="@(() => HandlePredicateChange("sent"))">Sent</MudButton>
-    </MudButtonGroup>
-
+<section class="app-page">
+    <MudPaper Elevation="0" Class="app-card pa-4">
+        <div class="app-page-header">
+            <div class="app-page-title-group">
+                <MudText Typo="Typo.h3">@_pageTitle</MudText>
+                <MudText Typo="Typo.body2" Class="app-page-subtitle">
+                    Review conversations and jump directly into a message thread.
+                </MudText>
+            </div>
+            <MudChipSet T="string"
+                        Class="app-filter-chips"
+                        SelectionMode="SelectionMode.SingleSelection"
+                        CheckMark="true"
+                        SelectedValue="_selectedContainer"
+                        SelectedValueChanged="HandlePredicateChangeAsync">
+                <MudChip T="string" Value=@("unread") Color="Color.Primary" Variant="Variant.Filled">Unread</MudChip>
+                <MudChip T="string" Value=@("inbox") Color="Color.Primary" Variant="Variant.Filled">Inbox</MudChip>
+                <MudChip T="string" Value=@("sent") Color="Color.Primary" Variant="Variant.Filled">Sent</MudChip>
+            </MudChipSet>
+        </div>
+    </MudPaper>
     @if (_showError)
     {
         <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+    }
+    else if (_loadingMessages)
+    {
+        <MudPaper Elevation="0" Class="app-content-state">
+            <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                <MudText Typo="Typo.body1">Loading messages...</MudText>
+            </MudStack>
+        </MudPaper>
     }
     else if (_messages?.Count > 0)
     {
@@ -24,10 +45,10 @@
                       @ref="_messageTable"
                       Items="@_messages"
                       OnRowClick="HandleRowClickEvent"
-                      Dense="true"
+                      Dense="false"
                       Hover="true"
                       Bordered="true"
-                      Striped="true"
+                      Striped="false"
                       Loading="@_loadingMessages"
                       LoadingProgressColor="Color.Info"
                       Breakpoint="Breakpoint.None"
@@ -44,7 +65,7 @@
                             <MudTh><MudText Typo="Typo.h5">To</MudText></MudTh>
                             <MudTh><MudText Typo="Typo.h5">Sent</MudText></MudTh>
                         }
-                        <MudTh><MudText Typo="Typo.h5">Message</MudText></MudTh>
+                        <MudTh><MudText Typo="Typo.h6">Message</MudText></MudTh>
                         <MudTh><MudText Typo="Typo.h5">Action</MudText></MudTh>
                     </HeaderContent>
                     <RowTemplate>
@@ -66,9 +87,13 @@
                                 <MudText Class="ml-2" Typo="Typo.h6" Inline="true">@context.RecipientUsername</MudText>
                             </MudTd>
                         }
-                        <MudTd><MudText Typo="Typo.h6">@DateTime.Now.Subtract(context.MessageSent.ToLocalTime()).Humanize() ago</MudText></MudTd>
-                        <MudTd><MudText Typo="Typo.body1">@context.Content</MudText></MudTd>
-                        <MudTd><MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="() => HandleMessageDeleteAsync(context.Id)">Delete</MudButton></MudTd>
+                        <MudTd><MudText Typo="Typo.body2">@DateTime.Now.Subtract(context.MessageSent.ToLocalTime()).Humanize() ago</MudText></MudTd>
+                        <MudTd><MudText Typo="Typo.body2" Class="text-truncate">@context.Content</MudText></MudTd>
+                        <MudTd>
+                            <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="() => HandleMessageDeleteAsync(context.Id)">
+                                Delete
+                            </MudButton>
+                        </MudTd>
                     </RowTemplate>
                 </MudTable>
             </MudItem>
@@ -77,9 +102,20 @@
         <MudPagination Class="d-flex justify-center my-5"
                    Rectangular="true"
                    Color="Color.Primary"
-                   Count="@_metaData.TotalPages"
+                   Count="@(_metaData?.TotalPages ?? 1)"
                    Size="Size.Large"
-                   Selected="@_metaData.CurrentPage"
+                   Selected="@(_metaData?.CurrentPage ?? 1)"
                    SelectedChanged="HandlePageChangedAsync" />
+    }
+    else
+    {
+        <MudPaper Elevation="0" Class="app-content-state">
+            <div class="app-empty-state">
+                <MudIcon Icon="@Icons.Material.Rounded.MarkEmailUnread" Color="Color.Primary" Size="Size.Large" />
+                <MudText Typo="Typo.h6">No messages in this view</MudText>
+                <MudText Typo="Typo.body2" Class="app-muted">Open a member profile and start a conversation.</MudText>
+                <MudButton Href="/members" Variant="Variant.Filled" Color="Color.Primary">Browse members</MudButton>
+            </div>
+        </MudPaper>
     }
 </section>

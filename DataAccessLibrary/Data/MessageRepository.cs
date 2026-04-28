@@ -14,7 +14,7 @@ public class MessageRepository : IMessageRepository
         await _db.Messages.AddAsync(message);
     }
 
-    public async Task<Message> GetMessageAsync(int id)
+    public async Task<Message?> GetMessageAsync(int id)
     {
         return await _db.Messages.FindAsync(id);
     }
@@ -69,7 +69,7 @@ public class MessageRepository : IMessageRepository
 
     public Tuple<string, string> DeleteMessageAsync(string requestUser, int id)
     {
-        Message message = _db.Messages.FirstOrDefault(m => m.Id == id);
+        Message? message = _db.Messages.FirstOrDefault(m => m.Id == id);
 
         if (message is null)
         {

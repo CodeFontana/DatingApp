@@ -7,7 +7,7 @@ using DataAccessLibrary.Entities;
 public class PhotoModel
 {
     public int Id { get; set; }
-    public string Filename { get; set; }
+    public string Filename { get; set; } = string.Empty;
     public bool IsMain { get; set; }
 
     public static readonly Expression<Func<Photo, PhotoModel>> Projection = p => new PhotoModel

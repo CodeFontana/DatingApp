@@ -2,10 +2,10 @@
 
 public class MemberParameters : PaginationParameters
 {
-    public string CurrentUsername { get; set; }
+    public string CurrentUsername { get; set; } = string.Empty;
 
     [MaxLength(25, ErrorMessage = "Invalid selection")]
-    public string Gender { get; set; }
+    public string Gender { get; set; } = string.Empty;
 
     [Range(18, 85, ErrorMessage ="Must be at least 18 years or older")]
     public int MinAge { get; set; } = 18;

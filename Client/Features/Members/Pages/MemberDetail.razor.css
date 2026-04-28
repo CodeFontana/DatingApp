@@ -3,6 +3,6 @@
     height: auto;
     max-width: 500px;
     border-radius: 1em;
-    box-shadow: 0 0 0 0 rgb(0 0 0 / 5%), 0 2px 3px 0 rgb(0 0 0 / 50%);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--mud-palette-dark) 24%, transparent);
     padding: 0.25rem;
 }

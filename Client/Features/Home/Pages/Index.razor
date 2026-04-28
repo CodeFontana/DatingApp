@@ -2,29 +2,21 @@
 
 <PageTitle>Dating App - Home</PageTitle>
 
-<MudStack Spacing="6" Class="animate__bounceInUp">
-
+<MudStack Spacing="6" Class="app-page">
     <MudPaper Elevation="0" Class="app-hero pa-8">
         <MudStack Spacing="3">
-
-            <MudText Typo="Typo.overline"
-                     Style="color: var(--mud-palette-primary); letter-spacing: 0.12em;">
-                Welcome
+            <MudText Typo="Typo.overline" Color="Color.Primary">Welcome</MudText>
+            <MudText Typo="Typo.h2" Class="font-weight-bold">
+                Find your <span class="mud-primary-text">match</span>.
             </MudText>
-
-            <MudText Typo="Typo.h2" Style="font-weight: 800;">
-                Find your <span style="color: var(--mud-palette-primary);">match</span>.
-            </MudText>
-
-            <MudText Typo="Typo.body1"
-                     Style="color: var(--mud-palette-text-secondary); max-width: 60ch;">
+            <MudText Typo="Typo.body1" Class="app-page-subtitle">
                 A modern place to meet people, exchange messages, and build connections.
                 Sign up in seconds &mdash; no clutter, no noise, just the good stuff.
             </MudText>
 
             <AuthorizeView Context="HeroAuth">
                 <NotAuthorized>
-                    <MudStack Row="true" Spacing="2" Class="mt-2">
+                    <MudStack Row="true" Spacing="2" Class="mt-2 app-action-bar">
                         <MudButton Variant="Variant.Filled"
                                    Color="Color.Primary"
                                    Size="Size.Large"
@@ -42,7 +34,7 @@
                     </MudStack>
                 </NotAuthorized>
                 <Authorized>
-                    <MudStack Row="true" Spacing="2" Class="mt-2">
+                    <MudStack Row="true" Spacing="2" Class="mt-2 app-action-bar">
                         <MudButton Variant="Variant.Filled"
                                    Color="Color.Primary"
                                    Size="Size.Large"
@@ -71,7 +63,7 @@
                         <MudIcon Icon="@Icons.Material.Rounded.People" Size="Size.Small" />
                     </MudAvatar>
                     <MudText Typo="Typo.h6">Discover members</MudText>
-                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">
+                    <MudText Typo="Typo.body2" Class="app-muted">
                         Browse profiles tailored to your preferences with rich photo galleries
                         and an easy filter for distance, age, and interests.
                     </MudText>
@@ -86,7 +78,7 @@
                         <MudIcon Icon="@Icons.Material.Rounded.Favorite" Size="Size.Small" />
                     </MudAvatar>
                     <MudText Typo="Typo.h6">Curated lists</MudText>
-                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">
+                    <MudText Typo="Typo.body2" Class="app-muted">
                         Keep tabs on people you like and people who liked you back, neatly
                         organised in lists you control.
                     </MudText>
@@ -101,7 +93,7 @@
                         <MudIcon Icon="@Icons.Material.Rounded.ChatBubbleOutline" Size="Size.Small" />
                     </MudAvatar>
                     <MudText Typo="Typo.h6">Real-time chat</MudText>
-                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">
+                    <MudText Typo="Typo.body2" Class="app-muted">
                         SignalR-powered messaging with presence so you know exactly who is
                         online and ready to talk.
                     </MudText>
@@ -109,5 +101,4 @@
             </MudPaper>
         </MudItem>
     </MudGrid>
-
 </MudStack>

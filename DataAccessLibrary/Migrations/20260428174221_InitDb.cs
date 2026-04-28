@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataAccessLibrary.Migrations
 {
+    /// <inheritdoc />
     public partial class InitDb : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -31,15 +33,15 @@ namespace DataAccessLibrary.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    KnownAs = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    KnownAs = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastActive = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Gender = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: true),
-                    Introduction = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    LookingFor = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    Interests = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    State = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
+                    Introduction = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    LookingFor = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Interests = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    State = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -173,10 +175,10 @@ namespace DataAccessLibrary.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SenderId = table.Column<int>(type: "int", nullable: false),
-                    SenderUsername = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    SenderUsername = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     RecipientId = table.Column<int>(type: "int", nullable: false),
-                    RecipientUsername = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Content = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    RecipientUsername = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
                     DateRead = table.Column<DateTime>(type: "datetime2", nullable: true),
                     MessageSent = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SenderDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -205,7 +207,7 @@ namespace DataAccessLibrary.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Filename = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Filename = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     IsMain = table.Column<bool>(type: "bit", nullable: false),
                     AppUserId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -303,6 +305,7 @@ namespace DataAccessLibrary.Migrations
                 column: "LikedUserId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

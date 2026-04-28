@@ -2,44 +2,31 @@
 
 public partial class MemberList : IAsyncDisposable
 {
+    private const string PageSizeModeAuto = "auto";
     private List<MemberModel> _members = new();
     private MemberParameters _membersFilter = new();
-    private PaginationModel _metaData;
+    private PaginationModel _metaData = new();
     private bool _showError = false;
-    private string _errorText;
-    private Breakpoint _breakpoint;
+    private string _errorText = string.Empty;
+    private bool _loadingMembers;
+    private Breakpoint _breakpoint = Breakpoint.None;
+    private string _selectedSort = "lastactive";
+    private string _selectedPageSizeMode = PageSizeModeAuto;
 
     [Inject] IMemberStateService MemberStateService { get; set; }
     [Inject] IMemberService MemberService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        if (string.IsNullOrWhiteSpace(_membersFilter.Gender))
-        {
-            if (MemberStateService.Member.Gender.ToLower().Equals("female"))
-            {
-                _membersFilter.Gender = "male";
-            }
-            else
-            {
-                _membersFilter.Gender = "female";
-            }
-        }
-
+        _membersFilter.Gender = GetDefaultGenderFilter();
         if (_membersFilter.PageSize <= 0)
         {
-            _membersFilter.PageSize = 8;
+            _membersFilter.PageSize = GetEffectivePageSize();
         }
-    }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await LoadMembersAsync();
-            StateHasChanged();
-        }
+        _membersFilter.OrderBy = "lastactive";
+        await LoadMembersAsync();
     }
 
     private async Task HandleBreakpointChangedAsync(Breakpoint breakpoint)
@@ -51,18 +38,9 @@ public partial class MemberList : IAsyncDisposable
 
         _breakpoint = breakpoint;
 
-        int newPageSize = breakpoint switch
-        {
-            Breakpoint.Xxl => 12,
-            Breakpoint.Xl => 12,
-            Breakpoint.Lg => 8,
-            Breakpoint.Md => 8,
-            Breakpoint.Sm => 6,
-            Breakpoint.Xs => 10,
-            _ => 8
-        };
+        int newPageSize = GetEffectivePageSize();
 
-        if (_membersFilter.PageSize == newPageSize)
+        if (_selectedPageSizeMode != PageSizeModeAuto || _membersFilter.PageSize == newPageSize)
         {
             return;
         }
@@ -76,6 +54,9 @@ public partial class MemberList : IAsyncDisposable
 
     private async Task LoadMembersAsync()
     {
+        _membersFilter.PageSize = GetEffectivePageSize();
+
+        _loadingMembers = true;
         PaginationResponseModel<IEnumerable<MemberModel>> result = await MemberService.GetMembersAsync(_membersFilter);
 
         if (result.Success)
@@ -90,6 +71,8 @@ public partial class MemberList : IAsyncDisposable
             _errorText = $"Request failed: {result.Message}";
             Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
         }
+
+        _loadingMembers = false;
     }
 
     private async Task HandleFilterSubmitAsync()
@@ -102,6 +85,7 @@ public partial class MemberList : IAsyncDisposable
         else
         {
             _showError = false;
+            _membersFilter.PageNumber = 1;
             await LoadMembersAsync();
         }
     }
@@ -111,31 +95,87 @@ public partial class MemberList : IAsyncDisposable
         _membersFilter.PageNumber = 1;
         _membersFilter.MinAge = 18;
         _membersFilter.MaxAge = 45;
-        _membersFilter.OrderBy = "LastActive";
-
-        if (MemberStateService.Member.Gender.ToLower().Equals("female"))
-        {
-            _membersFilter.Gender = "male";
-        }
-        else
-        {
-            _membersFilter.Gender = "female";
-        }
+        _membersFilter.OrderBy = "lastactive";
+        _selectedSort = "lastactive";
+        _membersFilter.Gender = GetDefaultGenderFilter();
+        _selectedPageSizeMode = PageSizeModeAuto;
+        _membersFilter.PageSize = GetEffectivePageSize();
 
         await LoadMembersAsync();
     }
 
     private async Task HandleSortSubmitAsync(string sortValue)
     {
-        _membersFilter.OrderBy = sortValue.ToLower();
+        _membersFilter.OrderBy = sortValue.ToLowerInvariant();
+        _selectedSort = _membersFilter.OrderBy;
+        _membersFilter.PageNumber = 1;
         await HandleFilterSubmitAsync();
     }
 
     private async Task HandlePageChangedAsync(int page)
     {
         _membersFilter.PageNumber = page;
-        _members = null;
+        _members = new();
         await LoadMembersAsync();
+    }
+
+    private async Task HandlePageSizeModeChangedAsync(string pageSizeMode)
+    {
+        if (string.IsNullOrWhiteSpace(pageSizeMode))
+        {
+            return;
+        }
+
+        _selectedPageSizeMode = pageSizeMode;
+        _membersFilter.PageNumber = 1;
+        _membersFilter.PageSize = GetEffectivePageSize();
+        await LoadMembersAsync();
+    }
+
+    private string GetDefaultGenderFilter()
+    {
+        return MemberStateService.Member.Gender.ToLowerInvariant().Equals("female")
+            ? "male"
+            : "female";
+    }
+
+    private int GetEffectivePageSize()
+    {
+        if (_selectedPageSizeMode == PageSizeModeAuto)
+        {
+            Breakpoint resolvedBreakpoint = _breakpoint == Breakpoint.None
+                ? Breakpoint.Lg
+                : _breakpoint;
+
+            return GetAutoPageSize(resolvedBreakpoint);
+        }
+
+        bool parseResult = int.TryParse(_selectedPageSizeMode, out int fixedPageSize);
+        if (parseResult && fixedPageSize > 0)
+        {
+            return fixedPageSize;
+        }
+
+        return GetAutoPageSize(Breakpoint.Lg);
+    }
+
+    private static int GetAutoPageSize(Breakpoint breakpoint)
+    {
+        return breakpoint switch
+        {
+            Breakpoint.Xxl => 6,
+            Breakpoint.Xl => 6,
+            Breakpoint.Lg => 6,
+            Breakpoint.Md => 4,
+            Breakpoint.Sm => 4,
+            Breakpoint.Xs => 3,
+            _ => 6
+        };
+    }
+
+    private Variant GetSortVariant(string sortKey)
+    {
+        return _selectedSort == sortKey ? Variant.Filled : Variant.Outlined;
     }
 
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;

@@ -3,20 +3,20 @@
 public class RegisterUserModel
 {
     [Required(ErrorMessage = "Please enter a username")]
-    public string Username { get; set; }
+    public string Username { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Please enter your email address")]
     [DataType(DataType.EmailAddress)]
     [EmailAddress]
-    public string Email { get; set; }
+    public string Email { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Please enter your preferred name")]
     [MaxLength(50, ErrorMessage = "Your preferred name must be less than (50) characters")]
-    public string KnownAs { get; set; }
+    public string KnownAs { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Please specify your biology")]
     [MaxLength(25)]
-    public string Gender { get; set; }
+    public string Gender { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Please enter your date of birth")]
     [ValidBirthday(ErrorMessage = "You must be at least 18 years old")]
@@ -24,20 +24,20 @@ public class RegisterUserModel
 
     [Required(ErrorMessage = "Please enter your town or city")]
     [MaxLength(100, ErrorMessage = "Your town name must be less than (100) characters")]
-    public string City { get; set; }
+    public string City { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Please enter your state or province")]
     [MaxLength(100, ErrorMessage = "Your state name must be less than (100) characters")]
-    public string State { get; set; }
+    public string State { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Please enter a password")]
     [MinLength(6, ErrorMessage="Password must be at least (6) characters")]
-    public string Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Please confirm your password")]
     [DisplayName("Confirm Password")]
     [Compare(nameof(Password), ErrorMessage = "Password does not match.")]
-    public string ConfirmPassword { get; set; }
+    public string ConfirmPassword { get; set; } = string.Empty;
 }
 
 public class ValidBirthdayAttribute : RangeAttribute

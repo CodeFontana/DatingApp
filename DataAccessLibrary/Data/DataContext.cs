@@ -27,9 +27,6 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int, IdentityUser
             .IsRequired();
 
         builder.Entity<UserLike>()
-            .HasKey(k => new { k.SourceUserId, k.LikedUserId });
-
-        builder.Entity<UserLike>()
             .HasOne(s => s.SourceUser)
             .WithMany(l => l.LikedUsers)
             .HasForeignKey(s => s.SourceUserId)

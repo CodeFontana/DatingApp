@@ -1,4 +1,6 @@
-﻿namespace Client.Authentication;
+﻿using Microsoft.JSInterop;
+
+namespace Client.Authentication;
 
 public class JwtAuthenticationStateProvider : AuthenticationStateProvider
 {
@@ -6,7 +8,7 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
     private readonly HttpClient _httpClient;
     private readonly IMemberStateService _memberStateService;
     private readonly IMemberService _memberService;
-    private readonly ILocalStorageService _localStorage;
+    private readonly IJSRuntime _jsRuntime;
     private readonly IPresenceService _presenceService;
     private readonly NavigationManager _navigationManager;
     private readonly AuthenticationState _anonymous;
@@ -18,7 +20,7 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
                                           HttpClient httpClient,
                                           IMemberStateService memberStateService,
                                           IMemberService memberService,
-                                          ILocalStorageService localStorage,
+                                          IJSRuntime jsRuntime,
                                           IPresenceService presenceService,
                                           NavigationManager navigationManager)
     {
@@ -26,7 +28,7 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
         _httpClient = httpClient;
         _memberStateService = memberStateService;
         _memberService = memberService;
-        _localStorage = localStorage;
+        _jsRuntime = jsRuntime;
         _presenceService = presenceService;
         _navigationManager = navigationManager;
         _anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
@@ -36,7 +38,8 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
     {
         try
         {
-            string localToken = await _localStorage.GetItemAsync<string>(_config["authTokenStorageKey"]);
+            string localToken = LocalStorageValueCompat.FromBrowser(
+                await _jsRuntime.InvokeAsync<string>("localStorage.getItem", _config["authTokenStorageKey"]));
 
             if (string.IsNullOrWhiteSpace(localToken))
             {
@@ -113,7 +116,7 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
             await _memberStateService.SetAppUserAsync(authenticatedUser.Identity.Name);
 
             string authTokenStorageKey = _config["authTokenStorageKey"];
-            await _localStorage.SetItemAsync(authTokenStorageKey, token);
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", authTokenStorageKey, token);
 
             NotifyAuthenticationStateChanged(authState);
             _isAuthenticated = true;
@@ -142,9 +145,9 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
     public async Task NotifyUserLogoutAsync()
     {
         await _presenceService.DisconnectAsync();
-        _authStateMonitoringTokenSource.Cancel();
+        _authStateMonitoringTokenSource?.Cancel();
         string authTokenStorageKey = _config["authTokenStorageKey"];
-        await _localStorage.RemoveItemAsync(authTokenStorageKey);
+        await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", authTokenStorageKey);
         Task<AuthenticationState> authState = Task.FromResult(_anonymous);
         _httpClient.DefaultRequestHeaders.Authorization = null;
         _memberService.MemberCache.Clear();

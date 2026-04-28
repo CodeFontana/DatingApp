@@ -3,31 +3,40 @@
 
 <PageTitle>DatingApp - Edit Profile</PageTitle>
 
-<section>
+<section class="app-page">
     @if (_showError)
     {
         <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
     }
 
-    <MudGrid>
-        <MudItem xs="12" md="4" lg="3">
-            <MudText Typo="Typo.h3">Your Profile</MudText>
-        </MudItem>
-
-        <MudItem xs="12" md="8" lg="9">
-            @if (_changesMade)
-            {
-                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
-                    Remember to save your changes!
-                </MudAlert>
-            }
-        </MudItem>
-    </MudGrid>
+    <MudPaper Elevation="0" Class="app-card pa-4">
+        <div class="app-page-header">
+            <div class="app-page-title-group">
+                <MudText Typo="Typo.h3">Your Profile</MudText>
+                <MudText Typo="Typo.body2" Class="app-page-subtitle">
+                    Keep your profile details current to improve match quality.
+                </MudText>
+            </div>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Success"
+                       ButtonType="ButtonType.Submit"
+                       form="editForm"
+                       Disabled="@(_changesMade == false)">
+                Save Changes
+            </MudButton>
+        </div>
+        @if (_changesMade)
+        {
+            <MudAlert Class="mt-4" Severity="Severity.Info" Variant="Variant.Outlined">
+                You have unsaved changes.
+            </MudAlert>
+        }
+    </MudPaper>
 
     <MudGrid Justify="Justify.Center">
 
         <MudItem xs="12" md="4" lg="3">
-            <MudCard Elevation="6" Style="border: 1px solid rgba(0,0,0,.125);">
+            <MudCard Elevation="0" Class="app-card">
                 <MudCardHeader>
                     <MudImage Class="img-thumbnail mx-auto"
                               Src="@MemberStateService.MainPhoto"
@@ -35,33 +44,15 @@
                               Style="border: 4px solid var(--mud-palette-surface);" />
                 </MudCardHeader>
                 <MudCardContent Class="mx-auto" Style="width: 90%; height: 90%; max-width: 100%;">
-                    <MudText Style="font-weight: bolder;">Location:</MudText>
+                    <MudText Class="font-weight-bold">Location:</MudText>
                     <MudText Class="mb-3">@MemberStateService.Member.City, @MemberStateService.Member.State</MudText>
-                    <MudText Style="font-weight: bolder;">Age:</MudText>
+                    <MudText Class="font-weight-bold">Age:</MudText>
                     <MudText Class="mb-3">@MemberStateService.Member.Age</MudText>
-                    <MudText Style="font-weight: bolder;">Last active:</MudText>
+                    <MudText Class="font-weight-bold">Last active:</MudText>
                     <MudText Class="mb-3">@DateTime.Now.Subtract(MemberStateService.Member.LastActive).Humanize()</MudText>
-                    <MudText Style="font-weight: bolder;">Member since:</MudText>
+                    <MudText Class="font-weight-bold">Member since:</MudText>
                     <MudText>@MemberStateService.Member.Created.ToLongDateString()</MudText>
                 </MudCardContent>
-                @if (_changesMade)
-                {
-                    <MudCardActions>
-                        <MudGrid Class="d-flex justify-center">
-
-                            <MudItem xs="8" Class="px-1 pl-3">
-                                <MudButton Variant="Variant.Filled"
-                                       Color="Color.Success"
-                                       ButtonType="ButtonType.Submit"
-                                       form="editForm"
-                                       Style="width: 100%;">
-                                    Save Changes
-                                </MudButton>
-                            </MudItem>
-
-                        </MudGrid>
-                    </MudCardActions>
-                }
             </MudCard>
         </MudItem>
 
@@ -81,7 +72,7 @@
                                                   Variant="Variant.Outlined"
                                                   @bind-Value="@_memberUpdate.Introduction"
                                                   Lines="6" />
-                                    <ValidationMessage For="(() => MemberStateService.Member.Introduction)" />
+                                    <ValidationMessage For="(() => _memberUpdate.Introduction)" />
 
                                     <MudTextField Class="mb-10"
                                                   T="string"
@@ -89,7 +80,7 @@
                                                   Variant="Variant.Outlined"
                                                   @bind-Value="@_memberUpdate.LookingFor"
                                                   Lines="6" />
-                                    <ValidationMessage For="(() => MemberStateService.Member.LookingFor)" />
+                                    <ValidationMessage For="(() => _memberUpdate.LookingFor)" />
 
                                     <MudTextField Class="mb-10"
                                                   T="string"
@@ -97,7 +88,7 @@
                                                   Variant="Variant.Outlined"
                                                   @bind-Value="@_memberUpdate.Interests"
                                                   Lines="6" />
-                                    <ValidationMessage For="(() => MemberStateService.Member.Interests)" />
+                                    <ValidationMessage For="(() => _memberUpdate.Interests)" />
 
                                     <MudGrid>
                                         <MudItem xs="6">

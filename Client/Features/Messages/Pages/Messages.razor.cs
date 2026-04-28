@@ -3,13 +3,14 @@
 public partial class Messages
 {
     private MudTable<MessageModel> _messageTable;
-	private List<MessageModel> _messages = new();
+    private List<MessageModel> _messages = new();
     private MessageParameters _messageFilter = new();
-    private PaginationModel _metaData;
-    private string _pageTitle;
+    private PaginationModel _metaData = new();
+    private string _pageTitle = "Messages";
+    private string _selectedContainer = "inbox";
     private bool _loadingMessages = false;
     private bool _showError = false;
-    private string _errorText;
+    private string _errorText = string.Empty;
 
     [Inject] IMessageService MessageService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
@@ -19,9 +20,10 @@ public partial class Messages
     {
         if (string.IsNullOrWhiteSpace(_messageFilter.Container))
         {
-            _pageTitle = "Messages - Inbox";
             _messageFilter.Container = "Inbox";
         }
+        _selectedContainer = _messageFilter.Container.ToLowerInvariant();
+        SetPageTitle(_selectedContainer);
 
         await LoadMessagesAsync();
     }
@@ -49,35 +51,39 @@ public partial class Messages
 
     private void HandleRowClickEvent(TableRowClickEventArgs<MessageModel> tableRowClickEventArgs)
     {
+        if (_selectedContainer == "sent")
+        {
+            NavManager.NavigateTo($"/member/{tableRowClickEventArgs.Item.RecipientUsername}/messages");
+            return;
+        }
+
         NavManager.NavigateTo($"/member/{tableRowClickEventArgs.Item.SenderUsername}/messages");
     }
 
-    private async Task HandlePredicateChange(string predicate)
+    private async Task HandlePredicateChangeAsync(string predicate)
     {
-        if (predicate.ToLower() == "inbox")
+        if (string.IsNullOrWhiteSpace(predicate))
         {
-            _messageFilter.Container = "Inbox";
-            _pageTitle = "Messages - Inbox";
-        }
-        else if (predicate.ToLower() == "sent")
-        {
-            _messageFilter.Container = "Sent";
-            _pageTitle = "Messages - Sent";
-        }
-        else
-        {
-            _messageFilter.Container = "Unread";
-            _pageTitle = "Messages - Unread";
+            return;
         }
 
-        _messages = null;
+        _selectedContainer = predicate.ToLowerInvariant();
+        _messageFilter.Container = _selectedContainer switch
+        {
+            "sent" => "Sent",
+            "unread" => "Unread",
+            _ => "Inbox"
+        };
+        _messageFilter.PageNumber = 1;
+        SetPageTitle(_selectedContainer);
+        _messages = new();
         await LoadMessagesAsync();
     }
 
     private async Task HandlePageChangedAsync(int page)
     {
         _messageFilter.PageNumber = page;
-        _messages = null;
+        _messages = new();
         await LoadMessagesAsync();
     }
 
@@ -97,5 +103,15 @@ public partial class Messages
             _errorText = $"Request failed: {result.Message}";
             Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
         }
+    }
+
+    private void SetPageTitle(string container)
+    {
+        _pageTitle = container switch
+        {
+            "sent" => "Messages - Sent",
+            "unread" => "Messages - Unread",
+            _ => "Messages - Inbox"
+        };
     }
 }

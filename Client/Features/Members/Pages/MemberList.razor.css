@@ -1,0 +1,68 @@
+.member-control {
+    flex: 0 0 auto;
+}
+
+.member-control-age {
+    width: 5.25rem;
+}
+
+.member-control-page-size {
+    width: 10rem;
+}
+
+.member-age-field {
+    width: 5.25rem;
+    min-width: 5.25rem;
+    max-width: 5.25rem;
+}
+
+.member-age-field ::deep .mud-input-control {
+    width: 5.25rem;
+    min-width: 5.25rem;
+}
+
+.member-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.member-toolbar-title-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-right: 0.25rem;
+}
+
+.member-page-size-field {
+    width: 10rem;
+    min-width: 10rem;
+    max-width: 10rem;
+}
+
+.member-page-size-field ::deep .mud-input-control {
+    width: 10rem;
+    min-width: 10rem;
+}
+
+.member-actions-panel {
+    border: 1px solid var(--mud-palette-lines-default);
+    border-radius: 10px;
+    padding: 0.4rem;
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+.member-action-button {
+    min-width: 5.9rem;
+    min-height: 2.25rem;
+    font-size: 0.8rem;
+}
+
+@media (min-width: 1280px) {
+    .member-toolbar {
+        flex-wrap: nowrap;
+    }
+}

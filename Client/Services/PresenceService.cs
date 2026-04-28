@@ -77,7 +77,17 @@ public class PresenceService : IAsyncDisposable, IPresenceService
 
     public async Task DisconnectAsync()
     {
-        await _presenceHub.StopAsync();
+        if (_presenceHub is null)
+        {
+            OnlineUsers = new();
+            return;
+        }
+
+        if (_presenceHub.State != HubConnectionState.Disconnected)
+        {
+            await _presenceHub.StopAsync();
+        }
+
         await _presenceHub.DisposeAsync();
         OnlineUsers = new();
         _presenceHub = null;

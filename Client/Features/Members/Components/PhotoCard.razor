@@ -1,25 +1,19 @@
 ﻿<MudItem xs="12" sm="6" lg="4" xl="3">
-    <MudGrid Justify="Justify.Center">
-
-        <MudItem xs="12">
+    <MudPaper Elevation="0" Class="app-card pa-3">
+        <MudStack Spacing="2">
             <MudImage Class="img-thumbnail rounded-lg" Src="@_photoFilename" />
-        </MudItem>
-
-        <MudButton Class="mx-2"
-                   Variant="Variant.Filled"
-                   @onclick="HandleSetMainPhotoAsync"
-                   Disabled="Photo.IsMain"
-                   Color="Color.Primary"
-                   Style="background-color: var(--mud-palette-dark-darken);">
-            Set Main
-        </MudButton>
-
-        <MudIconButton 
-            Icon="@Icons.Material.Filled.Delete" 
-            Variant="Variant.Filled" 
-            Color="Color.Error" 
-            @onclick="HandleDeletePhotoAsync">
-        </MudIconButton>
-
-    </MudGrid>
+            <MudStack Row="true" Spacing="1" Justify="Justify.Center">
+                <MudButton Variant="Variant.Filled"
+                           @onclick="HandleSetMainPhotoAsync"
+                           Disabled="Photo.IsMain"
+                           Color="Color.Primary">
+                    Set Main
+                </MudButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Variant="Variant.Filled"
+                               Color="Color.Error"
+                               @onclick="HandleDeletePhotoAsync" />
+            </MudStack>
+        </MudStack>
+    </MudPaper>
 </MudItem>

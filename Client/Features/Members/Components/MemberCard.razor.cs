@@ -11,11 +11,15 @@ public partial class MemberCard : IDisposable
 
     private string _photoFilename = "./assets/user.png";
 
+    protected override void OnInitialized()
+    {
+        PresenceService.OnlineUsersChanged += StateHasChanged;
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         _photoFilename = await PhotoService.GetPhotoAsync(Member.Username, Member.MainPhotoFilename);
         Member.MainPhotoFilename = _photoFilename;
-        PresenceService.OnlineUsersChanged += StateHasChanged;
         await base.OnParametersSetAsync();
     }
 

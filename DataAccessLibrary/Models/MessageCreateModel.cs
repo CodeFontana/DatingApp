@@ -3,8 +3,8 @@
 public class MessageCreateModel
 {
     [MaxLength(50)]
-    public string RecipientUsername { get; set; }
+    public string RecipientUsername { get; set; } = string.Empty;
 
     [MaxLength(2000)]
-    public string Content { get; set; }
+    public string Content { get; set; } = string.Empty;
 }

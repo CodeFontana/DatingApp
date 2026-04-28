@@ -1,68 +1,54 @@
-﻿<section>
+﻿<section class="app-page">
     @if (_showError)
     {
         <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
     }
-
-    <MudContainer MaxWidth="MaxWidth.False">
-        <MudGrid>
-            @if (MessageService.Messages?.Count > 0)
-            {
+    <MudPaper Elevation="0" Class="app-card pa-4">
+        @if (MessageService.Messages?.Count > 0)
+        {
+            <MudStack Spacing="2">
                 @foreach (MessageModel m in MessageService.Messages)
                 {
-                    <MudItem xs="11" Class="pt-1 pb-0 px-0">
-                        <MudItem Class="d-flex">
-                            <MudIcon Class="mr-1" Icon="@Icons.Material.Filled.AccessTime" Size="Size.Small" />
-                            <MudText Typo="Typo.caption">@m.MessageSent.ToLocalTime().Humanize()</MudText>
-                            @if (m.SenderUsername != Username && m.DateRead == null)
-                            {
-                                <MudText Class="ml-2" Typo="Typo.caption" Color="Color.Error">(unread)</MudText>
-                            }
-                            else if (m.SenderUsername != Username && m.RecipientDeleted)
-                            {
-                                <MudText Class="ml-2" Typo="Typo.caption" Color="Color.Error">(deleted)</MudText>
-                            }
-                            else if (m.SenderUsername != Username && m.DateRead != null)
-                            {
-                                <MudText Class="ml-2" Typo="Typo.caption" Color="Color.Success">(read @m.DateRead?.ToLocalTime().Humanize())</MudText>
-                            }
-                        </MudItem>
-                        <MudText Typo="Typo.body1">@m.Content</MudText>
-                    </MudItem>
-
-                    <MudItem xs="1" Class="pt-1 pb-0 px-0">
-                        <MudAvatar Size="Size.Large">
-                            <MudImage Src="@m.SenderPhotoUrl" />
-                        </MudAvatar>
-                    </MudItem>
-
-                    <MudItem xs="12" Class="pa-0">
-                        <MudDivider DividerType="DividerType.FullWidth" />
-                    </MudItem>
+                    <MudPaper Elevation="0" Class="pa-3">
+                        <MudStack Spacing="1">
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                                <MudAvatar Size="Size.Medium">
+                                    <MudImage Src="@m.SenderPhotoUrl" />
+                                </MudAvatar>
+                                <MudText Typo="Typo.body2">@m.SenderUsername</MudText>
+                                <MudText Typo="Typo.caption" Class="app-muted">@m.MessageSent.ToLocalTime().Humanize()</MudText>
+                                @if (m.SenderUsername != Username && m.DateRead == null)
+                                {
+                                    <MudChip T="string" Color="Color.Error" Variant="Variant.Text" Label="true">Unread</MudChip>
+                                }
+                            </MudStack>
+                            <MudText Typo="Typo.body1">@m.Content</MudText>
+                        </MudStack>
+                    </MudPaper>
                 }
-            }
-            else
-            {
-                <MudText>No messages!</MudText>
-            }
-
-            <MudItem xs="12">
-                <EditForm class="d-flex align-center" Model="@_newMessage" OnValidSubmit="HandleSendMessageToHub">
-                    <MudTextField Class="mr-2"
-                                  @bind-Value="_newMessage.Content"
-                                  Margin="Margin.Dense"
-                                  Variant="Variant.Outlined"
-                                  Label="Send a private message..."></MudTextField>
-                    <MudButton 
-                        ButtonType="ButtonType.Submit" 
-                        Variant="Variant.Filled" 
-                        Color="Color.Primary">
-                        Send
-                    </MudButton>
-                </EditForm>
-            </MudItem>
-
-        </MudGrid>
-    </MudContainer>
-
+            </MudStack>
+        }
+        else
+        {
+            <div class="app-empty-state">
+                <MudIcon Icon="@Icons.Material.Rounded.ChatBubbleOutline" Color="Color.Primary" Size="Size.Large" />
+                <MudText Typo="Typo.h6">No messages yet</MudText>
+                <MudText Typo="Typo.body2" Class="app-muted">Start the conversation by sending the first message.</MudText>
+            </div>
+        }
+    </MudPaper>
+    <MudPaper Elevation="0" Class="app-card pa-4">
+        <EditForm class="d-flex align-center" Model="@_newMessage" OnValidSubmit="HandleSendMessageToHub">
+            <MudTextField Class="mr-2 flex-grow-1"
+                          @bind-Value="_newMessage.Content"
+                          Margin="Margin.Dense"
+                          Variant="Variant.Outlined"
+                          Label="Send a private message..." />
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                Send
+            </MudButton>
+        </EditForm>
+    </MudPaper>
 </section>

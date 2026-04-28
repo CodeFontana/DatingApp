@@ -6,46 +6,46 @@ public sealed class MemberModel
 {
     public int Id { get; set; }
 
-    public string Username { get; set; }
+    public string Username { get; set; } = string.Empty;
 
-    public string MainPhotoFilename { get; set; }
+    public string MainPhotoFilename { get; set; } = string.Empty;
 
     public int Age { get; set; }
 
     [MaxLength(50)]
-    public string KnownAs { get; set; }
+    public string KnownAs { get; set; } = string.Empty;
 
     public DateTime Created { get; set; }
 
     public DateTime LastActive { get; set; }
 
     [MaxLength(25)]
-    public string Gender { get; set; }
+    public string Gender { get; set; } = string.Empty;
 
     [MaxLength(1000)]
-    public string Introduction { get; set; }
+    public string Introduction { get; set; } = string.Empty;
 
     [MaxLength(1000)]
-    public string LookingFor { get; set; }
+    public string LookingFor { get; set; } = string.Empty;
 
     [MaxLength(1000)]
-    public string Interests { get; set; }
+    public string Interests { get; set; } = string.Empty;
 
     [MaxLength(100)]
-    public string City { get; set; }
+    public string City { get; set; } = string.Empty;
 
     [MaxLength(100)]
-    public string State { get; set; }
+    public string State { get; set; } = string.Empty;
 
-    public IList<PhotoModel> Photos { get; set; }
+    public IList<PhotoModel> Photos { get; set; } = [];
 
     public DateTime CacheTime { get; set; }
 
     public static readonly Expression<Func<AppUser, MemberModel>> Projection = u => new MemberModel
     {
         Id = u.Id,
-        Username = u.UserName,
-        MainPhotoFilename = u.Photos.Where(p => p.IsMain).Select(p => p.Filename).FirstOrDefault(),
+        Username = u.UserName ?? string.Empty,
+        MainPhotoFilename = u.Photos.Where(p => p.IsMain).Select(p => p.Filename).FirstOrDefault() ?? string.Empty,
         Age = u.DateOfBirth.CalculateAge(),
         KnownAs = u.KnownAs,
         Created = u.Created,
@@ -74,8 +74,8 @@ public sealed class MemberModel
         return new MemberModel
         {
             Id = user.Id,
-            Username = user.UserName,
-            MainPhotoFilename = user.Photos?.FirstOrDefault(x => x.IsMain)?.Filename,
+            Username = user.UserName ?? string.Empty,
+            MainPhotoFilename = user.Photos?.FirstOrDefault(x => x.IsMain)?.Filename ?? string.Empty,
             Age = user.DateOfBirth.CalculateAge(),
             KnownAs = user.KnownAs,
             Created = user.Created,
@@ -86,7 +86,7 @@ public sealed class MemberModel
             Interests = user.Interests,
             City = user.City,
             State = user.State,
-            Photos = user.Photos?.Select(PhotoModel.FromEntity).ToList(),
+            Photos = user.Photos?.Select(PhotoModel.FromEntity).ToList() ?? [],
             CacheTime = DateTime.UtcNow
         };
     }

@@ -1,29 +1,12 @@
-﻿<div style="width: 100%;">
-    <MudCard Elevation="6" Style="border: 1px solid var(--mud-palette-surface);">
+﻿<div class="member-card-wrap">
+    <MudCard Elevation="0" Class="app-card member-card">
         <MudCardHeader>
             <div class='img-blur-wrap'>
                 <div class='img-blur-bg' style="background-image: linear-gradient(rgba(0, 0, 0, 0.3),rgba(0, 0, 0, 0.3) ), url('@_photoFilename');"></div>
                 <div class='img-blur' style="background-image: url('@_photoFilename')"></div>
             </div>
-            <MudPaper Elevation="0" Class="d-flex justify-center member-icons animate gap-5">
-                <MudIconButton Icon="@Icons.Material.Filled.Person"
-                               Variant="Variant.Filled" Color="Color.Primary"
-                               Size="Size.Large"
-                               aria-label="Profile"
-                               OnClick="HandleUserClick" />
-                <MudIconButton Icon="@Icons.Material.Filled.HeartBroken"
-                               Variant="Variant.Filled" Color="Color.Primary"
-                               Size="Size.Large"
-                               OnClick="HandleLikeToggleAsync"
-                               aria-label="Like" />
-                <MudIconButton Icon="@Icons.Material.Filled.Mail"
-                               Variant="Variant.Filled" Color="Color.Primary"
-                               Size="Size.Large"
-                               OnClick="HandleMessageClick"
-                               aria-label="Message" />
-            </MudPaper>
         </MudCardHeader>
-        <MudCardContent Style="background-color: var(--mud-palette-surface);">
+        <MudCardContent>
             <MudText Typo="Typo.body1" Align="Align.Center" Class="member-info d-flex justify-center align-center">
                 @if (PresenceService.OnlineUsers.Contains(Member.Username))
                 {
@@ -38,6 +21,23 @@
             <MudText Typo="Typo.body1" Align="Align.Center" Class="member-location">
                 @Member.City
             </MudText>
+            <MudStack Row="true" Spacing="1" Class="member-icons pt-3">
+                <MudIconButton Icon="@Icons.Material.Filled.Person"
+                               Variant="Variant.Filled" Color="Color.Primary"
+                               Size="Size.Medium"
+                               aria-label="Profile"
+                               OnClick="HandleUserClick" />
+                <MudIconButton Icon="@Icons.Material.Filled.Favorite"
+                               Variant="Variant.Filled" Color="Color.Primary"
+                               Size="Size.Medium"
+                               OnClick="HandleLikeToggleAsync"
+                               aria-label="Like" />
+                <MudIconButton Icon="@Icons.Material.Filled.Mail"
+                               Variant="Variant.Filled" Color="Color.Primary"
+                               Size="Size.Medium"
+                               OnClick="HandleMessageClick"
+                               aria-label="Message" />
+            </MudStack>
         </MudCardContent>
     </MudCard>
 </div>

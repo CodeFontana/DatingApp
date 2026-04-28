@@ -4,11 +4,12 @@ public partial class Lists
 {
     private List<MemberModel> _members = new();
     private LikesParameters _likesFilter = new();
-    private PaginationModel _metaData;
-    private string _pageTitle;
+    private PaginationModel _metaData = new();
+    private string _pageTitle = "Likes";
+    private string _selectedPredicate = "likedby";
+    private bool _loadingLikes;
     private bool _showError = false;
-    private string _errorText;
-    
+    private string _errorText = string.Empty;
 
     [Inject] ILikesService LikesService { get; set; }
     [Inject] ISnackbar Snackbar { get; set; }
@@ -17,17 +18,11 @@ public partial class Lists
     {
         if (string.IsNullOrWhiteSpace(_likesFilter.Predicate))
         {
-            _likesFilter.Predicate = "LikedBy";
+            _likesFilter.Predicate = "likedby";
         }
 
-        if (_likesFilter.Predicate == "LikedBy")
-        {
-            _pageTitle = "Members who like me";
-        }
-        else
-        {
-            _pageTitle = "Members who I like";
-        }
+        _selectedPredicate = _likesFilter.Predicate.ToLowerInvariant();
+        SetPageTitle(_selectedPredicate);
 
         if (_likesFilter.PageSize <= 0)
         {
@@ -39,6 +34,7 @@ public partial class Lists
 
     private async Task LoadLikesAsync()
     {
+        _loadingLikes = true;
         PaginationResponseModel<IEnumerable<MemberModel>> result = await LikesService.GetLikesAsync(_likesFilter);
 
         if (result.Success)
@@ -53,29 +49,36 @@ public partial class Lists
             _errorText = $"Request failed: {result.Message}";
             Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
         }
+
+        _loadingLikes = false;
     }
 
-    private async Task HandlePredicateChange(string predicate)
+    private async Task HandlePredicateChangeAsync(string predicate)
     {
-        if (predicate.ToLower() == "likedby")
+        if (string.IsNullOrWhiteSpace(predicate))
         {
-            _likesFilter.Predicate = "likedby";
-            _pageTitle = "Members who like me";
-        }
-        else
-        {
-            _likesFilter.Predicate = "liked";
-            _pageTitle = "Members who I like";
+            return;
         }
 
-        _members = null;
+        _selectedPredicate = predicate.ToLowerInvariant();
+        _likesFilter.Predicate = _selectedPredicate;
+        _likesFilter.PageNumber = 1;
+        SetPageTitle(_selectedPredicate);
+        _members = new();
         await LoadLikesAsync();
     }
 
     private async Task HandlePageChangedAsync(int page)
     {
         _likesFilter.PageNumber = page;
-        _members = null;
+        _members = new();
         await LoadLikesAsync();
+    }
+
+    private void SetPageTitle(string predicate)
+    {
+        _pageTitle = predicate == "likedby"
+            ? "Members who like me"
+            : "Members who I like";
     }
 }

@@ -2,7 +2,6 @@
 
 public partial class MemberDetail : IDisposable
 {
-    
     [Inject] IMemberService MemberService { get; set; }
     [Inject] IPhotoService PhotoService { get; set; }
     [Inject] ILikesService LikesService { get; set; }
@@ -24,7 +23,8 @@ public partial class MemberDetail : IDisposable
     private MemberModel _member;
     private string _photoFilename = "./assets/user.png";
     private bool _showError = false;
-    private string _errorText;
+    private string _errorText = string.Empty;
+    private bool _presenceSubscribed;
 
 
     protected override async Task OnParametersSetAsync()
@@ -33,6 +33,7 @@ public partial class MemberDetail : IDisposable
 
         if (result.Success)
         {
+            _showError = false;
             _member = result.Data;
             _photoFilename = await PhotoService.GetPhotoAsync(_member.Username, _member.MainPhotoFilename);
         }
@@ -43,7 +44,11 @@ public partial class MemberDetail : IDisposable
             Snackbar.Add($"Request failed: {result.Message}", Severity.Error);
         }
 
-        PresenceService.OnlineUsersChanged += StateHasChanged;
+        if (_presenceSubscribed == false)
+        {
+            PresenceService.OnlineUsersChanged += StateHasChanged;
+            _presenceSubscribed = true;
+        }
         await base.OnParametersSetAsync();
     }
 
@@ -53,22 +58,22 @@ public partial class MemberDetail : IDisposable
         {
             case "about":
                 await ActivateTab(_aboutTab);
-                ActivatePanel(_aboutPanel);
+                await ActivatePanelAsync(_aboutPanel);
                 break;
 
             case "interests":
                 await ActivateTab(_interestsTab);
-                ActivatePanel(_interestsPanel);
+                await ActivatePanelAsync(_interestsPanel);
                 break;
 
             case "photos":
                 await ActivateTab(_photosTab);
-                ActivatePanel(_photosPanel);
+                await ActivatePanelAsync(_photosPanel);
                 break;
 
             case "messages":
                 await ActivateTab(_messagesTab);
-                ActivatePanel(_messagesPanel);
+                await ActivatePanelAsync(_messagesPanel);
                 break;
 
             default:
@@ -88,12 +93,14 @@ public partial class MemberDetail : IDisposable
         await _memberDetailTabs.ActivatePanelAsync(panel);
     }
 
-    private void ActivatePanel(MudExpansionPanel panel)
+    private async Task ActivatePanelAsync(MudExpansionPanel panel)
     {
         if (panel == null)
         {
             return;
         }
+
+        await panel.ExpandAsync();
     }
 
     private async Task HandleLikeToggleAsync()

@@ -1,4 +1,6 @@
-﻿namespace Client.Features.Layout;
+﻿using Microsoft.JSInterop;
+
+namespace Client.Features.Layout;
 
 public partial class MainLayout : IDisposable
 {
@@ -9,7 +11,7 @@ public partial class MainLayout : IDisposable
     [Inject] NavigationManager NavManager { get; set; }
     [Inject] IAuthenticationService AuthService { get; set; }
     [Inject] IMemberStateService MemberStateService { get; set; }
-    [Inject] ILocalStorageService LocalStorage { get; set; }
+    [Inject] IJSRuntime JSRuntime { get; set; }
     [Inject] IWebAssemblyHostEnvironment HostEnv { get; set; }
 
     private string _themeIcon => _isDarkMode
@@ -25,7 +27,8 @@ public partial class MainLayout : IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        string theme = await LocalStorage.GetItemAsync<string>("Theme");
+        string theme = LocalStorageValueCompat.FromBrowser(
+            await JSRuntime.InvokeAsync<string>("localStorage.getItem", "Theme"));
 
         // Preserve the original DatingApp default of dark mode when the user
         // hasn't picked one explicitly.
@@ -51,7 +54,7 @@ public partial class MainLayout : IDisposable
     private async Task ToggleThemeAsync()
     {
         _isDarkMode = !_isDarkMode;
-        await LocalStorage.SetItemAsync("Theme", _isDarkMode ? "Dark" : "Light");
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "Theme", _isDarkMode ? "Dark" : "Light");
     }
 
     private async Task HandleLogoutAsync()

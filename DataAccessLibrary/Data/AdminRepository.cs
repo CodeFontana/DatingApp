@@ -16,6 +16,8 @@ public class AdminRepository : IAdminRepository
     {
         return await _roleManager.Roles
             .Select(x => x.Name)
+            .Where(x => x != null)
+            .Select(x => x!)
             .OrderBy(x => x)
             .ToListAsync();
     }
@@ -30,8 +32,8 @@ public class AdminRepository : IAdminRepository
             .Select(u => new UserWithRolesModel
             {
                 Id = u.Id,
-                Username = u.UserName,
-                Roles = u.UserRoles.Select(r => r.Role.Name).ToList()
+                Username = u.UserName ?? string.Empty,
+                Roles = u.UserRoles.Select(r => r.Role.Name).Where(r => r != null).Select(r => r!).ToList()
             })
             .ToListAsync();
     }
@@ -43,7 +45,7 @@ public class AdminRepository : IAdminRepository
             throw new ArgumentException("Invalid user for role modification");
         }
         
-        AppUser user = await _userManager.FindByNameAsync(userWithRoles.Username);
+        AppUser? user = await _userManager.FindByNameAsync(userWithRoles.Username);
 
         if (user == null)
         {

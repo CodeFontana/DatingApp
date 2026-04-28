@@ -8,19 +8,23 @@ public class Message
     public int SenderId { get; set; }
 
     [MaxLength(50)]
-    public string SenderUsername { get; set; }
+    public string SenderUsername { get; set; } = string.Empty;
 
-    public AppUser Sender { get; set; }
+    [ForeignKey(nameof(SenderId))]
+    [InverseProperty(nameof(AppUser.MessagesSent))]
+    public AppUser Sender { get; set; } = null!;
 
     public int RecipientId { get; set; }
 
     [MaxLength(50)]
-    public string RecipientUsername { get; set; }
+    public string RecipientUsername { get; set; } = string.Empty;
 
-    public AppUser Recipient { get; set; }
+    [ForeignKey(nameof(RecipientId))]
+    [InverseProperty(nameof(AppUser.MessagesReceived))]
+    public AppUser Recipient { get; set; } = null!;
 
     [MaxLength(2000)]
-    public string Content { get; set; }
+    public string Content { get; set; } = string.Empty;
 
     public DateTime? DateRead { get; set; }
 

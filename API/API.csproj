@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0-windows7.0</TargetFramework>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <UserSecretsId>a13375fb-b9e2-49ce-b103-bfee943630fb</UserSecretsId>
   </PropertyGroup>
 

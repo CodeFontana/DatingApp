@@ -12,9 +12,13 @@ public class SeedData
 
         try
         {
-            string execPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string? execPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (string.IsNullOrWhiteSpace(execPath))
+            {
+                throw new InvalidOperationException("Unable to resolve executing assembly path.");
+            }
             string userData = await File.ReadAllTextAsync(@$"{execPath}\Data\UserSeedData.json");
-            List<AppUser> users = JsonSerializer.Deserialize<List<AppUser>>(userData);
+            List<AppUser>? users = JsonSerializer.Deserialize<List<AppUser>>(userData);
 
             if (users == null)
             {
@@ -83,7 +87,7 @@ public class SeedData
                 for (int i = 0; i < numLikes; i++)
                 {
                     int skipUsers = random.Next(0, users.Count - 1);
-                    AppUser userToLike = unitOfWork.Db.Users
+                    AppUser? userToLike = unitOfWork.Db.Users
                         .OrderBy(r => Guid.NewGuid())
                         .Skip(skipUsers)
                         .Take(1).FirstOrDefault();
@@ -104,10 +108,10 @@ public class SeedData
                         unitOfWork.Db.Messages.Add(new Message
                         {
                             SenderId = user.Id,
-                            SenderUsername = user.UserName,
+                            SenderUsername = user.UserName ?? string.Empty,
                             Sender = user,
                             RecipientId = userToLike.Id,
-                            RecipientUsername = userToLike.UserName,
+                            RecipientUsername = userToLike.UserName ?? string.Empty,
                             Recipient = userToLike,
                             Content = "Hey gorgeous..."
                         });

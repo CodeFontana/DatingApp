@@ -2,6 +2,6 @@
 
 public class MessageParameters : PaginationParameters
 {
-    public string Username { get; set; }
-    public string Container { get; set; }
+    public string Username { get; set; } = string.Empty;
+    public string Container { get; set; } = string.Empty;
 }

@@ -1,8 +1,13 @@
-/*Credit: https://tobiasahlin.com/spinkit/ */
+/* Credit: https://tobiasahlin.com/spinkit/ */
 
 .loading {
     text-align: center;
     font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.loading-title {
+    margin-top: 0.5rem;
+    text-align: center;
 }
 
 .spinner-container {
@@ -21,60 +26,118 @@
     font-size: 10px;
 }
 
-    .spin-wave .spin-rect {
-        background-color: #E95420FF;
-        height: 100%;
-        width: 20px;
-        display: inline-block;
-        -webkit-animation: spin-waveStretchDelay 1.2s infinite ease-in-out;
-        animation: spin-waveStretchDelay 1.2s infinite ease-in-out;
-    }
-
-    .spin-wave .spin-rect1 {
-        -webkit-animation-delay: -1.2s;
-        animation-delay: -1.2s;
-    }
-
-    .spin-wave .spin-rect2 {
-        -webkit-animation-delay: -1.1s;
-        animation-delay: -1.1s;
-    }
-
-    .spin-wave .spin-rect3 {
-        -webkit-animation-delay: -1s;
-        animation-delay: -1s;
-    }
-
-    .spin-wave .spin-rect4 {
-        -webkit-animation-delay: -0.9s;
-        animation-delay: -0.9s;
-    }
-
-    .spin-wave .spin-rect5 {
-        -webkit-animation-delay: -0.8s;
-        animation-delay: -0.8s;
-    }
-
-@-webkit-keyframes spin-waveStretchDelay {
-    0%, 40%, 100% {
-        -webkit-transform: scaleY(0.4);
-        transform: scaleY(0.4);
-    }
-
-    20% {
-        -webkit-transform: scaleY(1);
-        transform: scaleY(1);
-    }
+.spin-wave .spin-rect {
+    background-color: var(--mud-palette-primary);
+    height: 100%;
+    width: 20px;
+    display: inline-block;
+    animation: spin-wave-stretch-delay 1.2s infinite ease-in-out;
 }
 
-@keyframes spin-waveStretchDelay {
-    0%, 40%, 100% {
-        -webkit-transform: scaleY(0.4);
-        transform: scaleY(0.4);
-    }
+.spin-wave .spin-rect1 {
+    animation-delay: -1.2s;
+}
 
-    20% {
-        -webkit-transform: scaleY(1);
-        transform: scaleY(1);
-    }
+.spin-wave .spin-rect2 {
+    animation-delay: -1.1s;
+}
+
+.spin-wave .spin-rect3 {
+    animation-delay: -1s;
+}
+
+.spin-wave .spin-rect4 {
+    animation-delay: -0.9s;
+}
+
+.spin-wave .spin-rect5 {
+    animation-delay: -0.8s;
+}
+
+.spinner-dots {
+    margin: 50px auto 0;
+    width: 130px;
+    text-align: center;
+}
+
+.spinner-dots > div {
+    width: 36px;
+    height: 36px;
+    background-color: var(--mud-palette-primary);
+    border-radius: 100%;
+    display: inline-block;
+    animation: spinner-bounce-delay 1.4s infinite ease-in-out both;
+}
+
+.spinner-dots .bounce1 {
+    animation-delay: -0.32s;
+}
+
+.spinner-dots .bounce2 {
+    animation-delay: -0.16s;
+}
+
+.spin-fading-circle {
+    margin: 20px auto;
+    width: 120px;
+    height: 120px;
+    position: relative;
+}
+
+.spin-fading-circle .spin-circle {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.spin-fading-circle .spin-circle:before {
+    content: "";
+    display: block;
+    margin: 0 auto;
+    width: 15%;
+    height: 15%;
+    background-color: var(--mud-palette-primary);
+    border-radius: 100%;
+    animation: spin-circle-fade-delay 1.2s infinite ease-in-out both;
+}
+
+.spin-fading-circle .spin-circle2 { transform: rotate(30deg); }
+.spin-fading-circle .spin-circle3 { transform: rotate(60deg); }
+.spin-fading-circle .spin-circle4 { transform: rotate(90deg); }
+.spin-fading-circle .spin-circle5 { transform: rotate(120deg); }
+.spin-fading-circle .spin-circle6 { transform: rotate(150deg); }
+.spin-fading-circle .spin-circle7 { transform: rotate(180deg); }
+.spin-fading-circle .spin-circle8 { transform: rotate(210deg); }
+.spin-fading-circle .spin-circle9 { transform: rotate(240deg); }
+.spin-fading-circle .spin-circle10 { transform: rotate(270deg); }
+.spin-fading-circle .spin-circle11 { transform: rotate(300deg); }
+.spin-fading-circle .spin-circle12 { transform: rotate(330deg); }
+
+.spin-fading-circle .spin-circle2:before { animation-delay: -1.1s; }
+.spin-fading-circle .spin-circle3:before { animation-delay: -1s; }
+.spin-fading-circle .spin-circle4:before { animation-delay: -0.9s; }
+.spin-fading-circle .spin-circle5:before { animation-delay: -0.8s; }
+.spin-fading-circle .spin-circle6:before { animation-delay: -0.7s; }
+.spin-fading-circle .spin-circle7:before { animation-delay: -0.6s; }
+.spin-fading-circle .spin-circle8:before { animation-delay: -0.5s; }
+.spin-fading-circle .spin-circle9:before { animation-delay: -0.4s; }
+.spin-fading-circle .spin-circle10:before { animation-delay: -0.3s; }
+.spin-fading-circle .spin-circle11:before { animation-delay: -0.2s; }
+.spin-fading-circle .spin-circle12:before { animation-delay: -0.1s; }
+
+@keyframes spin-wave-stretch-delay {
+    0%, 40%, 100% { transform: scaleY(0.4); }
+    20% { transform: scaleY(1); }
+}
+
+@keyframes spinner-bounce-delay {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+
+@keyframes spin-circle-fade-delay {
+    0%, 39%, 100% { opacity: 0; }
+    40% { opacity: 1; }
 }

@@ -15,7 +15,7 @@ public class AccountRepository : IAccountRepository
         _signInManager = signInManager;
     }
 
-    public async Task<AppUser> GetAccountAsync(string username)
+    public async Task<AppUser?> GetAccountAsync(string username)
     {
         if (string.IsNullOrWhiteSpace(username))
         {
@@ -26,7 +26,7 @@ public class AccountRepository : IAccountRepository
             .AsNoTracking()
             .SingleOrDefaultAsync(u =>
                 u.NormalizedEmail == username.ToUpper()
-                || u.UserName.ToUpper() == username.ToUpper());
+                || (u.UserName ?? string.Empty).ToUpper() == username.ToUpper());
     }
 
     public async Task<List<AppUser>> GetAccountsAsync()
@@ -69,10 +69,10 @@ public class AccountRepository : IAccountRepository
 
     public async Task<AppUser> LoginAsync(LoginUserModel loginUser)
     {
-        AppUser appUser = await _userManager.Users
+        AppUser? appUser = await _userManager.Users
             .SingleOrDefaultAsync(u =>
                 u.NormalizedEmail == loginUser.Username.ToUpper()
-                || u.UserName.ToUpper() == loginUser.Username.ToUpper());
+                || (u.UserName ?? string.Empty).ToUpper() == loginUser.Username.ToUpper());
 
         if (appUser == null)
         {
@@ -105,7 +105,7 @@ public class AccountRepository : IAccountRepository
             throw new ArgumentException("Email cannot be null or empty");
         }
 
-        AppUser user = await _userManager.Users
+        AppUser? user = await _userManager.Users
             .SingleOrDefaultAsync(u => u.Id == updateAccount.Id);
 
         if (user == null)
@@ -124,9 +124,9 @@ public class AccountRepository : IAccountRepository
             throw new ArgumentException("Username must not be null or empty");
         }
 
-        AppUser appUser = await _userManager.Users
+        AppUser? appUser = await _userManager.Users
             .SingleOrDefaultAsync(u =>
-            u.UserName == username.ToUpper()
+            (u.UserName ?? string.Empty) == username.ToUpper()
             || u.NormalizedEmail == username.ToUpper());
 
         if (appUser == null)
@@ -134,7 +134,7 @@ public class AccountRepository : IAccountRepository
             throw new Exception("Username not found");
         }
 
-        if (appUser.UserName.ToUpper().Equals(requestor.ToUpper()))
+        if ((appUser.UserName ?? string.Empty).ToUpper().Equals(requestor.ToUpper()))
         {
             throw new Exception("Unable to delete your own account");
         }

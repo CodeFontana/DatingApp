@@ -9,7 +9,7 @@ public sealed class MemberRepository : IMemberRepository
         _db = context;
     }
 
-    public async Task<MemberModel> GetMemberAsync(string username)
+    public async Task<MemberModel?> GetMemberAsync(string username)
     {
         return await _db.Users
             .AsNoTracking()
@@ -45,12 +45,12 @@ public sealed class MemberRepository : IMemberRepository
             userParameters.PageSize);
     }
 
-    public async Task<AppUser> GetMemberByIdAsync(int id)
+    public async Task<AppUser?> GetMemberByIdAsync(int id)
     {
         return await _db.Users.FindAsync(id);
     }
 
-    public async Task<AppUser> GetMemberByUsernameAsync(string username)
+    public async Task<AppUser?> GetMemberByUsernameAsync(string username)
     {
         return await _db.Users
             .Include(p => p.Photos)
