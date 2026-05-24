@@ -4,15 +4,11 @@ public class AccountRepository : IAccountRepository
 {
     private readonly DataContext _db;
     private readonly UserManager<AppUser> _userManager;
-    private readonly SignInManager<AppUser> _signInManager;
 
-    public AccountRepository(DataContext context,
-                             UserManager<AppUser> userManager,
-                             SignInManager<AppUser> signInManager)
+    public AccountRepository(DataContext context, UserManager<AppUser> userManager)
     {
         _db = context;
         _userManager = userManager;
-        _signInManager = signInManager;
     }
 
     public async Task<AppUser?> GetAccountAsync(string username)
@@ -72,17 +68,10 @@ public class AccountRepository : IAccountRepository
         AppUser? appUser = await _userManager.Users
             .SingleOrDefaultAsync(u =>
                 u.NormalizedEmail == loginUser.Username.ToUpper()
-                || (u.UserName ?? string.Empty).ToUpper() == loginUser.Username.ToUpper());
+                || (u.UserName ?? string.Empty).ToUpper() == loginUser.Username.ToUpper())
+            ?? throw new ArgumentException($"Invalid user [{loginUser.Username}]");
 
-        if (appUser == null)
-        {
-            throw new ArgumentException($"Invalid user [{loginUser.Username}]");
-        }
-
-        SignInResult result = await _signInManager.CheckPasswordSignInAsync(
-                appUser, loginUser.Password, false);
-
-        if (result.Succeeded == false)
+        if (await _userManager.CheckPasswordAsync(appUser, loginUser.Password) == false)
         {
             throw new Exception($"Invalid password for user [{loginUser.Username}]");
         }
@@ -126,13 +115,9 @@ public class AccountRepository : IAccountRepository
 
         AppUser? appUser = await _userManager.Users
             .SingleOrDefaultAsync(u =>
-            (u.UserName ?? string.Empty) == username.ToUpper()
-            || u.NormalizedEmail == username.ToUpper());
-
-        if (appUser == null)
-        {
-            throw new Exception("Username not found");
-        }
+                (u.UserName ?? string.Empty) == username.ToUpper()
+                || u.NormalizedEmail == username.ToUpper())
+            ?? throw new Exception("Username not found");
 
         if ((appUser.UserName ?? string.Empty).ToUpper().Equals(requestor.ToUpper()))
         {

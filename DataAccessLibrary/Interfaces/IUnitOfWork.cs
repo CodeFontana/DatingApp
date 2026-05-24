@@ -9,7 +9,6 @@ public interface IUnitOfWork
     IAccountRepository AccountRepository { get; }
     UserManager<AppUser> UserManager { get; }
     RoleManager<AppRole> RoleManager { get; }
-    SignInManager<AppUser> SignInManager { get; }
     DataContext Db { get; }
 
     Task<bool> CompleteAsync();

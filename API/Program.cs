@@ -47,7 +47,6 @@ builder.Services.AddIdentityCore<AppUser>(opt =>
 })
     .AddRoles<AppRole>()
     .AddRoleManager<RoleManager<AppRole>>()
-    .AddSignInManager<SignInManager<AppUser>>()
     .AddRoleValidator<RoleValidator<AppRole>>()
     .AddEntityFrameworkStores<DataContext>();
 
