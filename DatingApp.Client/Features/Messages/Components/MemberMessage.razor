@@ -7,7 +7,7 @@
         @if (MessageService.Messages?.Count > 0)
         {
             <MudStack Spacing="2">
-                @foreach (MessageResponse m in MessageService.Messages)
+                @foreach (MessageResponse m in MessageService.Messages.OrderBy(x => x.MessageSent))
                 {
                     <MudPaper Elevation="0" Class="pa-3">
                         <MudStack Spacing="1">
