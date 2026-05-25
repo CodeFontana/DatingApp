@@ -1,0 +1,69 @@
+@page "/lists"
+@attribute [Authorize]
+
+<PageTitle>DatingApp - Lists</PageTitle>
+
+<section class="app-page">
+    <MudPaper Elevation="0" Class="app-card pa-4">
+        <div class="app-page-header">
+            <div class="app-page-title-group">
+                <MudText Typo="Typo.h3">@_pageTitle</MudText>
+                <MudText Typo="Typo.body2" Class="app-page-subtitle">
+                    Keep track of who you like and who liked you back.
+                </MudText>
+            </div>
+            <MudChipSet T="string"
+                        Class="app-filter-chips"
+                        SelectionMode="SelectionMode.SingleSelection"
+                        CheckMark="true"
+                        SelectedValue="_selectedPredicate"
+                        SelectedValueChanged="HandlePredicateChangeAsync">
+                <MudChip T="string" Color="Color.Primary" Value=@("liked") Variant="Variant.Filled">Members I Like</MudChip>
+                <MudChip T="string" Color="Color.Primary" Value=@("likedby") Variant="Variant.Filled">Members Who Like Me</MudChip>
+            </MudChipSet>
+        </div>
+    </MudPaper>
+    @if (_showError)
+    {
+        <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+    }
+    else if (_loadingLikes)
+    {
+        <MudPaper Elevation="0" Class="app-content-state">
+            <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                <MudText Typo="Typo.body1">Loading likes...</MudText>
+            </MudStack>
+        </MudPaper>
+    }
+    else if (_members?.Count > 0)
+    {
+        <MudGrid Class="d-flex mb-2">
+            @foreach (MemberResponse m in _members)
+            {
+                <MudItem Class="d-flex justify-center px-lg-12 px-xl-6" xs="12" sm="4" md="3" lg="3" xl="2">
+                    <MemberCard Member="m" />
+                </MudItem>
+            }
+        </MudGrid>
+
+        <MudPagination Class="d-flex justify-center my-5"
+                   Rectangular="true"
+                   Color="Color.Primary"
+                   Size="Size.Large"
+                   Count="@(_metaData?.TotalPages ?? 1)"
+                   Selected="@(_metaData?.CurrentPage ?? 1)"
+                   SelectedChanged="HandlePageChangedAsync" />
+    }
+    else
+    {
+        <MudPaper Elevation="0" Class="app-content-state">
+            <div class="app-empty-state">
+                <MudIcon Icon="@Icons.Material.Rounded.FavoriteBorder" Color="Color.Primary" Size="Size.Large" />
+                <MudText Typo="Typo.h6">No members in this list yet</MudText>
+                <MudText Typo="Typo.body2" Class="app-muted">Try the other list or browse members to make new connections.</MudText>
+                <MudButton Href="/members" Variant="Variant.Filled" Color="Color.Primary">Browse members</MudButton>
+            </div>
+        </MudPaper>
+    }
+</section>

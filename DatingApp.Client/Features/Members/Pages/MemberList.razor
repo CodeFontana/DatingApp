@@ -1,0 +1,128 @@
+@page "/members"
+@attribute [Authorize]
+
+<MudBreakpointProvider OnBreakpointChanged="HandleBreakpointChangedAsync" />
+
+<PageTitle>DatingApp - Members</PageTitle>
+
+<section class="app-page">
+    <EditForm Model="@_membersFilter" OnValidSubmit="HandleFilterSubmitAsync">
+        <DataAnnotationsValidator />
+        <MudPaper Elevation="0" Class="app-card app-card-static pa-3 mb-2">
+            <div class="member-toolbar">
+                <div class="member-toolbar-title-sort">
+                    <MudText Typo="Typo.h5">Your matches - @(_metaData?.TotalCount ?? 0) found</MudText>
+                    <MudChipSet T="string"
+                                SelectionMode="SelectionMode.SingleSelection"
+                                SelectedValue="_selectedSort"
+                                SelectedValueChanged="HandleSortSubmitAsync"
+                                CheckMark="true"
+                                Class="app-filter-chips">
+                        <MudChip T="string" Value=@("lastactive") Color="Color.Primary" Variant="Variant.Filled">Last Active</MudChip>
+                        <MudChip T="string" Value=@("created") Color="Color.Primary" Variant="Variant.Filled">Newest</MudChip>
+                    </MudChipSet>
+                </div>
+
+                <div class="member-control member-control-age">
+                    <MudNumericField T="int"
+                                     Class="member-age-field"
+                                     Min="18"
+                                     Max="85"
+                                     MaxLength="3"
+                                     Label="Age from"
+                                     @bind-Value="@_membersFilter.MinAge"
+                                     For="@(() => _membersFilter.MinAge)" />
+                </div>
+
+                <div class="member-control member-control-age">
+                    <MudNumericField T="int"
+                                     Class="member-age-field"
+                                     Min="18"
+                                     Max="85"
+                                     MaxLength="3"
+                                     Label="Age to"
+                                     @bind-Value="@_membersFilter.MaxAge"
+                                     For="@(() => _membersFilter.MaxAge)" />
+                </div>
+
+                <div class="member-control member-control-page-size">
+                    <MudSelect T="string"
+                               Class="member-page-size-field"
+                               Dense="true"
+                               Label="Results per page"
+                               Variant="Variant.Filled"
+                               Value="@_selectedPageSizeMode"
+                               ValueChanged="HandlePageSizeModeChangedAsync">
+                        <MudSelectItem Value=@("auto")>Auto</MudSelectItem>
+                        <MudSelectItem Value=@("5")>5</MudSelectItem>
+                        <MudSelectItem Value=@("10")>10</MudSelectItem>
+                        <MudSelectItem Value=@("20")>20</MudSelectItem>
+                        <MudSelectItem Value=@("50")>50</MudSelectItem>
+                    </MudSelect>
+                </div>
+
+                <MudPaper Elevation="0" Class="member-actions-panel">
+                    <MudButton Class="member-action-button"
+                               Size="Size.Small"
+                               Color="Color.Primary"
+                               Variant="Variant.Filled"
+                               ButtonType="ButtonType.Submit">
+                        Apply
+                    </MudButton>
+                    <MudButton Class="member-action-button"
+                               Size="Size.Small"
+                               Color="Color.Info"
+                               Variant="Variant.Outlined"
+                               OnClick="HandleFilterResetAsync">
+                        Reset
+                    </MudButton>
+                </MudPaper>
+            </div>
+        </MudPaper>
+
+        @if (_showError)
+        {
+            <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+        }
+        else if (_loadingMembers)
+        {
+            <MudPaper Elevation="0" Class="app-content-state">
+                <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                    <MudText Typo="Typo.body1">Loading members...</MudText>
+                </MudStack>
+            </MudPaper>
+        }
+        else if (_members?.Count > 0)
+        {
+            <MudGrid Class="mb-2" Spacing="3" Justify="Justify.FlexStart">
+                @foreach (MemberResponse m in _members)
+                {
+                    <MudItem Class="d-flex" xs="12" sm="6" md="6" lg="4" xl="3">
+                        <MemberCard Member="m" />
+                    </MudItem>
+                }
+            </MudGrid>
+
+            <MudPagination Class="d-flex justify-center my-5"
+                       Rectangular="true"
+                       Color="Color.Primary"
+                       Count="@(_metaData?.TotalPages ?? 1)"
+                       Size="Size.Large"
+                       Selected="@(_metaData?.CurrentPage ?? 1)"
+                       SelectedChanged="HandlePageChangedAsync" />
+        }
+        else
+        {
+            <MudPaper Elevation="0" Class="app-content-state">
+                <div class="app-empty-state">
+                    <MudIcon Icon="@Icons.Material.Rounded.PeopleOutline" Color="Color.Primary" Size="Size.Large" />
+                    <MudText Typo="Typo.h6">No members match your filters</MudText>
+                    <MudText Typo="Typo.body2" Class="app-muted">Try broadening your age range or resetting filters.</MudText>
+                </div>
+            </MudPaper>
+        }
+
+        <ValidationSummary />
+    </EditForm>
+</section>

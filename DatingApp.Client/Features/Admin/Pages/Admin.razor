@@ -1,0 +1,104 @@
+@page "/Admin"
+@attribute [Authorize(Roles = "Administrator,Moderator")]
+
+<PageTitle>DatingApp - Admin Panel</PageTitle>
+
+<section class="app-page">
+    <MudPaper Elevation="0" Class="app-card pa-4">
+        <div class="app-page-header">
+            <div class="app-page-title-group">
+                <MudText Typo="Typo.h3">Admin Panel</MudText>
+                <MudText Typo="Typo.body2" Class="app-page-subtitle">
+                    Manage user access and moderation tools.
+                </MudText>
+            </div>
+        </div>
+    </MudPaper>
+
+    @if (_showError)
+    {
+        <MudAlert Severity="Severity.Error">@_errorText</MudAlert>
+    }
+
+    <MudTabs Elevation="6" Centered="true" Rounded="true" Color="Color.Primary">
+
+        <AuthorizeView Roles="Administrator" Context="UserManagement">
+            <Authorized>
+                <MudTabPanel Text="User management">
+                    <MudContainer Class="px-0" MaxWidth="MaxWidth.False">
+                        @if (_users?.Count > 0)
+                        {
+                            <MudGrid Class="mb-2" Justify="Justify.Center">
+                                <MudItem xs="12" xl="8">
+                                    <MudTable T="UserWithRolesResponse"
+                                          Items="@_users"
+                                          Dense="false"
+                                          Hover="true"
+                                          Bordered="true"
+                                          Striped="false"
+                                          Loading="@_loadingUsers"
+                                          LoadingProgressColor="Color.Info"
+                                          Filter="new Func<UserWithRolesResponse,bool>(UserFilterFunc)"
+                                          Breakpoint="Breakpoint.None"
+                                          HorizontalScrollbar="true"
+                                          Virtualize="true"
+                                          Elevation="20">
+                                        <ToolBarContent>
+                                            <MudTextField @bind-Value="_searchString"
+                                                          Label="Search users or roles"
+                                                          Placeholder="Type to filter"
+                                                          Adornment="Adornment.Start"
+                                                          AdornmentIcon="@Icons.Material.Filled.Search"
+                                                          IconSize="Size.Medium"
+                                                          Class="mt-0" />
+                                            <MudSpacer />
+                                            <MudText Typo="Typo.caption" Class="app-muted">Total: @_users.Count</MudText>
+                                        </ToolBarContent>
+                                        <HeaderContent>
+                                            <MudTh><MudText Typo="Typo.h5">Username</MudText></MudTh>
+                                            <MudTh><MudText Typo="Typo.h5">Roles</MudText></MudTh>
+                                            <MudTh><MudText Typo="Typo.h5">Actions</MudText></MudTh>
+                                        </HeaderContent>
+                                        <RowTemplate>
+                                            <MudTd><MudText Typo="Typo.h6">@context.Username</MudText></MudTd>
+                                            <MudTd><MudText Typo="Typo.h6">@(string.Join(", ", context.Roles))</MudText></MudTd>
+                                            <MudTd>
+                                                <MudButton Class="mx-1" Variant="Variant.Outlined" Color="Color.Info" OnClick="() => HandleEditRoles(context)">Edit Roles</MudButton>
+                                                <MudButton Class="mx-1" Variant="Variant.Outlined" Color="Color.Error" OnClick="() => HandleDeleteUser(context.Username)">Delete User</MudButton>
+                                            </MudTd>
+                                        </RowTemplate>
+                                        <PagerContent>
+                                            <MudTablePager />
+                                        </PagerContent>
+                                    </MudTable>
+                                </MudItem>
+                            </MudGrid>
+                        }
+                        else if (_loadingUsers == false)
+                        {
+                            <MudPaper Elevation="0" Class="app-content-state">
+                                <div class="app-empty-state">
+                                    <MudIcon Icon="@Icons.Material.Rounded.GroupOff" Color="Color.Primary" Size="Size.Large" />
+                                    <MudText Typo="Typo.h6">No users found</MudText>
+                                    <MudText Typo="Typo.body2" Class="app-muted">Try a different search or refresh the page.</MudText>
+                                </div>
+                            </MudPaper>
+                        }
+                    </MudContainer>
+                </MudTabPanel>
+            </Authorized>
+        </AuthorizeView>
+
+        <AuthorizeView Roles="Administrator,Moderator" Context="PhotoModeration">
+            <Authorized>
+                <MudTabPanel Text="Photo management">
+                    <MudContainer Class="px-0">
+                        Photo-management works!
+                    </MudContainer>
+                </MudTabPanel>
+            </Authorized>
+        </AuthorizeView>
+
+    </MudTabs>
+
+</section>
