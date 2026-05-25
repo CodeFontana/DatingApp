@@ -1,6 +1,13 @@
 ﻿@page "/member/{username}"
 @page "/member/{username}/{StartTab}"
 @attribute [Authorize]
+@implements IDisposable
+
+@inject IMemberService MemberService
+@inject IPhotoService PhotoService
+@inject ILikesService LikesService
+@inject IPresenceService PresenceService
+@inject ISnackbar Snackbar
 
 <PageTitle>DatingApp - @_member?.KnownAs</PageTitle>
 
@@ -155,15 +162,7 @@
     }
 </section>
 
-@implements IDisposable
-
 @code {
-    [Inject] public required IMemberService MemberService { get; set; }
-    [Inject] public required IPhotoService PhotoService { get; set; }
-    [Inject] public required ILikesService LikesService { get; set; }
-    [Inject] public required IPresenceService PresenceService { get; set; }
-    [Inject] public required ISnackbar Snackbar { get; set; }
-
     [Parameter] public string Username { get; set; } = string.Empty;
     [Parameter] public string StartTab { get; set; } = string.Empty;
 

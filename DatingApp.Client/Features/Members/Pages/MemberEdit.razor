@@ -1,5 +1,8 @@
 ﻿@page "/member/edit"
 @attribute [Authorize]
+@inject IMemberService MemberService
+@inject IMemberStateService MemberStateService
+@inject ISnackbar Snackbar
 
 <PageTitle>DatingApp - Edit Profile</PageTitle>
 
@@ -132,10 +135,6 @@
 </section>
 
 @code {
-    [Inject] public required IMemberService MemberService { get; set; }
-    [Inject] public required IMemberStateService MemberStateService { get; set; }
-    [Inject] public required ISnackbar Snackbar { get; set; }
-
     private bool _showError = false;
     private string _errorText = string.Empty;
     private bool _changesMade = false;

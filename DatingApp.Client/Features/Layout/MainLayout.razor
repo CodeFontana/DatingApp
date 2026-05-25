@@ -1,5 +1,14 @@
 @inherits LayoutComponentBase
+@implements IDisposable
+
 @using DatingApp.Client.Features.Theme
+
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavManager
+@inject IAuthenticationService AuthService
+@inject IMemberStateService MemberStateService
+@inject IJSRuntime JSRuntime
+@inject IWebAssemblyHostEnvironment HostEnv
 
 <MudThemeProvider Theme="AppTheme.Default" @bind-IsDarkMode="_isDarkMode" />
 <MudPopoverProvider />
@@ -303,18 +312,9 @@
     </MudMainContent>
 </MudLayout>
 
-@implements IDisposable
-
 @code {
     private bool _isDarkMode = true;
     private bool _drawerOpen = false;
-
-    [Inject] public required AuthenticationStateProvider AuthStateProvider { get; set; }
-    [Inject] public required NavigationManager NavManager { get; set; }
-    [Inject] public required IAuthenticationService AuthService { get; set; }
-    [Inject] public required IMemberStateService MemberStateService { get; set; }
-    [Inject] public required IJSRuntime JSRuntime { get; set; }
-    [Inject] public required IWebAssemblyHostEnvironment HostEnv { get; set; }
 
     private string _themeIcon => _isDarkMode
         ? Icons.Material.Rounded.LightMode

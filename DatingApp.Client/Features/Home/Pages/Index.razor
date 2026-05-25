@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject NavigationManager NavManager
 
 <PageTitle>Dating App - Home</PageTitle>
 
@@ -104,8 +105,6 @@
 </MudStack>
 
 @code {
-    [Inject] public required NavigationManager NavManager { get; set; }
-
     private void OnLogin()
     {
         NavManager.NavigateTo("/login");

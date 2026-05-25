@@ -1,4 +1,7 @@
-﻿@if (Member is not null
+@inject ISpinnerService SpinnerService
+@inject IPhotoService PhotoService
+
+@if (Member is not null
 && Member.Photos.Count > 0
 && SpinnerService.HoldSpinner == false)
 {
@@ -48,8 +51,6 @@ else
 }
 
 @code {
-    [Inject] public required ISpinnerService SpinnerService { get; set; }
-    [Inject] public required IPhotoService PhotoService { get; set; }
     [Parameter] public required MemberResponse Member { get; set; }
 
     private MudCarousel<PhotoResponse> _carousel = null!;

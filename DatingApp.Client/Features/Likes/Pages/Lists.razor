@@ -1,5 +1,7 @@
 @page "/lists"
 @attribute [Authorize]
+@inject ILikesService LikesService
+@inject ISnackbar Snackbar
 
 <PageTitle>DatingApp - Lists</PageTitle>
 
@@ -77,9 +79,6 @@
     private bool _loadingLikes;
     private bool _showError = false;
     private string _errorText = string.Empty;
-
-    [Inject] public required ILikesService LikesService { get; set; }
-    [Inject] public required ISnackbar Snackbar { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

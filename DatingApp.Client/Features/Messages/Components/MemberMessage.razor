@@ -1,3 +1,12 @@
+@implements IAsyncDisposable
+
+@inject IConfiguration Configuration
+@inject IJSRuntime JSRuntime
+@inject IMemberStateService MemberStateService
+@inject IMessageService MessageService
+@inject IPresenceService PresenceService
+@inject ISnackbar Snackbar
+
 <section class="app-page">
     @if (_showError)
     {
@@ -53,16 +62,7 @@
     </MudPaper>
 </section>
 
-@implements IAsyncDisposable
-
 @code {
-    [Inject] public required IConfiguration Configuration { get; set; }
-    [Inject] public required IJSRuntime JSRuntime { get; set; }
-    [Inject] public required IMemberStateService MemberStateService { get; set; }
-    [Inject] public required IMessageService MessageService { get; set; }
-    [Inject] public required IPresenceService PresenceService { get; set; }
-    [Inject] public required ISnackbar Snackbar { get; set; }
-
     [Parameter] public string Username { get; set; } = string.Empty;
 
     private CreateMessageRequest _newMessage = new();

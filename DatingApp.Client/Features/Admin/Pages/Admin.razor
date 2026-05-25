@@ -1,5 +1,8 @@
 @page "/Admin"
 @attribute [Authorize(Roles = "Administrator,Moderator")]
+@inject IAdminService AdminService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
 <PageTitle>DatingApp - Admin Panel</PageTitle>
 
@@ -110,10 +113,6 @@
     private string _searchString = "";
     private bool _showError = false;
     private string _errorText = "";
-
-    [Inject] public required IAdminService AdminService { get; set; }
-    [Inject] public required IDialogService DialogService { get; set; }
-    [Inject] public required ISnackbar Snackbar { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

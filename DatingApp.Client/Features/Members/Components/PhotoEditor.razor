@@ -1,3 +1,7 @@
+@inject IPhotoService PhotoService
+@inject IMemberStateService MemberStateService
+@inject ISnackbar Snackbar
+
 <section class="app-page">
     @if (_showError)
     {
@@ -30,10 +34,6 @@
 </section>
 
 @code {
-    [Inject] public required IPhotoService PhotoService { get; set; }
-    [Inject] public required IMemberStateService MemberStateService { get; set; }
-    [Inject] public required ISnackbar Snackbar { get; set; }
-
     [Parameter] public EventCallback<string> OnImageChanged { get; set; }
 
     private IList<PhotoResponse> Photos => MemberStateService.Member?.Photos ?? [];

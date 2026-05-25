@@ -1,5 +1,8 @@
 @page "/messages"
 @attribute [Authorize]
+@inject IMessageService MessageService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
 
 <PageTitle>DatingApp - Messages</PageTitle>
 
@@ -130,10 +133,6 @@
     private bool _loadingMessages = false;
     private bool _showError = false;
     private string _errorText = string.Empty;
-
-    [Inject] public required IMessageService MessageService { get; set; }
-    [Inject] public required ISnackbar Snackbar { get; set; }
-    [Inject] public required NavigationManager NavManager { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

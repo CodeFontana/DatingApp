@@ -1,5 +1,8 @@
 @page "/members"
 @attribute [Authorize]
+@inject IMemberStateService MemberStateService
+@inject IMemberService MemberService
+@inject ISnackbar Snackbar
 
 <MudBreakpointProvider OnBreakpointChanged="HandleBreakpointChangedAsync" />
 
@@ -138,10 +141,6 @@
     private Breakpoint _breakpoint = Breakpoint.None;
     private string _selectedSort = "lastactive";
     private string _selectedPageSizeMode = PageSizeModeAuto;
-
-    [Inject] public required IMemberStateService MemberStateService { get; set; }
-    [Inject] public required IMemberService MemberService { get; set; }
-    [Inject] public required ISnackbar Snackbar { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

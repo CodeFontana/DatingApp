@@ -1,4 +1,8 @@
 ﻿@page "/register"
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavManager
+@inject IAuthenticationService AuthService
+@inject ISnackbar Snackbar
 
 <PageTitle>Dating App - Create account</PageTitle>
 
@@ -140,11 +144,6 @@
 </MudContainer>
 
 @code {
-    [Inject] public required AuthenticationStateProvider AuthStateProvider { get; set; }
-    [Inject] public required NavigationManager NavManager { get; set; }
-    [Inject] public required IAuthenticationService AuthService { get; set; }
-    [Inject] public required ISnackbar Snackbar { get; set; }
-
     private RegisterRequest _registerUser = new();
     private InputType _passwordInput = InputType.Password;
     private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;

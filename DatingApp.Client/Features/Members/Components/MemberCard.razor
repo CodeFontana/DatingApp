@@ -1,4 +1,12 @@
-﻿<div class="member-card-wrap">
+@implements IDisposable
+
+@inject NavigationManager NavManager
+@inject IPhotoService PhotoService
+@inject ILikesService LikesService
+@inject ISnackbar Snackbar
+@inject IPresenceService PresenceService
+
+<div class="member-card-wrap">
     <MudCard Elevation="0" Class="app-card member-card">
         <MudCardHeader>
             <div class='img-blur-wrap'>
@@ -42,14 +50,7 @@
     </MudCard>
 </div>
 
-@implements IDisposable
-
 @code {
-    [Inject] public required NavigationManager NavManager { get; set; }
-    [Inject] public required IPhotoService PhotoService { get; set; }
-    [Inject] public required ILikesService LikesService { get; set; }
-    [Inject] public required ISnackbar Snackbar { get; set; }
-    [Inject] public required IPresenceService PresenceService { get; set; }
     [Parameter] public required MemberResponse Member { get; set; }
 
     private string _photoFilename = "./assets/user.png";

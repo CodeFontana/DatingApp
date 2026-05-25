@@ -1,4 +1,8 @@
-﻿<MudItem xs="12" sm="6" lg="4" xl="3">
+@inject IMemberStateService MemberStateService
+@inject IPhotoService PhotoService
+@inject ISnackbar Snackbar
+
+<MudItem xs="12" sm="6" lg="4" xl="3">
     <MudPaper Elevation="0" Class="app-card pa-3">
         <MudStack Spacing="2">
             <MudImage Class="img-thumbnail rounded-lg" Src="@_photoFilename" />
@@ -19,9 +23,6 @@
 </MudItem>
 
 @code {
-    [Inject] public required IMemberStateService MemberStateService { get; set; }
-    [Inject] public required IPhotoService PhotoService { get; set; }
-    [Inject] public required ISnackbar Snackbar { get; set; }
     [Parameter] public required PhotoResponse Photo { get; set; }
 
     [Parameter] public EventCallback<string> OnImageChanged { get; set; }

@@ -1,4 +1,7 @@
-﻿<MudDialog>
+@inject IAdminService AdminService
+@inject ISnackbar Snackbar
+
+<MudDialog>
     <DialogContent>
         <MudGrid>
             <MudItem xs="5">
@@ -47,8 +50,6 @@
     private string _rightValue = string.Empty;
     private List<string> _diffRoles = [];
 
-    [Inject] public required IAdminService AdminService { get; set; }
-    [Inject] public required ISnackbar Snackbar { get; set; }
     [CascadingParameter] public required IMudDialogInstance MudDialog { get; set; }
     [Parameter] public required UserWithRolesResponse User { get; set; }
     [Parameter] public required List<string> AvailableRoles { get; set; }

@@ -1,4 +1,7 @@
 ﻿@page "/login"
+@inject IAuthenticationService AuthService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavManager
 
 <PageTitle>Dating App - Sign in</PageTitle>
 
@@ -82,10 +85,6 @@
 </MudContainer>
 
 @code {
-    [Inject] public required IAuthenticationService AuthService { get; set; }
-    [Inject] public required AuthenticationStateProvider AuthStateProvider { get; set; }
-    [Inject] public required NavigationManager NavManager { get; set; }
-
     private LoginRequest _loginUser = new();
     private InputType _passwordInput = InputType.Password;
     private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
