@@ -2,8 +2,8 @@
 @inject IPhotoService PhotoService
 
 @if (Member is not null
-&& Member.Photos.Count > 0
-&& SpinnerService.HoldSpinner == false)
+    && Member.Photos.Count > 0
+    && SpinnerService.HoldSpinner == false)
 {
     <MudCarousel Class="d-flex mx-auto mb-2"
              @ref="_carousel"
